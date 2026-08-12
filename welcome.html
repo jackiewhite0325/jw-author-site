@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to the Homestead! — J. White</title>
+<link rel="preconnect" href="https://googleapis.com">
+<link rel="preconnect" href="https://gstatic.com" crossorigin="">
+<link href="https://googleapis.comcss2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<!-- Automatically triggers the PDF download when the page opens -->
+<meta http-equiv="refresh" content="2;url=free-coloring-page.pdf">
+<style>
+  body.welcome-page {
+    background: linear-gradient(180deg, var(--night-1) 0%, var(--night-2) 100%);
+    color: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 24px;
+    text-align: center;
+  }
+  .welcome-card {
+    background: rgba(247, 241, 228, 0.05);
+    border: 1px solid rgba(247, 241, 228, 0.15);
+    border-radius: var(--radius);
+    padding: 48px 32px;
+    max-width: 500px;
+    width: 100%;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+  .welcome-card h1 {
+    color: var(--cream);
+    font-size: 2.2rem;
+    margin-top: 12px;
+  }
+  .welcome-card p {
+    color: rgba(247, 241, 228, 0.8);
+    font-size: 1.05rem;
+    margin-bottom: 24px;
+    max-width: 42ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .download-note {
+    font-size: 0.85rem;
+    color: var(--firefly-soft);
+    font-family: var(--font-mono);
+    margin-bottom: 32px;
+  }
+</style>
+</head>
+<body class="welcome-page">
+
+  <div class="welcome-card">
+    <div class="eyebrow">
+      <span class="firefly-dot"></span> Muffin's Mailbox
+    </div>
+    <h1>You're on the list!</h1>
+    <p>Welcome to the homestead table. Once a month, you'll receive behind-the-book notes, sketches, and updates on the Muffin Series.</p>
+    
+    <div class="download-note">
+      📥 Your free coloring page download is starting automatically...
+    </div>
+
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <a href="free-coloring-page.pdf" download class="btn btn-outline">Didn't download? Click here</a>
+      <a href="index.html" class="btn btn-firefly">Back to the Shelves</a>
+    </div>
+  </div>
+
+</body>
+</html>

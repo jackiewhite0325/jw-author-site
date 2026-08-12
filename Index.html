@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>J. White — Author</title>
+<meta name="description" content="J. White writes picture books, humor and wellness nonfiction, quote collections, and coloring books, published under Sigil and Scribe, LLC.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#211c2b;
+    --ink-soft:#4a4458;
+    --dusk:#2e2650;
+    --dusk-2:#1a1530;
+    --ember:#c1542e;
+    --ember-deep:#9c3f22;
+    --firefly:#f4b942;
+    --parchment:#f7efdd;
+    --parchment-2:#efe4c9;
+    --sage:#7c8b6f;
+    --sage-deep:#5f6e53;
+    --plum:#5b4a7a;
+    --line:rgba(33,28,43,0.12);
+    --radius:14px;
+    --shadow: 0 12px 30px -12px rgba(33,28,43,0.25);
+    --maxw:1080px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--parchment);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.55;
+  }
+  h1,h2,h3,h4{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    margin:0 0 .4em 0;
+    color:var(--ink);
+    letter-spacing:-0.01em;
+  }
+  p{margin:0 0 1em 0;}
+  a{color:var(--ember-deep);}
+  a.plain{color:inherit;text-decoration:none;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    display:flex;
+    align-items:center;
+    gap:.5em;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+  img{max-width:100%;display:block;}
+  button{font-family:inherit;}
+
+  /* --- firefly dot, used as bullet / active marker / hero motif --- */
+  .firefly-dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--firefly);
+    box-shadow:0 0 8px 2px rgba(244,185,66,0.7);
+    flex:none;
+  }
+
+  /* ============ HEADER ============ */
+  header.site{
+    position:sticky;top:0;z-index:50;
+    background:rgba(247,239,221,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .header-inner{
+    max-width:var(--maxw);margin:0 auto;padding:16px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+  }
+  .wordmark{
+    font-family:'Fraunces',serif;font-weight:700;font-size:1.3rem;color:var(--ink);
+    text-decoration:none;letter-spacing:-0.01em;
+  }
+  .wordmark small{
+    display:block;font-family:'JetBrains Mono',monospace;font-weight:400;
+    font-size:.62rem;letter-spacing:.12em;color:var(--ink-soft);text-transform:uppercase;
+  }
+  .imprint-tag{
+    font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--ink-soft);
+    letter-spacing:.06em;
+  }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(180deg,var(--dusk-2) 0%, var(--dusk) 55%, var(--ember-deep) 130%);
+    color:var(--parchment);
+    padding:88px 24px 76px;
+  }
+  .hero-inner{max-width:var(--maxw);margin:0 auto;position:relative;z-index:2;}
+  .hero .eyebrow{color:rgba(247,239,221,0.75);margin-bottom:18px;}
+  .hero .eyebrow .firefly-dot{box-shadow:0 0 10px 3px rgba(244,185,66,0.85);}
+  .hero h1{
+    color:var(--parchment);
+    font-size:clamp(2.1rem, 5.5vw, 3.4rem);
+    max-width:14ch;
+    margin-bottom:.3em;
+  }
+  .hero .sub{
+    color:rgba(247,239,221,0.82);
+    font-size:1.1rem;
+    max-width:46ch;
+    margin-bottom:1.6em;
+  }
+  .hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:40px;}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:.5em;
+    padding:12px 22px;border-radius:999px;
+    font-weight:600;font-size:.95rem;
+    text-decoration:none;border:1px solid transparent;
+    cursor:pointer;transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-firefly{background:var(--firefly);color:var(--dusk-2);}
+  .btn-firefly:hover{box-shadow:0 8px 22px -8px rgba(244,185,66,0.7);}
+  .btn-outline{background:transparent;color:var(--parchment);border-color:rgba(247,239,221,0.45);}
+  .btn-outline:hover{border-color:var(--parchment);}
+  .btn-ember{background:var(--ember);color:#fff;}
+  .btn-ember:hover{box-shadow:0 8px 22px -8px rgba(193,84,46,0.6);}
+  .btn-sage{background:var(--sage);color:#fff;}
+  .btn-ghost{background:transparent;color:var(--ember-deep);border:1px solid var(--line);padding:10px 18px;}
+
+  .hero-featured{
+    background:rgba(247,239,221,0.06);
+    border:1px solid rgba(247,239,221,0.18);
+    border-radius:var(--radius);
+    padding:20px 22px;
+    display:flex;gap:18px;align-items:center;
+    max-width:640px;
+    backdrop-filter:blur(2px);
+  }
+  .mini-cover{
+    width:56px;height:78px;border-radius:5px;flex:none;
+    background:linear-gradient(160deg,#2a2436,#151022);
+    border:2px solid var(--firefly);
+    position:relative;
+    box-shadow:0 6px 16px -6px rgba(0,0,0,0.5);
+  }
+  .mini-cover .patch{
+    position:absolute;left:14px;top:20px;width:16px;height:14px;
+    background:var(--ink);border-radius:0 60% 40% 50%;
+  }
+  .hero-featured .txt{font-size:.92rem;color:rgba(247,239,221,0.85);}
+  .hero-featured strong{display:block;color:var(--parchment);font-family:'Fraunces',serif;font-size:1.02rem;margin-bottom:2px;}
+
+  .fireflies{position:absolute;inset:0;z-index:1;pointer-events:none;}
+  .fly{
+    position:absolute;bottom:-10px;
+    width:5px;height:5px;border-radius:50%;
+    background:var(--firefly);
+    box-shadow:0 0 10px 3px rgba(244,185,66,0.8);
+    opacity:0;
+    animation:rise 9s ease-in infinite;
+  }
+  @keyframes rise{
+    0%{opacity:0; transform:translate(0,0);}
+    8%{opacity:.9;}
+    50%{opacity:.6; transform:translate(var(--dx,20px),-160px);}
+    92%{opacity:.15;}
+    100%{opacity:0; transform:translate(calc(var(--dx,20px)*1.6),-320px);}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .fly{animation:none; opacity:.4;}
+    html{scroll-behavior:auto;}
+  }
+
+  /* ============ TABS ============ */
+  .tabs-region{background:var(--parchment);}
+  nav.tabbar{
+    position:sticky;top:65px;z-index:40;
+    background:var(--parchment);
+    border-bottom:1px solid var(--line);
+  }
+  .tabbar-inner{
+    max-width:var(--maxw);margin:0 auto;
+    display:flex;gap:6px;overflow-x:auto;
+    padding:0 24px;
+    -ms-overflow-style:none;scrollbar-width:none;
+  }
+  .tabbar-inner::-webkit-scrollbar{display:none;}
+  .tab-btn{
+    flex:none;
+    background:transparent;border:none;
+    padding:16px 16px 13px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-soft);
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    white-space:nowrap;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .tab-btn:hover{color:var(--ink);}
+  .tab-btn[aria-selected="true"]{
+    color:var(--ink);
+    border-bottom-color:var(--tab-color, var(--firefly));
+  }
+
+  section.panel{display:none;padding:56px 0 80px;}
+  section.panel.active{display:block;animation:fadein .35s ease;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .panel-head{max-width:640px;margin-bottom:40px;}
+  .panel-head .eyebrow{margin-bottom:10px;}
+  .panel-head h2{font-size:clamp(1.6rem,3.5vw,2.1rem);}
+  .panel-head p{color:var(--ink-soft);font-size:1.02rem;}
+
+  /* ============ BOOK CARDS ============ */
+  .book-card{
+    display:grid;grid-template-columns:150px 1fr;gap:26px;
+    background:#fff;border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:26px;margin-bottom:22px;
+    box-shadow:var(--shadow);
+  }
+  .cover{
+    width:100%;aspect-ratio:5/8;border-radius:8px;
+    position:relative;overflow:hidden;
+    box-shadow:0 10px 20px -8px rgba(33,28,43,0.35);
+  }
+  .cover .cov-title{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    text-align:center;padding:10px;
+    font-family:'Fraunces',serif;font-weight:600;font-size:.85rem;line-height:1.2;
+    color:#fff;
+  }
+  .cov-muffin{background:linear-gradient(160deg,#2e2650,#161129);}
+  .cov-muffin::after{
+    content:"";position:absolute;left:26%;top:32%;width:34%;height:26%;
+    background:var(--ink);border-radius:0 60% 45% 55%;
+  }
+  .cov-bingo{background:linear-gradient(160deg,var(--ember),#7a3016);}
+  .cov-quote{background:linear-gradient(160deg,#3a2e12,#1c1608);}
+  .cov-quote .cov-title{color:var(--firefly);}
+  .cov-axolotl{background:linear-gradient(160deg,#e8b9c4,#c98aa0);}
+  .cov-axolotl .cov-title{color:#3a1e28;}
+  .cov-grace{background:linear-gradient(160deg,var(--plum),#3a2e57);}
+
+  .book-body h3{font-size:1.25rem;margin-bottom:.15em;}
+  .book-sub{
+    font-family:'JetBrains Mono',monospace;font-size:.72rem;
+    color:var(--ink-soft);letter-spacing:.05em;text-transform:uppercase;
+    margin-bottom:.9em;
+  }
+  .book-blurb{color:var(--ink-soft);font-size:.97rem;margin-bottom:1em;}
+  .book-meta{
+    display:flex;flex-wrap:wrap;gap:8px 18px;
+    font-size:.85rem;color:var(--ink-soft);margin-bottom:1em;
+  }
+  .book-meta strong{color:var(--ink);}
+  .buy-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  .status-pill{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;
+    padding:4px 10px;border-radius:999px;background:var(--parchment-2);color:var(--ink-soft);
+  }
+  .disclaimer{
+    margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);
+    font-size:.82rem;color:var(--ink-soft);
+  }
+
+  @media (max-width:560px){
+    .book-card{grid-template-columns:96px 1fr;gap:16px;padding:18px;}
+    .book-body h3{font-size:1.08rem;}
+  }
+
+  /* ============ PHASE MAP (children's) ============ */
+  .phase-map{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:16px;margin:34px 0 42px;
+  }
+  .phase{
+    background:#fff;border:1px solid var(--line);border-radius:12px;
+    padding:18px;position:relative;
+  }
+  .phase .num{
+    font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--firefly);
+    background:var(--dusk-2);display:inline-block;padding:3px 8px;border-radius:6px;
+    margin-bottom:10px;
+  }
+  .phase h4{font-size:1rem;margin-bottom:6px;}
+  .phase p{font-size:.84rem;color:var(--ink-soft);margin:0;}
+
+  /* ============ SOFT CARD (empty states, about blocks) ============ */
+  .soft-card{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:34px;box-shadow:var(--shadow);
+  }
+  .empty-state{
+    text-align:left;padding:48px 34px;
+    background:linear-gradient(160deg,#fff,var(--parchment-2));
+    border:1px dashed var(--line);border-radius:var(--radius);
+  }
+  .empty-state h3{margin-bottom:10px;}
+  .empty-state p{color:var(--ink-soft);margin-bottom:0;}
+
+  /* ============ ABOUT ============ */
+  .about-grid{display:grid;grid-template-columns:220px 1fr;gap:36px;align-items:start;}
+  .about-photo{
+    width:100%;aspect-ratio:4/5;border-radius:var(--radius);
+    background:linear-gradient(160deg,var(--sage),var(--sage-deep));
+    display:flex;align-items:center;justify-content:center;
+    color:rgba(255,255,255,0.85);font-family:'JetBrains Mono',monospace;
+    font-size:.72rem;text-align:center;padding:14px;letter-spacing:.04em;
+    box-shadow:var(--shadow);
+  }
+  .about-body p{color:var(--ink-soft);}
+  .about-body p.lede{color:var(--ink);font-size:1.08rem;}
+  .memorial-line{
+    margin-top:22px;padding:18px 20px;border-left:3px solid var(--firefly);
+    background:var(--parchment-2);border-radius:0 10px 10px 0;
+    font-size:.95rem;color:var(--ink-soft);
+  }
+  .giving-line{
+    margin-top:16px;display:flex;gap:10px;align-items:flex-start;
+    font-size:.9rem;color:var(--ink-soft);
+  }
+  @media (max-width:640px){
+    .about-grid{grid-template-columns:1fr;}
+    .about-photo{max-width:200px;}
+  }
+
+  /* Lanes overview (used inside About / as quick cross-links) */
+  .lane-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:14px;margin-top:28px;
+  }
+  .lane-card{
+    padding:18px;border-radius:10px;border:1px solid var(--line);
+    background:#fff;text-decoration:none;color:inherit;display:block;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .lane-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+  .lane-card .eyebrow{margin-bottom:8px;}
+  .lane-card h4{font-size:1rem;margin-bottom:4px;}
+  .lane-card p{font-size:.82rem;color:var(--ink-soft);margin:0;}
+
+  /* ============ NEWSLETTER / CONTACT ============ */
+  .signup-box{
+    background:var(--dusk-2);color:var(--parchment);
+    border-radius:var(--radius);padding:34px;margin-top:20px;
+  }
+  .signup-box h3{color:var(--parchment);}
+  .signup-box p{color:rgba(247,239,221,0.75);font-size:.92rem;}
+  .signup-form{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+  .signup-form input[type=email]{
+    flex:1;min-width:200px;padding:12px 14px;border-radius:8px;border:1px solid rgba(247,239,221,0.3);
+    background:rgba(247,239,221,0.08);color:var(--parchment);font-family:inherit;
+  }
+  .signup-form input[type=email]::placeholder{color:rgba(247,239,221,0.5);}
+  .signup-note{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:rgba(247,239,221,0.55);margin-top:10px;}
+
+  .contact-block{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media (max-width:640px){.contact-block{grid-template-columns:1fr;}}
+  .contact-item{padding:20px;border:1px solid var(--line);border-radius:10px;background:#fff;}
+  .contact-item .eyebrow{margin-bottom:8px;}
+
+  /* ============ FOOTER ============ */
+  footer{
+    background:var(--ink);color:rgba(247,239,221,0.75);
+    padding:44px 24px 30px;margin-top:20px;
+  }
+  .footer-inner{max-width:var(--maxw);margin:0 auto;}
+  .footer-top{
+    display:flex;flex-wrap:wrap;gap:30px;justify-content:space-between;
+    padding-bottom:26px;border-bottom:1px solid rgba(247,239,221,0.14);margin-bottom:20px;
+  }
+  .footer-col h5{
+    font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+    color:rgba(247,239,221,0.5);margin-bottom:12px;
+  }
+  .footer-col a{display:block;color:rgba(247,239,221,0.82);text-decoration:none;font-size:.9rem;margin-bottom:8px;}
+  .footer-col a:hover{color:var(--firefly);}
+  .footer-legal{font-size:.78rem;color:rgba(247,239,221,0.45);line-height:1.7;}
+  .footer-legal p{margin-bottom:.6em;}
+
+  .sr-only{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0;
+  }
+  :focus-visible{outline:3px solid var(--firefly);outline-offset:2px;}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="header-inner">
+    <a href="#" class="wordmark">J. White<small>Sigil &amp; Scribe, LLC</small></a>
+    <span class="imprint-tag">warmth · humor · a little truth</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="fireflies" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <div class="eyebrow"><span class="firefly-dot"></span> The home of the Muffin Series and friends</div>
+    <h1>Brave comes in small, wiggly bodies.</h1>
+    <p class="sub">J. White writes picture books and humor for readers who need warmth, a laugh, and a little truth.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn btn-firefly" data-goto="childrens">Meet Muffin</a>
+      <a href="#" class="btn btn-outline" data-goto="about">About J. White</a>
+    </div>
+    <div class="hero-featured">
+      <div class="mini-cover" aria-hidden="true"><div class="patch"></div></div>
+      <div class="txt">
+        <strong>Muffin Gets the Wiggles</strong>
+        Book 1 of the Muffin Series. Available now in Kindle and paperback. A portion of proceeds supports St. Jude in memory of the real Muffin.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="tabs-region">
+  <nav class="tabbar" aria-label="Site sections">
+    <div class="tabbar-inner" id="tabbar"></div>
+  </nav>
+
+  <div class="wrap">
+
+    <!-- ============ CHILDREN'S ============ -->
+    <section class="panel active" id="panel-childrens" data-color="var(--dusk)">
+      <div class="panel-head">
+        <div class="eyebrow"><span class="firefly-dot"></span> Children&rsquo;s</div>
+        <h2>The Muffin Series</h2>
+        <p>Twenty-six picture books that help young children understand their bodies, their medical experiences, and their big feelings. Meet Muffin, a black-and-white pitbull with a patch over her left eye and a tail that tells you how she feels. A portion of proceeds supports St. Jude Children&rsquo;s Research Hospital in memory of the real Muffin.</p>
+      </div>
+
+      <div class="book-card">
+        <div class="cover cov-muffin"><div class="cov-title">Muffin Gets the Wiggles</div></div>
+        <div class="book-body">
+          <span class="status-pill"><span class="firefly-dot"></span> In review on Amazon KDP</span>
+          <h3 style="margin-top:12px;">Muffin Gets the Wiggles</h3>
+          <div class="book-sub">Phase 1, Book 1 &middot; Picture book, 32 pages, full color, 5x8</div>
+          <p class="book-blurb">Muffin is a happy little pitbull with a patch over her left eye and a tail that never stops talking. But sometimes the wiggles come: a sudden thunderstorm that shakes her whole body. With her best friend Luna and her people beside her, Muffin learns what the wiggles are, how to be brave through them, and that she is still wonderful, still Muffin, always. A gentle, honest introduction to seizures for the youngest readers, with caregiver discussion prompts inside.</p>
+          <div class="book-meta"><span><strong>Kindle</strong> $3.99</span><span><strong>Paperback</strong> $8.99</span></div>
+          <div class="buy-row">
+            <a href="#" class="btn btn-ember">Amazon listing (adding at launch)</a>
+          </div>
+          <div class="disclaimer">Educational storytelling, not medical advice. Includes a grown-up page with a crisis line for anyone who needs it.</div>
+        </div>
+      </div>
+
+      <div class="book-card">
+        <div class="cover cov-muffin" style="opacity:.55"><div class="cov-title">Muffin Gets Tired a Lot</div></div>
+        <div class="book-body">
+          <span class="status-pill">Coming soon &middot; production next</span>
+          <h3 style="margin-top:12px;">Muffin Gets Tired a Lot</h3>
+          <div class="book-sub">Phase 1, Book 2</div>
+          <p class="book-blurb">Some days Muffin&rsquo;s battery sits at one bar and nothing fills it. This gentle picture book helps children understand fatigue, energy limits, and the friends who know how to wait.</p>
+        </div>
+      </div>
+
+      <h3 style="margin-top:44px;">The five phases</h3>
+      <p style="color:var(--ink-soft);max-width:640px;">Every book follows the same trusted structure: a story, a gentle metaphor, coping tools, Muffin&rsquo;s Tips, and caregiver discussion prompts.</p>
+      <div class="phase-map">
+        <div class="phase"><span class="num">01</span><h4>Understanding My Body</h4><p>Wiggles, Tired a Lot, Tummy Hurts, Takes Medicine</p></div>
+        <div class="phase"><span class="num">02</span><h4>Medical Experiences &amp; Diagnosis</h4><p>Hospital, Diagnosis, Flare-Up, Brain Fog</p></div>
+        <div class="phase"><span class="num">03</span><h4>Emotions &amp; Mental Health</h4><p>Worries, Feels Too Much, Can&rsquo;t Sleep, Gets Really Mad, Feels Sad, Needs a Break</p></div>
+        <div class="phase"><span class="num">04</span><h4>Social &amp; Identity Growth</h4><p>Feels Left Out, Misses School, Can&rsquo;t Do What Others Can, Has Something Different, Gets Bullied, Makes a Mistake</p></div>
+        <div class="phase"><span class="num">05</span><h4>Special Life Moments</h4><p>New Sibling, New Burrow, Friend Moves Away, Loses Someone, Wheelchair, Therapy</p></div>
+      </div>
+    </section>
+
+    <!-- ============ HEALTH & WELLNESS ============ -->
+    <section class="panel" id="panel-wellness" data-color="var(--ember)">
+      <div class="panel-head">
+        <div class="eyebrow"><span class="firefly-dot"></span> Health &amp; Wellness</div>
+        <h2>For the chronically ill, and everyone who loves them</h2>
+        <p>Sharp wit, trustworthy science, zero invented statistics, and a clear line: these books are not medical advice.</p>
+      </div>
+
+      <div class="book-card">
+        <div class="cover cov-bingo"><div class="cov-title">The Bingo Card of Chronic Illness</div></div>
+        <div class="book-body">
+          <span class="status-pill"><span class="firefly-dot"></span> Revamped edition live</span>
+          <h3 style="margin-top:12px;">The Bingo Card of Chronic Illness</h3>
+          <div class="book-sub">Have You Tried This? Surviving the Advice Parade with Humor, Science, and Hope</div>
+          <p class="book-blurb">Kale smoothies. Toxic positivity. Yoga as a cure-all. If you live with chronic illness, you know the Advice Parade well. This book takes on the unsolicited cures with sharp wit and trustworthy science, names the invisible barriers of cost and access, and reminds you that you are not alone in wanting to laugh, or scream, at the absurdity of it all.</p>
+          <div class="book-meta"><span><strong>Ebook</strong> $4.99</span><span><strong>Paperback</strong> $14.99</span><span>ISBN 9798231996186</span></div>
+          <div class="buy-row">
+            <a href="https://books2read.com/u/meNaLz" class="btn btn-ember" target="_blank" rel="noopener">Find it at your favorite retailer</a>
+          </div>
+          <div class="disclaimer">Not medical advice. Community stories inside are anonymized composites, clearly labeled.</div>
+        </div>
+      </div>
+
+      <div class="book-card">
+        <div class="cover cov-grace"><div class="cov-title">The Many Faces of Grace</div></div>
+        <div class="book-body">
+          <h3 style="margin-top:0;">The Many Faces of Grace</h3>
+          <div class="book-sub">Cross-Cultural Perspectives and Interpretations</div>
+          <p class="book-blurb">One word, eleven chapters, a hundred traditions. A clear-eyed journey through what grace has meant across cultures and centuries, from unmerited favor to the quiet forgiveness we offer each other. For the curious, the doubting, and the faithful alike.</p>
+          <div class="book-meta"><span>ISBN 979-8232535391</span></div>
+          <div class="buy-row">
+            <a href="https://books2read.com/u/mga6XD" class="btn btn-ember" target="_blank" rel="noopener">Find it at your favorite retailer</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FICTION ============ -->
+    <section class="panel" id="panel-fiction" data-color="var(--plum)">
+      <div class="panel-head">
+        <div class="eyebrow"><span class="firefly-dot"></span> Fiction</div>
+        <h2>A shelf being built</h2>
+      </div>
+      <div class="empty-state">
+        <h3>Coming soon</h3>
+        <p>The first novel isn&rsquo;t announced yet. When it is, it lands here first. In the meantime, pull up a chair with the Muffin Series or the More Books shelf.</p>
+      </div>
+    </section>
+
+    <!-- ============ MORE BOOKS ============ -->
+    <section class="panel" id="panel-more" data-color="var(--firefly)">
+      <div class="panel-head">
+        <div class="eyebrow"><span class="firefly-dot"></span> More Books</div>
+        <h2>Quotes and a calm hour</h2>
+        <p>For readers who want their wisdom with an edge, or just need to slow down and color for a while.</p>
+      </div>
+
+      <div class="book-card">
+        <div class="cover cov-quote"><div class="cov-title">Don&rsquo;t Quote Me: Smart Mouths</div></div>
+        <div class="book-body">
+          <span class="status-pill">Second edition in review</span>
+          <h3 style="margin-top:12px;">Don&rsquo;t Quote Me: Smart Mouths</h3>
+          <div class="book-sub">Quote collection &middot; 60 pages, 6x9</div>
+          <p class="book-blurb">Forty-two voices, seven sections, zero patience for small talk. A collection of public-domain quotes from history&rsquo;s sharpest minds, each paired with original commentary. Wisdom with an edge, properly attributed, beautifully presented.</p>
+          <div class="book-meta"><span><strong>Kindle</strong> $3.99</span><span><strong>Paperback</strong> $9.99</span></div>
+          <div class="buy-row"><a href="#" class="btn btn-ember">Amazon listing</a></div>
+          <div class="disclaimer">All quotes are public domain, credited to their source. Commentary is original.</div>
+        </div>
+      </div>
+
+      <div class="book-card">
+        <div class="cover cov-axolotl"><div class="cov-title">Axolotl Dreams</div></div>
+        <div class="book-body">
+          <h3 style="margin-top:0;">Axolotl Dreams: A Coloring Journey</h3>
+          <div class="book-sub">Coloring book &middot; 76 pages</div>
+          <p class="book-blurb">Meet the axolotl, the smiling salamander who never grows up, and color your way through mandala-inspired patterns made for slowing down. No rules, only possibilities. Pencils, pens, markers, whatever you love, all welcome.</p>
+          <div class="book-meta"><span><strong>Paperback</strong> $9.99</span></div>
+          <div class="buy-row"><a href="#" class="btn btn-ember">Amazon listing</a></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============ BLOG ============ -->
+    <section class="panel" id="panel-blog" data-color="var(--sage)">
+      <div class="panel-head">
+        <div class="eyebrow"><span class="firefly-dot"></span> Blog</div>
+        <h2>Notes from the homestead table</h2>
+      </div>
+      <div class="empty-state">
+        <h3>First post is on its way</h3>
+        <p>This is where the behind-the-book notes, homestead stories, and Muffin Series updates will live. Check back soon, or join Muffin&rsquo;s Mailbox below and get the first post by email.</p>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section class="panel" id="panel-about" data-color="var(--sage-deep)">
+      <div class="panel-head">
+        <div class="eyebrow"><span class="firefly-dot"></span> About</div>
+        <h2>J. White</h2>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-photo">Author photo<br>(bookshelf portrait)</div>
+        <div class="about-body">
+          <p class="lede">J. White writes books for readers who need warmth, humor, and a little truth. The Muffin Series, a 26-book picture book journey, began as a memorial to her rescued pitbull Muffin, who taught her family that brave comes in small, wiggly bodies.</p>
+          <p>She also writes humor and survival guides for the chronic illness community, quote collections for the sharp-tongued, and coloring books for anyone who needs to slow down. J. White writes from a small homestead where the day starts with chickens, pigs, and a watering can, and ends with a manuscript open on the kitchen table. She publishes under her imprint, Sigil and Scribe, LLC.</p>
+          <p>The Muffin Series is her flagship work: a planned 26-book picture book series that helps young children understand their bodies, their medical experiences, and their big feelings. In the books, Muffin the character lives with the wiggles, a gentle name for seizures, and learns that her body works a little differently but she is still wonderful. Every book closes with the same promise: you are loved, loved, loved.</p>
+
+          <div class="memorial-line">
+            The real Muffin was a rescued pitbull, the runt of her litter, who lived with seizures for most of her short life. She was almost two when she passed. These books are how her family keeps her teaching: that asking for help is brave, and that a body that works a little differently is still a wonderful body.
+          </div>
+
+          <div class="giving-line">
+            <span class="firefly-dot" style="margin-top:5px;"></span>
+            <span>A portion of Muffin Series royalties is donated quarterly to St. Jude Children&rsquo;s Research Hospital, in memory of Muffin.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="lane-grid">
+        <a href="#" class="lane-card" data-goto="childrens"><div class="eyebrow">Children&rsquo;s</div><h4>The Muffin Series</h4><p>26 picture books, one wiggly pitbull</p></a>
+        <a href="#" class="lane-card" data-goto="wellness"><div class="eyebrow">Health &amp; Wellness</div><h4>Bingo Card &amp; Grace</h4><p>Humor, science, and hope</p></a>
+        <a href="#" class="lane-card" data-goto="more"><div class="eyebrow">More Books</div><h4>Quotes &amp; coloring</h4><p>An edge, and a calm hour</p></a>
+      </div>
+
+      <div class="signup-box">
+        <h3>Muffin&rsquo;s Mailbox</h3>
+        <p>One email a month, a free coloring page to start, and no spam.</p>
+        <form class="signup-form" onsubmit="return false;">
+          <label class="sr-only" for="email">Email address</label>
+          <input type="email" id="email" placeholder="you@email.com" required>
+          <button type="submit" class="btn btn-firefly">Join</button>
+        </form>
+        <p class="signup-note">Newsletter embed goes here once the Mailchimp form is connected.</p>
+      </div>
+
+      <div class="contact-block">
+        <div class="contact-item">
+          <div class="eyebrow">Contact</div>
+          <p style="margin-top:8px;color:var(--ink-soft);">Author email goes here once a dedicated address is set up.</p>
+        </div>
+        <div class="contact-item">
+          <div class="eyebrow">Elsewhere</div>
+          <p style="margin-top:8px;color:var(--ink-soft);">Instagram and Facebook links go here.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-col">
+        <h5>Shelves</h5>
+        <a href="#" data-goto="childrens">Children&rsquo;s</a>
+        <a href="#" data-goto="wellness">Health &amp; Wellness</a>
+        <a href="#" data-goto="fiction">Fiction</a>
+        <a href="#" data-goto="more">More Books</a>
+        <a href="#" data-goto="blog">Blog</a>
+      </div>
+      <div class="footer-col">
+        <h5>Elsewhere</h5>
+        <a href="https://sigilandscribe.com" target="_blank" rel="noopener">Sigil &amp; Scribe, LLC</a>
+      </div>
+      <div class="footer-col">
+        <h5>Say hello</h5>
+        <a href="#" data-goto="about">Contact &amp; newsletter</a>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p>Copyright &copy; 2026 J. White. All rights reserved.</p>
+      <p>The Muffin Series is educational storytelling, not medical advice. The Bingo Card of Chronic Illness is not medical advice. Quotes in Don&rsquo;t Quote Me are public domain, credited to their source, with original commentary.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var tabs = [
+    {id:'childrens', label:"Children's"},
+    {id:'wellness', label:'Health & Wellness'},
+    {id:'fiction', label:'Fiction'},
+    {id:'more', label:'More Books'},
+    {id:'blog', label:'Blog'},
+    {id:'about', label:'About'}
+  ];
+  var bar = document.getElementById('tabbar');
+
+  tabs.forEach(function(t, i){
+    var btn = document.createElement('button');
+    btn.className = 'tab-btn';
+    btn.textContent = t.label;
+    btn.setAttribute('role','tab');
+    btn.setAttribute('data-tab', t.id);
+    btn.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    var panel = document.getElementById('panel-' + t.id);
+    if(panel) btn.style.setProperty('--tab-color', panel.getAttribute('data-color'));
+    btn.addEventListener('click', function(){ activate(t.id); window.scrollTo({top: bar.getBoundingClientRect().top + window.scrollY - 66, behavior:'smooth'}); });
+    bar.appendChild(btn);
+  });
+
+  function activate(id){
+    document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.setAttribute('aria-selected', b.getAttribute('data-tab') === id ? 'true':'false'); });
+    var target = document.getElementById('panel-' + id);
+    if(target) target.classList.add('active');
+  }
+
+  document.querySelectorAll('[data-goto]').forEach(function(el){
+    el.addEventListener('click', function(e){
+      e.preventDefault();
+      activate(el.getAttribute('data-goto'));
+      document.querySelector('.tabbar').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+
+  // fireflies
+  var field = document.querySelector('.fireflies');
+  if(field){
+    for(var i=0;i<14;i++){
+      var f = document.createElement('span');
+      f.className = 'fly';
+      f.style.left = (Math.random()*100) + '%';
+      f.style.setProperty('--dx', (Math.random()*60-30) + 'px');
+      f.style.animationDelay = (Math.random()*9) + 's';
+      f.style.animationDuration = (7 + Math.random()*5) + 's';
+      field.appendChild(f);
+    }
+  }
+})();
+</script>
+
+</body>
+</html>

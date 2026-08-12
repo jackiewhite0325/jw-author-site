@@ -32,7 +32,6 @@
       var top = tabsRegion.getBoundingClientRect().top + window.pageYOffset - headerOffset;
       window.scrollTo({ top: top, behavior: 'smooth' });
     }
-
     return true;
   }
 
@@ -51,7 +50,7 @@
     });
   });
 
-  // Respect a direct link like site.com/#wellness
+  // Respect a direct link like ://site.com
   var initial = (window.location.hash || '').replace('#', '');
   var validTabs = Array.prototype.map.call(tabButtons, function (b) {
     return b.getAttribute('data-tab');

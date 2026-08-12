@@ -684,3 +684,43 @@ footer {
   .about-photo { max-width: 200px; }
   .header-inner { flex-direction: column; align-items: flex-start; }
 }
+
+/* ---------- Contact Form Integration ---------- */
+.contact-block form input[type="text"],
+.contact-block form input[type="email"],
+.contact-block form textarea {
+  width: 100%;
+  padding: 12px;
+  background: var(--cream-deep);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.94rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.contact-block form input[type="text"]:focus,
+.contact-block form input[type="email"]:focus,
+.contact-block form textarea:focus {
+  outline: none;
+  border-color: var(--sage-deep);
+  box-shadow: 0 0 0 3px rgba(67, 89, 58, 0.15);
+}
+
+.contact-block form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* Responsive adjustment for contact section */
+@media (max-width: 640px) {
+  .contact-block {
+    max-width: 100% !important;
+  }
+  .contact-block form button {
+    width: 100%;
+    text-align: center;
+  }
+}
+

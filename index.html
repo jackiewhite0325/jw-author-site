@@ -47,9 +47,10 @@
     <!-- 3D 360° Virtual Library Environment Scene -->
     <a-scene cursor="rayOrigin: mouse">
         <a-assets>
-            <!-- Equirectangular 360 Photosphere of an old Victorian library -->
-            <img id="libraryRoom" src="images/victorian_library_360.jpg">
-        </a-assets>
+    <!-- Updated path to match your nested site subfolder and .png file extension -->
+    <img id="libraryRoom" src="./images/site/victorian_library_360.png" crossorigin="anonymous">
+</a-assets>
+
 
         <!-- Main 360 Background Sphere centering the user -->
         <a-sky src="#libraryRoom" rotation="0 -90 0"></a-sky>

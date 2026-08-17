@@ -1,0 +1,80 @@
+const libraryRegistry = [
+  {
+    "id": "i_finally_wrote_it",
+    "title": "I Finally Wrote It!",
+    "authorName": "Jackie White",
+    "deweyClassification": "808.02",
+    "seriesName": "The Writer's Toolbox Series, Vol. 1",
+    "shelfCoordinate": { "pitch": -3.5, "yaw": -52.0 },
+    "targetUrl": "write/index.html"
+  },
+  {
+    "id": "partner_book_placeholder",
+    "title": "Untitled Gothic Mystery",
+    "authorName": "Partner Author",
+    "deweyClassification": "813.6",
+    "seriesName": "Ink & Key Chronicles, Vol. 1",
+    "shelfCoordinate": { "pitch": -8.2, "yaw": -24.0 },
+    "targetUrl": "books/gothic-mystery/index.html"
+  },
+  {
+    "id": "kids_corner_anchor",
+    "title": "Children's Reading Tub",
+    "authorName": "Sigil & Scribe LLC",
+    "deweyClassification": "808.83",
+    "seriesName": "Kids' Corner Catalog",
+    "shelfCoordinate": { "pitch": -16.5, "yaw": -125.0 },
+    "targetUrl": "kids/index.html"
+  },
+  {
+    "id": "meditation_space_anchor",
+    "title": "Author Wellness & Meditation",
+    "authorName": "Sigil & Scribe LLC",
+    "deweyClassification": "158.12",
+    "seriesName": "Writer Mindset & Relaxation",
+    "shelfCoordinate": { "pitch": -6.0, "yaw": 58.5 },
+    "targetUrl": "wellness/index.html"
+  },
+  {
+    "id": "librarians_desk_papers",
+    "title": "About Sigil and Scribe LLC",
+    "authorName": "Corporate Portfolio",
+    "deweyClassification": "027.1",
+    "seriesName": "Business Foundations",
+    "shelfCoordinate": { "pitch": -17.0, "yaw": 14.5 },
+    "targetUrl": "about/index.html"
+  },
+  {
+    "id": "librarians_desk_typewriter",
+    "title": "The Dispatch Blog Log",
+    "authorName": "Editorial Board",
+    "deweyClassification": "070.41",
+    "seriesName": "Community Announcements",
+    "shelfCoordinate": { "pitch": -14.5, "yaw": -1.5 },
+    "targetUrl": "blog/index.html"
+  },
+  {
+    "id": "muffins_memorial_portrait",
+    "title": "Muffin's Eternal Sanctuary",
+    "authorName": "In Memoriam",
+    "deweyClassification": "636.7",
+    "seriesName": "Site Foundations",
+    "shelfCoordinate": { "pitch": 13.0, "yaw": -138.5 },
+    "targetUrl": "memorial.html"
+  },
+  {
+    "id": "muffins_constellation_poster",
+    "title": "The Muffin Constellation Chart",
+    "authorName": "Achievement Engine",
+    "deweyClassification": "523.8",
+    "seriesName": "Badge & Progression Sync",
+    "shelfCoordinate": { "pitch": 11.5, "yaw": 118.0 },
+    "targetUrl": "badges/index.html",
+    "badgeLocations": [
+      { "id": "muffin01", "x": 15, "y": 20, "label": "First Post" },
+      { "id": "muffin02", "x": 45, "y": 30, "label": "Writer's Spark" },
+      { "id": "muffin03", "x": 75, "y": 45, "label": "Consistency" },
+      { "id": "muffin04", "x": -138.5, "y": 11.5, "label": "Muffin's Legacy" }
+    ]
+  }
+];

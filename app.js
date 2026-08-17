@@ -12,7 +12,7 @@ diagnostics.lifecycle = diagnostics.lifecycle || [];
 diagnostics.failures = diagnostics.failures || [];
 diagnostics.environment = diagnostics.environment || collectEnvironmentDetails();
 diagnostics.webgl = diagnostics.webgl || probeWebGlSupport();
-diagnostics.cdn = diagnostics.cdn || readCdnStatus();
+diagnostics.libraryAssets = diagnostics.libraryAssets || readLibraryAssetStatus();
 
 function collectEnvironmentDetails() {
   const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -34,12 +34,12 @@ function collectEnvironmentDetails() {
   };
 }
 
-function readCdnStatus() {
+function readLibraryAssetStatus() {
   const script = document.getElementById('pannellum-script');
   const css = document.getElementById('pannellum-css');
   return {
-    scriptStatus: diagnostics.cdn?.scriptStatus || script?.dataset?.status || (window.pannellum ? 'loaded' : 'unknown'),
-    cssStatus: diagnostics.cdn?.cssStatus || css?.dataset?.status || 'unknown',
+    scriptStatus: diagnostics.libraryAssets?.scriptStatus || script?.dataset?.status || (window.pannellum ? 'loaded' : 'unknown'),
+    cssStatus: diagnostics.libraryAssets?.cssStatus || css?.dataset?.status || 'unknown',
     scriptUrl: script?.src || null,
     cssUrl: css?.href || null
   };
@@ -98,7 +98,7 @@ function classifyFailure(stage, error) {
   const message = (error && (error.message || error.reason || error.statusText)) || (typeof error === 'string' ? error : '');
   const combined = `${stage} ${message}`.toLowerCase();
 
-  if (stage === 'missing-pannellum' || diagnostics.cdn.scriptStatus === 'error') {
+  if (stage === 'missing-pannellum' || diagnostics.libraryAssets.scriptStatus === 'error') {
     return 'asset-load-failure';
   }
 
@@ -143,8 +143,8 @@ function buildDiagnosticSummary() {
     sessionId: diagnostics.sessionId,
     failureCategory,
     failureSummary: summarizeFailure(failureCategory),
-    pannellumScriptStatus: diagnostics.cdn.scriptStatus,
-    pannellumCssStatus: diagnostics.cdn.cssStatus,
+    pannellumScriptStatus: diagnostics.libraryAssets.scriptStatus,
+    pannellumCssStatus: diagnostics.libraryAssets.cssStatus,
     webglSupported: diagnostics.webgl.supported,
     webglContext: diagnostics.webgl.contextName,
     webglRenderer: diagnostics.webgl.renderer,
@@ -225,7 +225,7 @@ window.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  diagnostics.cdn = readCdnStatus();
+  diagnostics.libraryAssets = readLibraryAssetStatus();
   if (!window.pannellum || typeof window.pannellum.viewer !== 'function') {
     recordLifecycle('missing-pannellum');
     showLoadingFallback(

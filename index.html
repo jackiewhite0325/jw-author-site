@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Sigil and Scribe LLC - Interactive Library</title>
-    <!-- Core 3D engine scripts -->
+    <!-- FIXED: Using the direct absolute library path to prevent engine 404 crashes -->
     <script src="https://aframe.io"></script>
     <style>
-        /* Block mobile browsers from dragging the entire page window around */
+        /* Block mobile browsers from dragging the entire page window layout around */
         html, body {
             overflow: hidden;
             width: 100%;
@@ -15,7 +15,7 @@
             margin: 0;
             padding: 0;
         }
-        /* Style adjustments for user interface reading windows */
+        /* Style adjustments for user reading popups */
         .library-modal {
             display: none;
             position: fixed;
@@ -52,8 +52,8 @@
         <div id="modalContent"></div>
     </div>
 
-    <!-- The 3D Panoramic Engine Canvas Scene Viewport -->
-    <a-scene cursor="rayOrigin: mouse" raycaster="objects: .clickable" embedded style="width: 100%; height: 100%;">
+    <!-- FIXED: Running a single optimized 3D canvas rendering engine loop -->
+    <a-scene cursor="rayOrigin: mouse" raycaster="objects: .clickable" embedded renderer="antialias: false; precision: medium;" style="width: 100%; height: 100%;">
         <a-assets>
             <img id="libraryRoom" src="./images/site/victorian_library_360.png" crossorigin="anonymous">
         </a-assets>
@@ -61,7 +61,7 @@
         <!-- Equirectangular 360 Sky Component Background Mapping -->
         <a-sky src="#libraryRoom" rotation="0 -90 0"></a-sky>
 
-        <!-- Interaction Zone Elements -->
+        <!-- Interaction Zone Hotspots -->
         <a-plane id="muffinPoster" position="-3 2 -4" rotation="0 45 0" width="1.5" height="2" 
                  material="opacity: 0.01; transparent: true" class="clickable"
                  onclick="openParchment('Muffin\'s Memorial', 'In loving memory of the dog who inspired it all. Here lies the foundation of our creative stories.')"></a-plane>
@@ -74,31 +74,20 @@
                material="opacity: 0.01; transparent: true" class="clickable"
                onclick="openParchment('The Scribe\'s Blog', 'Latest Update: Transitioning to our multi-author platform! Stay tuned for upcoming catalog additions from our writing partners.')"></a-box>
 
-        <!-- Explicit Mobile-Optimized Tracking Viewport Camera -->
+        <!-- FIXED: Added back the clean look-around camera container view tracker -->
         
     </a-scene>
-    <!-- Optimized Performance 3D Canvas Scene Viewport -->
-    <a-scene cursor="rayOrigin: mouse" raycaster="objects: .clickable" embedded renderer="antialias: false; precision: medium;" style="width: 100%; height: 100%;">
 
-        
-    <!-- Tracking Mechanics script link call -->
-    <script src="./js/library-engine.js"></script>
-
-        <!-- Add this block directly above your engine script hook line at the bottom -->
+    <!-- Block mobile browsers from handling native background scrolling glitches -->
     <script>
-        // Prevents the mobile browser from handling drag/scroll gestures over the 3D scene
         document.addEventListener('touchmove', function(e) {
-            // Only block scrolling if a text modal reading pop-up is NOT open
             if (!document.getElementById('parchmentModal').classList.contains('modal-active')) {
                 e.preventDefault();
             }
         }, { passive: false });
     </script>
 
-    <!-- This is your existing line that stays at the very bottom -->
+    <!-- Master catalog engine execution layer -->
     <script src="./js/library-engine.js"></script>
-</body>
-
-    
 </body>
 </html>

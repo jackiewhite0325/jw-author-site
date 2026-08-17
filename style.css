@@ -40,45 +40,48 @@ h1, h2, h3, .literary-font {
   height: 100%;
 }
 
-/* Card Catalog Drawer (Overlay on Panorama) */
+/* Card Catalog Drawer (Fixed on Librarian Desk) */
 #card-catalog-drawer {
   position: fixed;
-  top: 32px;
-  left: 32px;
+  bottom: 80px;
+  right: 48px;
   z-index: 10;
   background-color: var(--module-bg);
   padding: 0;
   border-radius: 4px;
   border: 1px solid var(--sage-divider);
   box-shadow: 0 4px 12px rgba(43, 43, 43, 0.15);
-  width: 320px;
+  width: 200px;
   max-width: 90vw;
   transition: all 0.3s ease;
+  max-height: 240px;
+  display: flex;
+  flex-direction: column;
 }
 
 .catalog-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
+  padding: 12px;
   border-bottom: 1px solid var(--sage-divider);
   flex-shrink: 0;
 }
 
 .catalog-header h3 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
 }
 
 .catalog-minimize-btn {
   background: none;
   border: none;
   color: var(--charcoal-txt);
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   cursor: pointer;
   padding: 0;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -91,6 +94,7 @@ h1, h2, h3, .literary-font {
 
 #card-catalog-drawer.minimized {
   width: auto;
+  max-height: auto;
 }
 
 #card-catalog-drawer.minimized .catalog-select {
@@ -99,13 +103,16 @@ h1, h2, h3, .literary-font {
 
 .catalog-select {
   font-family: 'Inter', sans-serif;
-  padding: 12px 16px;
+  padding: 8px 12px;
   color: var(--charcoal-txt);
   background-color: var(--canvas-bg);
   border: none;
   width: 100%;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  font-size: 0.85rem;
+  overflow-y: auto;
+  max-height: 180px;
 }
 
 .catalog-select:hover {
@@ -227,6 +234,7 @@ h1, h2, h3, .literary-font {
   border: none !important;
   box-shadow: none !important;
   transition: all 0.3s ease !important;
+  cursor: pointer !important;
 }
 
 .library-custom-hotspot {

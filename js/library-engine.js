@@ -3,29 +3,35 @@ const libraryMasterCatalog = [
     {
         title: "Muffin Gets the Wiggles",
         author: "J. White",
-        dewey: "813.6", // American Fiction / Children's Literature classification
+        dewey: "813.6", 
         genre: "Children's Books",
         seriesName: "The Muffin the Pitbull Puppy series",
         volume: 1,
-        summary: "Follow the charming first adventures of Muffin the Pitbull puppy."
+        summary: "Follow the charming first adventures of Muffin the Pitbull puppy.",
+        // 3D Target: Facing the Left Bookshelf wall coordinates
+        cameraYRotation: 90 
     },
     {
         title: "The Bingo Card of Chronic Illness",
         author: "J. White",
-        dewey: "616.09", // Medicine & Health Chronic Diseases classification
+        dewey: "616.09", 
         genre: "Health & Wellness",
         seriesName: "None",
         volume: 0,
-        summary: "An honest read offering grace and vulnerability while managing ongoing chronic conditions."
+        summary: "An honest read offering grace and vulnerability while managing ongoing chronic conditions.",
+        // 3D Target: Facing the Right Bookshelf wall coordinates
+        cameraYRotation: -90 
     },
     {
         title: "Don't Quote Me: Smart Mouths",
         author: "J. White",
-        dewey: "818.6", // Miscellaneous American Literature / Sayings
+        dewey: "818.6", 
         genre: "More Books",
         seriesName: "Quote Journeys",
         volume: 1,
-        summary: "A beautifully curated collection of wit, smart expressions, and interactive drawing paths."
+        summary: "A beautifully curated collection of wit, smart expressions, and interactive drawing paths.",
+        // 3D Target: Facing the Deep Back Alcove shelves coordinates
+        cameraYRotation: 180 
     }
 ];
 
@@ -38,6 +44,15 @@ function openParchment(title, contents) {
 
 function closeParchment() {
     document.getElementById('parchmentModal').classList.remove('modal-active');
+}
+
+// Automatically rotates the room to target the physical bookshelf area
+function highlightBookshelfZone(targetDegrees) {
+    const cameraRig = document.querySelector('[camera]');
+    if (cameraRig) {
+        // Smoothly forces the 3D rendering pipeline to adjust its looking horizon vector
+        cameraRig.setAttribute('rotation', { x: 0, y: targetDegrees, z: 0 });
+    }
 }
 
 // Old-Fashioned Card Catalog Search & Highlight Logic
@@ -64,15 +79,19 @@ document.getElementById('catalogSearch').addEventListener('input', function(e) {
         // Print Card with Dewey Classification and Series Tracking
         item.innerHTML = `
             <strong>[Dewey: ${book.dewey}]</strong> ${book.title}<br>
-            <small>By ${book.author} | ${book.seriesName ? `Vol ${book.volume} of ${book.seriesName}` : 'Standalone'}</small>
+            <small>By ${book.author} | ${book.seriesName !== "None" ? `Vol ${book.volume} of ${book.seriesName}` : 'Standalone'}</small>
         `;
         
-        // When a user selects a book card, highlight it inside the room
+        // When a user selects a book card, point camera to shelf and open text card details
         item.onclick = () => {
+            // Pivot the entire room orientation instantly to point at the correct wall
+            highlightBookshelfZone(book.cameraYRotation);
+            
+            // Pop open the detailed historical library parchment card
             openParchment(`${book.title} (Class ${book.dewey})`, `
                 <strong>Author:</strong> ${book.author}<br>
                 <strong>Genre Hierarchy:</strong> ${book.genre}<br>
-                <strong>Series Ordering:</strong> ${book.seriesName} (Volume ${book.volume})<br><br>
+                <strong>Series Ordering:</strong> ${book.seriesName !== "None" ? `${book.seriesName} (Volume ${book.volume})` : 'N/A'}<br><br>
                 <em>${book.summary}</em>
             `);
         };

@@ -20,14 +20,14 @@ window.setStaticMode = function(enabled) {
   if (diagnosticTimer) clearTimeout(diagnosticTimer);
   const container = document.getElementById('panorama-container');
   if (container) {
-    container.innerHTML = '<div style="color:var(--ink); padding:20px; background:var(--paper); height:100%; overflow-y:auto;"><h3>Basic Text Layout Active</h3><ul id="fallback-list" style="margin-top:15px; list-style:none; padding:0;"></ul></div>';
+    container.innerHTML = '<div style="color:var(--ink); padding:20px; background:var(--paper); height:100%; overflow-y:auto;"><h3>Library Directory</h3><p>Immersive 360 viewer is currently unavailable. Use our text index below:</p><ul id="fallback-list" style="margin-top:15px; list-style:none; padding:0;"></ul></div>';
     
     const list = document.getElementById('fallback-list');
     if (list) {
       libraryMasterCatalog.forEach(item => {
         const li = document.createElement('li');
         li.style.marginBottom = "10px";
-        li.innerHTML = `<a href="${item.targetUrl}" style="color:var(--amber); font-weight:bold; text-decoration:underline;">[Dewey ${item.dewey}] View ${item.elementId.replace(/_/g, ' ')}</a>`;
+        li.innerHTML = `<a href="${item.targetUrl}" style="color:var(--amber); font-weight:bold; text-decoration:underline;">[Dewey ${item.dewey}] Go to ${item.elementId.replace(/_/g, ' ')}</a>`;
         list.appendChild(li);
       });
     }
@@ -35,6 +35,7 @@ window.setStaticMode = function(enabled) {
     document.getElementById('panorama-loading-spinner')?.remove();
   }
 };
+
 /* ==========================================================================
    2. DOM Viewport Engineering & Diagnostic Timers
    ========================================================================== */
@@ -73,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     container.appendChild(banner);
   }, 4500);
 
-  // Safeguard step: only try loading the viewer if the window library variable exists
+  // Mobile Safe Library Verification
   if (typeof window.pannellum !== 'undefined') {
     initializeViewer(container);
   } else {
@@ -87,11 +88,12 @@ document.addEventListener('DOMContentLoaded', () => {
 function initializeViewer(container) {
   if (!window.pannellum || !window.pannellum.viewer) return;
 
-  const liveAssetUrl = 'https://github.io';
+  // Root-relative pathing mapping matching your live repository name
+  const structuralAssetUrl = '/jw-author-site/images/site/victorian_library_360.jpg';
 
   roomViewer = window.pannellum.viewer(container, {
     type: 'equirectangular',
-    panorama: liveAssetUrl,
+    panorama: structuralAssetUrl,
     autoLoad: true,
     hotSpots: libraryMasterCatalog.map(item => ({
       pitch: item.shelfCoordinate.pitch,
@@ -166,5 +168,4 @@ function initializeUIComponents() {
     });
   }
 }
-
 

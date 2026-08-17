@@ -4,7 +4,6 @@
 let roomViewer = null;
 let diagnosticTimer = null;
 
-// Consolidated Device Defaults & Viewport Resizing Logic
 function initializeDeviceDefaults() {
   window.addEventListener('resize', () => {
     if (roomViewer && typeof roomViewer.resize === 'function') {
@@ -16,7 +15,6 @@ function initializeDeviceDefaults() {
   document.getElementById('panorama-container')?.setAttribute('data-device-mode', isTouch ? 'touch' : 'desktop');
 }
 
-// Seamless A11y Static Layout Engine Transition Fallback
 window.setStaticMode = function(enabled) {
   if (!enabled) return;
   if (diagnosticTimer) clearTimeout(diagnosticTimer);
@@ -40,7 +38,9 @@ window.setStaticMode = function(enabled) {
       list.appendChild(li);
     });
   }
-};/* ==========================================================================
+};
+
+/* ==========================================================================
    2. DOM Watchdog Lifecycle & Timer Orchestration
    ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
@@ -152,5 +152,4 @@ function setupDrawerControls() {
     });
   }
 }
-
 

@@ -5,110 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Sigil and Scribe LLC - Interactive Library</title>
     
-    <!-- Link your existing brand stylesheet directly -->
     <link rel="stylesheet" href="css/style.css">
-    
-    <!-- FIXED: Use a specific A-Frame release build to avoid 404s -->
     <script src="https://aframe.io/releases/1.4.1/aframe.min.js" defer></script>
-    
-    <style>
-        /* Block mobile browsers from breaking the canvas window bounds */
-        html, body {
-            overflow: hidden;
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* VINTAGE PARCHMENT MODAL: Styled using your exact branding palette */
-        .library-modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 85%;
-            max-width: 600px;
-            background: var(--cream);
-            border: 5px double var(--clay-deep);
-            padding: 24px;
-            box-shadow: 0 12px 30px rgba(43, 36, 32, 0.4);
-            z-index: 9999;
-            font-family: Georgia, 'Iowan Old Style', serif;
-            color: var(--ink);
-            border-radius: 4px;
-        }
-        .library-modal h2 {
-            margin-top: 0;
-            margin-bottom: 12px;
-            font-size: 1.5rem;
-            color: var(--clay-deep);
-            border-bottom: 2px solid var(--gold);
-            padding-bottom: 6px;
-        }
-        .modal-active { display: block; }
-        .close-btn { float: right; cursor: pointer; font-weight: bold; color: var(--clay-deep); }
-        
-        /* CARD CATALOG DRAWER: Made to look like a vintage wooden filing chest */
-        #cardCatalogDrawer {
-            position: fixed;
-            bottom: 20px;
-            left: 5%;
-            right: 5%;
-            z-index: 100;
-            background: var(--clay-deep);
-            color: var(--cream);
-            padding: 16px;
-            border-radius: 6px;
-            border-top: 4px solid var(--gold);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            max-width: 90vw;
-        }
-        #cardCatalogDrawer h3 {
-            color: var(--cream);
-            margin-top: 0;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-        }
-        #catalogSearch {
-            padding: 10px;
-            width: 100%;
-            box-sizing: border-box;
-            border-radius: 4px;
-            border: 1px solid var(--gold);
-            background: var(--cream);
-            color: var(--ink);
-            font-family: serif;
-        }
-        
-        /* SEARCH CARD RESULTS: Look and feel of clean index library tags */
-        .catalog-item {
-            padding: 8px;
-            border-bottom: 1px solid rgba(230, 217, 200, 0.2);
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
-        .catalog-item:hover {
-            background: var(--clay);
-            color: var(--cream);
-        }
-        .catalog-item strong {
-            color: var(--gold);
-        }
-        .catalog-item:hover strong {
-            color: var(--cream);
-        }
-    </style>
 </head>
 <body>
 
-    <!-- 2D Overlay Interface: Card Catalog Drawer (Mobile Centered Layout) -->
+    <!-- Onboarding / invite to explore (shown once) -->
+    <div id="exploreIntro" role="dialog" aria-modal="true" aria-labelledby="exploreTitle" class="visible" style="display:none;">
+      <h3 id="exploreTitle">Welcome to the Sigil &amp; Scribe Library</h3>
+      <p>Tip: drag or touch to look around the room. Use the Card Catalog at the bottom to search for books or open the static view for reduced motion.</p>
+      <div class="actions">
+        <button id="exploreBtn" class="btn-small btn-primary">Start exploring</button>
+        <button id="showCatalogBtn" class="btn-small btn-outline">Open catalog</button>
+        <button id="staticModeBtn" class="btn-small btn-outline" aria-pressed="false">Static view (reduce motion)</button>
+      </div>
+    </div>
+
+    <!-- Floating Explore toggle and Static mode control -->
+    <button id="exploreToggle" aria-label="Toggle explore">Explore</button>
+
+    <!-- 2D Overlay Interface: Card Catalog Drawer -->
     <div id="cardCatalogDrawer">
         <h3>📜 Card Catalog Drawer</h3>
         <input type="text" id="catalogSearch" placeholder="Search Title, Author, or Genre...">
-        <div id="catalogResults" style="max-height:120px; overflow-y:auto; margin-top:8px;"></div>
+        <div id="catalogResults"></div>
     </div>
 
     <!-- UI Overlay Popup for Reading Text Assets -->
@@ -118,43 +38,62 @@
         <div id="modalContent"></div>
     </div>
 
-    <!-- SINGLE OPTIMIZED 3D CANVAS RENDERING ENGINE LOOP -->
-    <a-scene cursor="rayOrigin: mouse" raycaster="objects: .clickable" embedded renderer="antialias: false; precision: medium;" style="width: 100%; height: 100%;">
+    <!-- Static accessible fallback (for users who prefer no motion) -->
+    <div id="staticView" style="display:none; padding:20px; background:var(--cream); color:var(--ink);">
+      <h2>Static Library View</h2>
+      <p>This view is provided for readers who prefer reduced motion. You can still browse the catalog and read book details.</p>
+      <div id="staticBookList"></div>
+      <button id="exitStaticBtn" class="btn-outline">Return to interactive view</button>
+    </div>
+
+    <!-- 3D 360° Virtual Library Environment Scene -->
+    <a-scene id="sceneCanvas" cursor="rayOrigin: mouse" raycaster="objects: .clickable" embedded renderer="antialias: false; precision: medium;">
         <a-assets>
             <img id="libraryRoom" src="./images/site/victorian_library_360.png" crossorigin="anonymous">
         </a-assets>
 
-        <!-- Equirectangular 360 Sky Component Background Mapping -->
         <a-sky src="#libraryRoom" rotation="0 -90 0"></a-sky>
 
         <!-- Interaction Zone Hotspots -->
-        <a-plane id="muffinPoster" position="-3 2 -4" rotation="0 45 0" width="1.5" height="2" 
-                 material="opacity: 0.01; transparent: true" class="clickable"
-                 onclick="openParchment('Muffin&#39;s Memorial', 'In loving memory of the dog who inspired it all. Here lies the foundation of our creative stories.')"></a-plane>
+        <a-plane id="muffinPoster" position="-3 2 -4" rotation="0 45 0" width="1.5" height="2" material="opacity: 0.01; transparent: true" class="clickable" onclick="openParchment('Muffin\'s Memorial','In loving memory of the dog who inspired it all. Here lies the foundation of our creative stories.')"></a-plane>
 
-        <a-box id="aboutDeskPapers" position="0 -1 -3" width="1" height="0.2" depth="0.8"
-               material="opacity: 0.01; transparent: true" class="clickable"
-               onclick="openParchment('About Sigil and Scribe LLC', 'Welcome to our collaborative library. We publish works across Fiction, Wellness, and Children&#39;s genres from multiple authors.')"></a-box>
+        <a-box id="aboutDeskPapers" position="0 -1 -3" width="1" height="0.2" depth="0.8" material="opacity: 0.01; transparent: true" class="clickable" onclick="openParchment('About Sigil and Scribe LLC','Welcome to our collaborative library. We publish works across Fiction, Wellness, and Children\'s genres from multiple authors.')"></a-box>
 
-        <a-box id="blogTypewriter" position="1 -1 -3" width="0.6" height="0.4" depth="0.6"
-               material="opacity: 0.01; transparent: true" class="clickable"
-               onclick="openParchment('The Scribe&#39;s Blog', 'Latest Update: Transitioning to our multi-author platform! Stay tuned for upcoming catalog additions from our writing partners.')"></a-box>
+        <a-box id="blogTypewriter" position="1 -1 -3" width="0.6" height="0.4" depth="0.6" material="opacity: 0.01; transparent: true" class="clickable" onclick="openParchment('The Scribe\'s Blog','Latest Update: Transitioning to our multi-author platform! Stay tuned for upcoming catalog additions from our writing partners.')"></a-box>
 
-        <!-- FIXED: Re-added the device look-controls viewpoint camera system -->
-        <a-entity id="cameraRig" camera look-controls wasd-controls position="0 1.6 0"></a-entity>
-        
+        <!-- camera rig with a child camera for explicit look-controls (touch enabled) -->
+        <a-entity id="cameraRig" position="0 1.6 0">
+          <a-entity camera look-controls="touchEnabled: true; pointerLockEnabled: true" wasd-controls></a-entity>
+        </a-entity>
     </a-scene>
-
-    <!-- Block mobile browsers from handling native background scrolling glitches -->
-    <script>
-        document.addEventListener('touchmove', function(e) {
-            if (!document.getElementById('parchmentModal').classList.contains('modal-active')) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-    </script>
 
     <!-- Master catalog engine execution layer -->
     <script src="./js/library-engine.js"></script>
+
+    <script>
+      // No global touchmove blocker here — allow A-Frame to handle touch gestures.
+      // Small helper: toggle static vs interactive view
+      function setStaticMode(enabled) {
+        const scene = document.getElementById('sceneCanvas');
+        const staticView = document.getElementById('staticView');
+        const card = document.getElementById('cardCatalogDrawer');
+        if (enabled) {
+          if (scene) scene.style.display = 'none';
+          if (staticView) staticView.style.display = '';
+          if (card) card.classList.remove('hidden');
+          localStorage.setItem('staticMode', '1');
+        } else {
+          if (scene) scene.style.display = '';
+          if (staticView) staticView.style.display = 'none';
+          localStorage.removeItem('staticMode');
+        }
+      }
+
+      // Initialize static mode based on user preference
+      document.addEventListener('DOMContentLoaded', function() {
+        const staticMode = !!localStorage.getItem('staticMode');
+        setStaticMode(staticMode);
+      });
+    </script>
 </body>
 </html>

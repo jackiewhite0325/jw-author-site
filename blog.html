@@ -1,85 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog | J. White</title>
-<meta name="description" content="Updates, behind-the-scenes notes, and news from author J. White.">
-<meta property="og:title" content="Blog | J. White">
-<meta property="og:image" content="images/site/social-share.jpg">
-<link rel="icon" href="images/site/favicon.ico">
-<link rel="apple-touch-icon" href="images/site/favicon-180.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog | J. White</title>
+  <meta name="description" content="Updates, behind-the-scenes notes, and news from author J. White.">
+  
+  <!-- Open Graph Social Protocol Configurations -->
+  <meta property="og:title" content="Blog | J. White">
+  <meta property="og:image" content="images/site/social-share.jpg">
+  
+  <!-- Favicon Asset Hooks -->
+  <link rel="icon" href="images/site/favicon.ico">
+  <link rel="apple-touch-icon" href="images/site/favicon-180.png">
+  
+  <!-- Global Typography Font Arrays -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  
+  <!-- Core Design Application Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <style>
+    /* Blog Page Specific Component Layout Rules */
+    .blog-hero {
+      text-align: center;
+      padding: 4rem 1.5rem 2rem;
+    }
+    
+    .blog-hero h1 {
+      font-size: clamp(2rem, 6vw, 3.25rem);
+      margin: 0;
+    }
+    
+    .blog-hero p {
+      font-size: 1.15rem;
+      margin: 0.75rem 0 0 0;
+      opacity: 0.85;
+    }
+
+    .blog-feed-container {
+      max-width: 750px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+
+    .blog-post-card {
+      background: var(--paper, #FDFBF7); 
+      border: 1px solid var(--sage-divider, #A3B19B); 
+      border-radius: 6px; 
+      padding: 2.5rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    }
+
+    .blog-post-card .post-date {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--amber-gold, #D4A373);
+      margin: 0;
+    }
+
+    .blog-post-card h2 {
+      margin: 0.5rem 0 1.25rem;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      line-height: 1.3;
+    }
+
+    .blog-post-card p {
+      margin: 0 0 1.25rem 0;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--charcoal-txt, #2B2B2B);
+      opacity: 0.95;
+    }
+
+    .blog-post-card p:last-of-type {
+      margin-bottom: 2rem;
+    }
+
+    .blog-post-card .post-signature {
+      font-family: 'Playfair Display', serif;
+      font-style: italic; 
+      font-size: 1.15rem;
+      color: var(--charcoal-txt, #2B2B2B);
+      margin: 0;
+    }
+  </style>
 </head>
 <body>
-<a href="#main-content" class="skip-link">Skip to main content</a>
 
-<header class="site-header">
-  <div class="container">
-    <a href="index.html" class="logo-link">
-      <img src="images/site/logo-banner.png" alt="J. White, Sigil and Scribe">
-    </a>
-    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
-    <nav class="site-nav">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="children.html">Children's Books</a></li>
-        <li><a href="health-wellness.html">Health &amp; Wellness</a></li>
-        <li><a href="more-books.html">More Books</a></li>
-        <li><a href="fiction.html">Fiction</a></li>
-        <li><a href="muffin-memorial.html">Muffin's Memorial</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="blog.html" class="active">Blog</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
-<main id="main-content">
+  <!-- Accessible Navigation Skip Target Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<section class="site-hero">
-  <h1>The Blog</h1>
-  <p>Updates, behind-the-scenes notes, and news from Sigil and Scribe.</p>
-</section>
-  
-<section class="container" style="max-width:750px;">
-  <article style="background:#fff; border:1px solid #e4d8c5; border-radius:6px; padding:2rem;">
-    <p class="eyebrow">August 13, 2026</p>
-    <h2 style="margin:0.5rem 0 1rem;">Welcome to the Healing Space</h2>
+  <!-- Global Application Site Header Context -->
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="logo-link">
+        <img src="images/site/logo-banner.png" alt="J. White, Sigil and Scribe">
+      </a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="children.html">Children's Books</a></li>
+          <li><a href="health-wellness.html">Health &amp; Wellness</a></li>
+          <li><a href="more-books.html">More Books</a></li>
+          <li><a href="fiction.html">Fiction</a></li>
+          <li><a href="muffin-memorial.html">Muffin's Memorial</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="blog.html" class="active">Blog</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-    <p style="margin-bottom:1rem;">
-      Welcome, however you found your way here. This corner of Sigil and Scribe is a
-      space built for anyone: the parent looking for a story that finally makes sense
-      of a hard diagnosis, the reader who needs a laugh on a rough day, or the person
-      just passing through and curious what's inside. No matter your background, your
-      body, or your story, there's a seat for you here.
-    </p>
+  <!-- Central Payload Document Workspace -->
+  <main id="main-content">
 
-    <p style="margin-bottom:1rem;">
-      Everything I create, the books, the memorial to Muffin, the free downloadables
-      coming to this blog, is meant to do one of three things: bring a little
-      awareness, offer a little comfort, or (when the day calls for it) just be plain
-      entertaining. Some days you'll need all three at once, and that's alright too.
-    </p>
+    <section class="blog-hero">
+      <h1>The Blog</h1>
+      <p>Updates, behind-the-scenes notes, and news from Sigil and Scribe.</p>
+    </section>
+      
+    <section class="blog-feed-container">
+      <article class="blog-post-card">
+        <p class="post-date">August 13, 2026</p>
+        <h2>Welcome to the Healing Space</h2>
 
-    <p style="margin-bottom:1rem;">
-      I'll use this space to share updates on new books, behind-the-scenes looks at
-      where these stories come from, and free printables and resources as they're
-      ready. Thank you for stepping in. I'm glad you're here.
-    </p>
+        <p>
+          Welcome, however you found your way here. This corner of Sigil and Scribe is a
+          space built for anyone: the parent looking for a story that finally makes sense
+          of a hard diagnosis, the reader who needs a laugh on a rough day, or the person
+          just passing through and curious what's inside. No matter your background, your
+          body, or your story, there's a seat for you here.
+        </p>
 
-    <p style="font-style:italic; color:var(--charcoal);">J. White</p>
-  </article>
-</section>
+        <p>
+          Everything I create—the books, the memorial to Muffin, the free downloadables
+          coming to this blog—is meant to do one of three things: bring a little
+          awareness, offer a little comfort, or (when the day calls for it) just be plain
+          entertaining. Some days you'll need all three at once, and that's alright too.
+        </p>
 
-</main>
-<footer class="site-footer">
-  <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
-</footer>
+        <p>
+          I'll use this space to share updates on new books, behind-the-scenes looks at
+          where these stories come from, and free printables and resources as they're
+          ready. Thank you for stepping in. I'm glad you're here.
+        </p>
 
-<script src="js/main.js"></script>
+        <p class="post-signature">J. White</p>
+      </article>
+    </section>
+
+  </main>
+
+  <!-- Universal Footer Element -->
+  <footer class="site-footer">
+    <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
+  </footer>
+
+  <!-- Universal Core Application Navigation Script Logic -->
+  <script src="js/main.js"></script>
 </body>
 </html>
-  

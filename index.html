@@ -80,5 +80,22 @@
 
     <!-- Tracking Mechanics script link call -->
     <script src="./js/library-engine.js"></script>
+
+        <!-- Add this block directly above your engine script hook line at the bottom -->
+    <script>
+        // Prevents the mobile browser from handling drag/scroll gestures over the 3D scene
+        document.addEventListener('touchmove', function(e) {
+            // Only block scrolling if a text modal reading pop-up is NOT open
+            if (!document.getElementById('parchmentModal').classList.contains('modal-active')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+
+    <!-- This is your existing line that stays at the very bottom -->
+    <script src="./js/library-engine.js"></script>
+</body>
+
+    
 </body>
 </html>

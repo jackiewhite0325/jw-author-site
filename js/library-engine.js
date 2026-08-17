@@ -95,7 +95,7 @@
       el.setAttribute('animation__highlight', 'property: scale; to: 1.08 1.08 1.08; dir: alternate; dur: 600; loop: true; easing: easeInOutSine');
       lastHighlightedEl = el;
     } catch (err) {
-      try { el.object3D.scale.set(1.08, 1.08, 1.08); lastHighlightedEl = el; } catch (e) { /* ignore */ }
+      try { if (el.object3D) el.object3D.scale.set(1.08, 1.08, 1.08); lastHighlightedEl = el; } catch (e) { /* ignore */ }
     }
   }
   function clearSceneHighlight() {
@@ -105,7 +105,7 @@
       lastHighlightedEl.removeAttribute('material');
       lastHighlightedEl.setAttribute('scale', '1 1 1');
     } catch (err) {
-      try { lastHighlightedEl.object3D.scale.set(1,1,1); } catch (e) { /* ignore */ }
+      try { if (lastHighlightedEl.object3D) lastHighlightedEl.object3D.scale.set(1,1,1); } catch (e) { /* ignore */ }
     }
     lastHighlightedEl = null;
   }
@@ -121,6 +121,15 @@
       if (tries < attempts) setTimeout(tryNow, 250);
     };
     tryNow();
+  }
+
+  // Utility: announce to aria-live region
+  function announce(msg) {
+    const live = document.getElementById('siteAnnouncement');
+    if (!live) return;
+    live.textContent = '';
+    // small timeout to ensure screen readers detect change
+    setTimeout(() => { live.textContent = msg; }, 50);
   }
 
   // Cached DOM nodes & startup
@@ -140,14 +149,12 @@
     const cardCatalog = document.getElementById('cardCatalogDrawer');
     const catalogSearch = searchInput;
     const exitStaticBtn = document.getElementById('exitStaticBtn');
-    const siteAnnounce = document.getElementById('siteAnnouncement');
+    const mTooltip = document.getElementById('mTooltip');
 
     if (!searchInput || !resultsContainer || !modal || !modalTitle || !modalContent) {
       console.warn('library-engine: missing required DOM elements. Aborting initialization.');
       return;
     }
-
-    function announce(msg) { if (siteAnnounce) siteAnnounce.textContent = msg; }
 
     // Prevent body scroll while modal is open
     function preventBodyScroll() { document.body.style.overflow = 'hidden'; }
@@ -317,15 +324,73 @@
     window.openParchment = openParchment;
     window.closeParchment = closeParchment;
 
+    // Populate static list for reduced-motion view (accessible list)
+    function populateStaticList() {
+      const list = document.getElementById('staticBookList');
+      if (!list) return;
+      list.innerHTML = '';
+      libraryMasterCatalog.forEach(book => {
+        const item = document.createElement('div');
+        item.className = 'static-item';
+        item.setAttribute('role','listitem');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = `${book.title} — ${book.author}`;
+        btn.addEventListener('click', () => {
+          try { highlightBookshelfZone(book.cameraYRotation || 0); } catch (e) {}
+          highlightSceneElementWithRetry(book.elementId);
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = `<p><strong>Author:</strong> ${escapeHtml(book.author)}</p><p><strong>Genre Hierarchy:</strong> ${escapeHtml(book.genre)}</p><p><em>${escapeHtml(book.summary)}</em></p>`;
+          openParchment(`${book.title} (Class ${book.dewey})`, wrapper);
+          announce(`${book.title} opened`);
+        });
+        item.appendChild(btn);
+        list.appendChild(item);
+      });
+    }
+
+    // Attach keyboard handlers to hotspot entities so Enter/Space activates them
+    function attachHotspotKeyboardHandlers() {
+      libraryMasterCatalog.forEach(book => {
+        if (!book.elementId) return;
+        const el = document.getElementById(book.elementId);
+        if (!el) return;
+        // ensure keyboard focusable
+        try { el.setAttribute('tabindex', '0'); } catch (e) { /* ignore */ }
+        el.addEventListener('keydown', (ev) => {
+          if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            // trigger click handler (some a-frame elements support click)
+            try { el.click(); } catch (err) {
+              // fallback to openParchment using book data
+              const wrapper = document.createElement('div');
+              wrapper.innerHTML = `<p><strong>Author:</strong> ${escapeHtml(book.author)}</p><p><em>${escapeHtml(book.summary)}</em></p>`;
+              openParchment(`${book.title} (Class ${book.dewey})`, wrapper);
+            }
+          }
+        });
+      });
+    }
+
+    // M-key tooltip helper
+    function showMTooltipOnce() {
+      const tip = document.getElementById('mTooltip');
+      if (!tip) return;
+      if (localStorage.getItem('sawMTooltip')) return;
+      tip.classList.add('visible');
+      announce('Tip: press M to toggle Reduce Motion');
+      setTimeout(() => { tip.classList.remove('visible'); localStorage.setItem('sawMTooltip','1'); }, 4500);
+    }
+
     // Onboarding + Explore toggle wiring with accessibility
-    // siteAnnounce is an aria-live polite region (screen-reader announcements)
-    if (exploreIntro && !localStorage.getItem('sawExploreIntro')) { exploreIntro.style.display = 'block'; }
-    else if (exploreIntro) { exploreIntro.style.display = 'none'; }
+    if (exploreIntro && !localStorage.getItem('sawExploreIntro')) { exploreIntro.style.display = 'block'; exploreIntro.setAttribute('aria-hidden','false'); }
+    else if (exploreIntro) { exploreIntro.style.display = 'none'; exploreIntro.setAttribute('aria-hidden','true'); }
 
     if (exploreBtn) {
       exploreBtn.addEventListener('click', () => {
         localStorage.setItem('sawExploreIntro', '1');
         exploreIntro.style.display = 'none';
+        exploreIntro.setAttribute('aria-hidden','true');
         brieflyShowHotspots();
         announce('Exploration started');
       });
@@ -333,7 +398,7 @@
 
     if (showCatalogBtn) {
       showCatalogBtn.addEventListener('click', () => {
-        if (exploreIntro) exploreIntro.style.display = 'none';
+        if (exploreIntro) { exploreIntro.style.display = 'none'; exploreIntro.setAttribute('aria-hidden','true'); }
         if (cardCatalog) { cardCatalog.classList.remove('hidden'); if (catalogSearch) catalogSearch.focus(); }
         announce('Catalog opened');
       });
@@ -373,6 +438,7 @@
         staticModeBtn.setAttribute('aria-pressed', String(newMode));
         if (typeof window.setStaticMode === 'function') window.setStaticMode(newMode);
         announce(newMode ? 'Static view enabled' : 'Interactive view enabled');
+        showMTooltipOnce();
       });
     }
 
@@ -386,17 +452,23 @@
 
     // Keyboard shortcut: press 'm' to toggle static mode (when not focused in an input)
     document.addEventListener('keydown', (e) => {
-      const tag = document.activeElement && document.activeElement.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable) return;
+      const ae = document.activeElement;
+      const tag = ae && ae.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || (ae && ae.isContentEditable)) return;
       if (e.key && e.key.toLowerCase() === 'm') {
-        // toggle
+        e.preventDefault();
         const current = !!localStorage.getItem('staticMode');
         const newMode = !current;
         if (typeof window.setStaticMode === 'function') window.setStaticMode(newMode);
         if (staticModeBtn) staticModeBtn.setAttribute('aria-pressed', String(newMode));
         announce(newMode ? 'Static view enabled' : 'Interactive view enabled');
+        showMTooltipOnce();
       }
     });
+
+    // Populate static list and hotspot keyboard handlers now
+    populateStaticList();
+    attachHotspotKeyboardHandlers();
 
   });
 })();

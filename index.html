@@ -5,40 +5,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sigil and Scribe LLC | Immersive Library</title>
   <meta name="description" content="Sigil and Scribe LLC — an immersive library showcasing books by J. White, including children's, health &amp; wellness, and fiction titles.">
+  
+  <!-- Open Graph Metadata -->
   <meta property="og:title" content="Sigil and Scribe LLC | Immersive Library">
   <meta property="og:description" content="Browse books by J. White in an immersive 360° library experience.">
   <meta property="og:image" content="images/site/social-share.jpg">
+  
+  <!-- Favicons -->
   <link rel="icon" href="images/site/favicon.ico">
   <link rel="apple-touch-icon" href="images/site/favicon-180.png">
   
+  <!-- Google Web Fonts (Loads your core Inter & Playfair Display typefaces) -->
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
+  
   <!-- Pannellum WebGL Engine Libraries -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+  
+  <!-- Production Site Cascading Style Sheets -->
+  <link rel="stylesheet" href="sigil-and-scribe-library.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+  <!-- Accessible Navigation Skip Anchor Link -->
+  <a href="#panorama-container" class="skip-link">Skip to library experience viewer</a>
+
   <!-- Main Immersive Room Viewport Container (FULL PAGE) -->
   <main id="library-viewport-wrapper" style="position: fixed; width: 100vw; height: 100vh; overflow: hidden; top: 0; left: 0;">
-    <div id="panorama-container" style="width: 100%; height: 100%;"></div>
+    
+    <!-- Immersive Panorama Display Canvas -->
+    <div id="panorama-container" style="width: 100%; height: 100%;" role="region" aria-label="360 degree library room view"></div>
 
     <!-- Card Catalog Drawer (Overlay on top of panorama) -->
-    <div id="card-catalog-drawer" class="catalog-overlay">
+    <div id="card-catalog-drawer" class="catalog-overlay" aria-live="polite">
       <div class="catalog-header">
         <h3 style="font-family: 'Playfair Display', serif; margin: 0;">Card Catalog</h3>
-        <button id="catalog-toggle-btn" class="catalog-minimize-btn" title="Minimize catalog">−</button>
+        <button id="catalog-toggle-btn" class="catalog-minimize-btn" title="Minimize catalog" aria-label="Minimize catalog window">−</button>
       </div>
+      
+      <label for="catalog-search-select" class="sr-only">Search books inside card catalog drawers</label>
       <select id="catalog-search-select" onchange="targetCatalogItem(this.value)" class="catalog-select">
         <option value="">-- Pull open a drawer --</option>
       </select>
     </div>
 
     <!-- Smart Guidance Indicators (Hidden by default, driven by math loop) -->
-    <div id="guide-arrow-left" class="nav-guide-arrow">←</div>
-    <div id="guide-arrow-right" class="nav-guide-arrow">→</div>
+    <div id="guide-arrow-left" class="nav-guide-arrow" aria-hidden="true">←</div>
+    <div id="guide-arrow-right" class="nav-guide-arrow" aria-hidden="true">→</div>
 
     <!-- "Everything Invites" Non-Intrusive Shortcut Invitation Card Toast -->
-    <div id="invitation-toast" class="invitation-toast">
+    <div id="invitation-toast" class="invitation-toast" role="alert" aria-live="assertive">
       <p id="invitation-text"></p>
       <div class="toast-actions">
         <button id="toast-accept-btn" class="btn-accept">Open Book</button>
@@ -47,9 +66,10 @@
     </div>
 
     <!-- Hotspot Overlay Labels (appear on hover) -->
-    <div id="hotspot-label" class="hotspot-label" style="display: none;"></div>
+    <div id="hotspot-label" class="hotspot-label" style="display: none;" aria-hidden="true"></div>
   </main>
 
+  <!-- Application Engine Scripts -->
   <script src="catalog.js"></script>
   <script src="app.js"></script>
 </body>

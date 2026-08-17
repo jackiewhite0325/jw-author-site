@@ -52,7 +52,10 @@
   let _trapHandler = null;
   function trapFocus(modalEl) {
     const selector = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])';
-    const focusable = Array.from(modalEl.querySelectorAll(selector)).filter(el => el.offsetParent !== null);
+    const focusable = Array.from(modalEl.querySelectorAll(selector)).filter(el => {
+      const style = window.getComputedStyle(el);
+      return !el.hidden && style.display !== 'none' && style.visibility !== 'hidden';
+    });
     if (!focusable.length) return;
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
@@ -134,8 +137,7 @@
     } catch (e) {}
   }
 
-  function highlightSceneElementWithRetry(elementId, attempts = 6, fallbackYaw) {
-    // In the non-A-Frame flow we simply use the fallback yaw immediately
+  function highlightSceneElementWithRetry(elementId, fallbackYaw) {
     highlightSceneElement(elementId, fallbackYaw);
   }
 
@@ -165,7 +167,6 @@
     const cardCatalog = document.getElementById('cardCatalogDrawer');
     const catalogSearch = searchInput;
     const exitStaticBtn = document.getElementById('exitStaticBtn');
-    const mTooltip = document.getElementById('mTooltip');
 
     if (!searchInput || !resultsContainer || !modal || !modalTitle || !modalContent) {
       console.warn('library-engine: missing required DOM elements. Aborting initialization.');
@@ -200,10 +201,12 @@
       preventBodyScroll();
 
       // trap focus inside the modal
+      releaseFocus();
       trapFocus(modal);
       announce(`${title} opened`);
 
       // listen for Escape to close
+      if (modal._escHandler) document.removeEventListener('keydown', modal._escHandler);
       const escHandler = function (e) { if (e.key === 'Escape') closeParchment(); };
       document.addEventListener('keydown', escHandler);
       modal._escHandler = escHandler;
@@ -214,7 +217,10 @@
       modal.setAttribute('aria-hidden', 'true');
       restoreBodyScroll();
       releaseFocus();
-      if (modal._escHandler) document.removeEventListener('keydown', modal._escHandler);
+      if (modal._escHandler) {
+        document.removeEventListener('keydown', modal._escHandler);
+        modal._escHandler = null;
+      }
       if (lastFocusedEl && typeof lastFocusedEl.focus === 'function') lastFocusedEl.focus();
       const prev = document.querySelector('.catalog-result.selected');
       if (prev) prev.classList.remove('selected');
@@ -269,7 +275,7 @@
         btn.classList.add('selected');
 
         try { highlightBookshelfZone(book.cameraYRotation || 0); } catch (e) { /* ignore */ }
-        highlightSceneElementWithRetry(book.elementId, 6, book.cameraYRotation);
+        highlightSceneElementWithRetry(book.elementId, book.cameraYRotation);
 
         const wrapper = document.createElement('div');
         const authorLine = document.createElement('p');
@@ -299,7 +305,7 @@
       resultsContainer.innerHTML = '';
       const no = document.createElement('div');
       no.className = 'catalog-result';
-      no.textContent = `No results for "${query}."`;
+      no.textContent = `No results for "${query}".`;
       resultsContainer.appendChild(no);
       announce(`No results for ${query}`);
     }
@@ -354,7 +360,7 @@
         btn.textContent = `${book.title} — ${book.author}`;
         btn.addEventListener('click', () => {
           try { highlightBookshelfZone(book.cameraYRotation || 0); } catch (e) {}
-          highlightSceneElementWithRetry(book.elementId, 6, book.cameraYRotation);
+          highlightSceneElementWithRetry(book.elementId, book.cameraYRotation);
           const wrapper = document.createElement('div');
           wrapper.innerHTML = `<p><strong>Author:</strong> ${escapeHtml(book.author)}</p><p><strong>Genre Hierarchy:</strong> ${escapeHtml(book.genre)}</p><p><em>${escapeHtml(book.summary)}</em></p>`;
           openParchment(`${book.title} (Class ${book.dewey})`, wrapper);
@@ -365,21 +371,15 @@
       });
     }
 
-    // Attach keyboard handlers to hotspot entities (no A-Frame dependency)
-    function attachHotspotKeyboardHandlers() {
-      // Our catalog buttons and static list already provide keyboard activation; ensure they exist.
-      // No A-Frame bindings are added here to remove that dependency entirely.
-      return;
-    }
-
     // M-key tooltip helper
     function showMTooltipOnce() {
       const tip = document.getElementById('mTooltip');
       if (!tip) return;
       if (localStorage.getItem('sawMTooltip')) return;
+      localStorage.setItem('sawMTooltip', '1');
       tip.classList.add('visible');
       announce('Tip: press M to toggle Reduce Motion');
-      setTimeout(() => { tip.classList.remove('visible'); localStorage.setItem('sawMTooltip','1'); }, 4500);
+      setTimeout(() => { tip.classList.remove('visible'); }, 4500);
     }
 
     // Onboarding + Explore toggle wiring with accessibility
@@ -389,8 +389,10 @@
     if (exploreBtn) {
       exploreBtn.addEventListener('click', () => {
         localStorage.setItem('sawExploreIntro', '1');
-        exploreIntro.style.display = 'none';
-        exploreIntro.setAttribute('aria-hidden','true');
+        if (exploreIntro) {
+          exploreIntro.style.display = 'none';
+          exploreIntro.setAttribute('aria-hidden','true');
+        }
         brieflyShowHotspots();
         announce('Exploration started');
       });
@@ -407,12 +409,11 @@
     // helper that briefly hints at hotspots
     function brieflyShowHotspots() {
       const hotspotEntries = libraryMasterCatalog.map(b => ({ yaw: b.cameraYRotation }));
-      hotspotEntries.forEach(entry => {
-        if (typeof window.panSetYaw === 'function' && typeof entry.yaw === 'number') {
-          window.panSetYaw(entry.yaw);
-        }
-        _createTransientOverlay('Hotspot');
-      });
+      const yaw = hotspotEntries.length ? hotspotEntries[0].yaw : null;
+      if (typeof window.panSetYaw === 'function' && typeof yaw === 'number') {
+        window.panSetYaw(yaw);
+      }
+      _createTransientOverlay('Hotspot');
     }
 
     // Explore toggle (floating)
@@ -466,9 +467,8 @@
       }
     });
 
-    // Populate static list and hotspot keyboard handlers now
+    // Populate static list now
     populateStaticList();
-    attachHotspotKeyboardHandlers();
 
   });
 })();

@@ -18,6 +18,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // 2. Loop and Add Hotspots Programmatically from catalog.js Database Source
   roomViewer.on('load', () => {
     libraryRegistry.forEach((item, index) => {
+      // Use 'info' type to prevent Pannellum's default URL handling
       roomViewer.addHotSpot({
         "pitch": item.shelfCoordinate.pitch,
         "yaw": item.shelfCoordinate.yaw,
@@ -98,16 +99,17 @@ function setupHotspotClickHandling() {
     // Check if click target is a hotspot
     const hotspot = e.target.closest('.pnlm-hotspot');
     if (hotspot && hotspot.classList.contains('library-custom-hotspot')) {
-      // Find which item this hotspot belongs to by checking proximity
-      const hotspotsContainer = container.querySelector('.pnlm-hotspots');
-      if (hotspotsContainer) {
-        const allHotspots = Array.from(hotspotsContainer.querySelectorAll('.pnlm-hotspot.library-custom-hotspot'));
-        const index = allHotspots.indexOf(hotspot);
-        if (index >= 0 && libraryRegistry[index]) {
-          const item = libraryRegistry[index];
-          // Direct navigation on hotspot click
-          window.location.href = item.targetUrl;
-        }
+      // Find which item this hotspot belongs to by checking the text content
+      const hotspotText = hotspot.textContent || '';
+      
+      // Match against libraryRegistry to find the corresponding item
+      const matchedItem = libraryRegistry.find(item => 
+        hotspotText.includes(item.title) || hotspotText.includes(item.deweyClassification)
+      );
+      
+      if (matchedItem && matchedItem.targetUrl) {
+        // Direct navigation on hotspot click
+        window.location.href = matchedItem.targetUrl;
       }
     }
   });
@@ -120,54 +122,11 @@ function targetCatalogItem(itemId) {
     return;
   }
   
-  triggerItemSelection(itemId);
-}
-
-function triggerItemSelection(itemId) {
   const targetItem = libraryRegistry.find(i => i.id === itemId);
   if (!targetItem) return;
 
-  activeTargetId = itemId;
-
-  // Render the Non-Intrusive Shortcut Invitation Banner Card
-  const toast = document.getElementById('invitation-toast');
-  const toastText = document.getElementById('invitation-text');
-  const acceptBtn = document.getElementById('toast-accept-btn');
-  
-  if (toast && toastText && acceptBtn) {
-    toastText.textContent = `"${targetItem.title}" by ${targetItem.authorName} is resting on the shelves. Would you like to step inside the page now?`;
-    acceptBtn.onclick = () => { window.location.href = targetItem.targetUrl; };
-    toast.style.display = "block";
-  }
-
-  // Engage real-time math tracking loop for Left/Right screen edge pointer arrows
-  if (navigationTrackingInterval) clearInterval(navigationTrackingInterval);
-  navigationTrackingInterval = setInterval(() => { calculateGuidanceVectors(targetItem.shelfCoordinate.yaw); }, 100);
-}
-
-// 4. Calculate Vector Distance between Current Camera Angle and Target Coordinate Yaw Angle
-function calculateGuidanceVectors(targetYaw) {
-  const currentYaw = roomViewer.getYaw();
-  
-  // Normalize difference calculation within -180 to 180 coordinate bounds
-  let diff = targetYaw - currentYaw;
-  while (diff < -180) diff += 360;
-  while (diff > 180) diff -= 360;
-
-  const leftArrow = document.getElementById('guide-arrow-left');
-  const rightArrow = document.getElementById('guide-arrow-right');
-
-  // If the target item falls inside a 15-degree centered view window, hide tracking pointers
-  if (Math.abs(diff) < 15) {
-    if (leftArrow) leftArrow.style.display = "none";
-    if (rightArrow) rightArrow.style.display = "none";
-  } else if (diff < 0) {
-    if (leftArrow) leftArrow.style.display = "block";
-    if (rightArrow) rightArrow.style.display = "none";
-  } else {
-    if (leftArrow) leftArrow.style.display = "none";
-    if (rightArrow) rightArrow.style.display = "block";
-  }
+  // Direct navigation from catalog
+  window.location.href = targetItem.targetUrl;
 }
 
 function dismissToast() {
@@ -176,10 +135,6 @@ function dismissToast() {
 }
 
 function clearNavigationLock() {
-  activeTargetId = null;
-
-  if (navigationTrackingInterval) clearInterval(navigationTrackingInterval);
-  
   const leftArrow = document.getElementById('guide-arrow-left');
   const rightArrow = document.getElementById('guide-arrow-right');
   

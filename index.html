@@ -30,12 +30,13 @@
 </head>
 <body>
 
-    <!-- 2D Overlay Interface: Card Catalog Drawer -->
-    <div id="cardCatalogDrawer" style="position:fixed; bottom:20px; left:20px; z-index:100; background:#3e2723; color:#fff; padding:15px; border-radius:4px; font-family:serif;">
+        <!-- 2D Overlay Interface: Card Catalog Drawer -->
+    <div id="cardCatalogDrawer" style="position:fixed; bottom:20px; left:20px; z-index:100; background:#3e2723; color:#fff; padding:15px; border-radius:4px; font-family:serif; max-width: 90vw;">
         <h3>📜 Card Catalog Drawer</h3>
         <input type="text" id="catalogSearch" placeholder="Search Title, Author, or Genre..." style="padding:5px; width:200px;">
         <div id="catalogResults" style="max-height:150px; overflow-y:auto; margin-top:10px;"></div>
     </div>
+
 
     <!-- UI Overlay for Reading Text (About, Blog, and Memorial Pages) -->
     <div id="parchmentModal" class="library-modal">

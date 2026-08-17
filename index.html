@@ -1,93 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Sigil and Scribe LLC - Interactive Library</title>
-    
-    <link rel="stylesheet" href="css/style.css">
-    <!-- Pannellum CDN assets (immersive 360 engine) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sigil and Scribe LLC | Immersive Library</title>
+  
+  <!-- Pannellum WebGL Engine Libraries -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <a class="skip-link" href="#cardCatalogDrawer">Skip to catalog</a>
-    <div id="siteAnnouncement" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+  <!-- Card Catalog Drawer Sidebar Interface (Visual Representation) -->
+  <div id="card-catalog-drawer">
+    <h3 style="font-family: 'Playfair Display', serif;">Card Catalog</h3>
+    <select id="catalog-search-select" onchange="targetCatalogItem(this.value)">
+      <option value="">-- Pull open a drawer --</option>
+      <!-- Script handles population from libraryRegistry array dynamically -->
+    </select>
+  </div>
 
-    <!-- Onboarding / invite to explore (shown once) -->
-    <div id="exploreIntro" role="dialog" aria-modal="true" aria-labelledby="exploreTitle" aria-hidden="true" class="visible" style="display:none;">
-      <h3 id="exploreTitle">Welcome to the Sigil &amp; Scribe Library</h3>
-      <p>Tip: drag or touch to look around the room. Use the Card Catalog at the bottom to search for books or open the static view for reduced motion.</p>
-      <div class="actions">
-        <button id="exploreBtn" class="btn-small btn-primary">Start exploring</button>
-        <button id="showCatalogBtn" class="btn-small btn-outline">Open catalog</button>
-        <button id="staticModeBtn" class="btn-small btn-outline" aria-pressed="false">Static view (reduce motion)</button>
+  <!-- Main Immersive Room Viewport Container -->
+  <main id="library-viewport-wrapper" style="position: relative; width: 100vw; height: 100vh; overflow: hidden;">
+    <div id="panorama-container" style="width: 100%; height: 100%;"></div>
+
+    <!-- Smart Guidance Indicators (Hidden by default, driven by math loop) -->
+    <div id="guide-arrow-left" class="nav-guide-arrow" style="display: none; position: absolute; left: 24px; top: 50%; transform: translateY(-50%); cursor: pointer;">←</div>
+    <div id="guide-arrow-right" class="nav-guide-arrow" style="display: none; position: absolute; right: 24px; top: 50%; transform: translateY(-50%); cursor: pointer;">→</div>
+
+    <!-- "Everything Invites" Non-Intrusive Shortcut Invitation Card Toast -->
+    <div id="invitation-toast" style="display: none; position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);">
+      <p id="invitation-text"></p>
+      <div class="toast-actions">
+        <button id="toast-accept-btn">Open Book</button>
+        <button id="toast-dismiss-btn" onclick="dismissToast()">Keep Looking</button>
       </div>
     </div>
+  </main>
 
-    <!-- Floating Explore toggle and Static mode control -->
-    <button id="exploreToggle" aria-label="Toggle explore" aria-pressed="false">Explore</button>
-
-    <!-- 2D Overlay Interface: Card Catalog Drawer -->
-    <div id="cardCatalogDrawer">
-        <h3>📜 Card Catalog Drawer</h3>
-        <input type="text" id="catalogSearch" aria-label="Search catalog" aria-controls="catalogResults" placeholder="Search Title, Author, or Genre...">
-        <div id="catalogResults" role="list"></div>
-    </div>
-
-    <!-- UI Overlay Popup for Reading Text Assets -->
-    <div id="parchmentModal" class="library-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modalTitle" aria-describedby="modalContent" tabindex="-1">
-        <button class="close-btn" onclick="closeParchment()" aria-label="Close">✕ Close</button>
-        <h2 id="modalTitle"></h2>
-        <div id="modalContent"></div>
-    </div>
-
-    <!-- Static accessible fallback (for users who prefer no motion) -->
-    <div id="staticView" style="display:none; padding:20px; background:var(--canvas-bg); color:var(--charcoal);">
-      <h2>Static Library View</h2>
-      <p>This view is provided for readers who prefer reduced motion. You can still browse the catalog and read book details.</p>
-      <div id="staticBookList" role="list"></div>
-      <button id="exitStaticBtn" class="btn-outline">Return to interactive view</button>
-    </div>
-
-    <!-- 360° Panorama container (Pannellum) -->
-    <div id="library-panorama" style="width: 100%; height: 85vh; background-color: #FDFBF7;"></div>
-
-    <!-- Master catalog engine execution layer -->
-    <script src="./js/library-engine.js"></script>
-    <script src="./js/app.js" defer></script>
-
-    <script>
-      // No global touchmove blocker here — allow Pannellum to handle touch gestures.
-      // Small helper: toggle static vs interactive view
-      function setStaticMode(enabled) {
-        const pano = document.getElementById('library-panorama');
-        const staticView = document.getElementById('staticView');
-        const card = document.getElementById('cardCatalogDrawer');
-        const staticBtn = document.getElementById('staticModeBtn');
-        if (enabled) {
-          if (pano) pano.style.display = 'none';
-          if (staticView) staticView.style.display = '';
-          if (staticBtn) staticBtn.setAttribute('aria-pressed', 'true');
-          if (card) card.classList.remove('hidden');
-          localStorage.setItem('staticMode', '1');
-        } else {
-          if (pano) pano.style.display = '';
-          if (staticView) staticView.style.display = 'none';
-          if (staticBtn) staticBtn.setAttribute('aria-pressed', 'false');
-          localStorage.removeItem('staticMode');
-        }
-        // announce via live region if present
-        const live = document.getElementById('siteAnnouncement');
-        if (live) live.textContent = enabled ? 'Static view enabled' : 'Interactive view enabled';
-      }
-
-      // Initialize static mode based on user preference
-      document.addEventListener('DOMContentLoaded', function() {
-        const staticMode = !!localStorage.getItem('staticMode');
-        setStaticMode(staticMode);
-      });
-    </script>
+  <script src="catalog.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

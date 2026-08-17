@@ -87,11 +87,17 @@ h1, h2, h3, .literary-font {
   text-decoration: none;
 }
 
-.library-fallback a:hover,
+.library-fallback a:hover {
+  border-color: var(--amber-gold);
+  background: #fff7ef;
+}
+
 .library-fallback a:focus {
   border-color: var(--amber-gold);
+  background: #fff7ef;
   outline: 2px solid var(--amber-gold);
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(212, 163, 115, 0.2);
 }
 
 /* Card Catalog Drawer (Fixed on Librarian Desk) */

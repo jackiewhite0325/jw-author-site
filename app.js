@@ -78,8 +78,8 @@ window.addEventListener('DOMContentLoaded', () => {
     setupHotspotClickHandling();
   });
 
-  roomViewer.on('error', () => {
-    console.error('Immersive library reported a viewer error.');
+  roomViewer.on('error', (error) => {
+    console.error('Immersive library reported a viewer error.', error);
     showLoadingFallback('The immersive scene could not finish loading. You can still use the direct links below.');
   });
 

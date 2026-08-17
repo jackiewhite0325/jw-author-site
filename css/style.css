@@ -1,3 +1,13 @@
+:root{
+  /* Canonical tokens */
+  --canvas-bg: #FDFBF7;   /* Warm Paper */
+  --module-bg: #F2F5F3;   /* Morning Mist */
+  --charcoal: #2B2B2B;    /* Charcoal Typography */
+  --accent: #D4A373;      /* Amber Gold */
+  --meta: #A3B19B;        /* Sage Green */
+  --transition-ease: cubic-bezier(.2,.8,.2,1);
+}
+
 /* Accessibility helper styles */
 .sr-only {
   position: absolute !important;
@@ -11,19 +21,38 @@
   position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden;
 }
 .skip-link:focus {
-  left: 8px; top: 8px; width: auto; height: auto; background: var(--cream); color: var(--clay-deep);
-  padding: 8px 12px; border-radius: 4px; z-index: 10010; box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  left: 8px; top: 8px; width: auto; height: auto; background: var(--canvas-bg); color: var(--charcoal);
+  padding: 8px 12px; border-radius: 4px; z-index: 10010; box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
-/* Focus-visible for keyboard users */
+/* Focus-visible for keyboard users — use accent token */
 :focus {
-  outline: 3px solid rgba(184,135,63,0.9);
+  outline: 3px solid rgba(212,163,115,0.9); /* Accent (Amber Gold) */
   outline-offset: 2px;
 }
 
-/* High contrast fallback for catalog text if needed */
-.catalog-result { color: #fff; }
-.catalog-result .meta { color: rgba(255,255,255,0.9); }
+/* Catalog results and button styles — use Charcoal for primary text and Accent for hover/active */
+.catalog-result {
+  color: var(--charcoal);
+  background: var(--module-bg);
+  border: 1px solid rgba(43,43,43,0.06);
+  padding: 32px;
+  border-radius: 8px;
+  display: block;
+  text-align: left;
+  margin-bottom: 10px;
+  transition: box-shadow 0.3s var(--transition-ease), transform 0.18s var(--transition-ease);
+  cursor: pointer;
+}
+.catalog-result .meta { color: var(--meta); margin-top: 6px; font-size: 0.95rem; }
+
+/* Active / hover / selected visual */
+.catalog-result:hover,
+.catalog-result:active,
+.catalog-result.selected {
+  box-shadow: 0 4px 20px rgba(212, 163, 115, 0.15); /* Accent shadow */
+  transform: translateY(-2px);
+}
 
 /* Hidden utility class used by the Explore toggle */
 #cardCatalogDrawer.hidden { display: none !important; }
@@ -34,11 +63,11 @@
   right: 18px;
   top: 18px;
   z-index: 10003;
-  background: rgba(255,250,242,0.98);
-  color: var(--clay-deep);
+  background: var(--canvas-bg);
+  color: var(--charcoal);
   padding: 8px 12px;
   border-radius: 6px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   font-size: 0.95rem;
   display: none;
 }
@@ -46,5 +75,19 @@
 
 /* Static view list styles */
 #staticBookList { display: grid; gap: 10px; }
-#staticBookList .static-item { background: #fff; border: 1px solid #e4d8c5; padding: 10px; border-radius: 6px; }
-#staticBookList .static-item button { background: transparent; border: none; color: var(--clay-deep); font-weight: 700; cursor: pointer; }
+#staticBookList .static-item {
+  background: var(--module-bg);
+  border: 1px solid rgba(43,43,43,0.04);
+  padding: 12px;
+  border-radius: 6px;
+}
+#staticBookList .static-item button {
+  background: transparent; border: none; color: var(--charcoal); font-weight: 700; cursor: pointer;
+}
+
+/* Ensure there are no legacy palette hardcoded colors below.
+   If you have other CSS files, search for #4a90e2 and #d9534f and replace:
+   - Primary/link/text => #2B2B2B
+   - Hover/pointer/interactive => #D4A373
+   - Metadata => #A3B19B
+*/

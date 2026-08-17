@@ -12,31 +12,36 @@
 </head>
 <body>
 
-  <!-- Card Catalog Drawer Sidebar Interface (Visual Representation) -->
-  <div id="card-catalog-drawer">
-    <h3 style="font-family: 'Playfair Display', serif;">Card Catalog</h3>
-    <select id="catalog-search-select" onchange="targetCatalogItem(this.value)">
-      <option value="">-- Pull open a drawer --</option>
-      <!-- Script handles population from libraryRegistry array dynamically -->
-    </select>
-  </div>
-
-  <!-- Main Immersive Room Viewport Container -->
-  <main id="library-viewport-wrapper" style="position: relative; width: 100vw; height: 100vh; overflow: hidden;">
+  <!-- Main Immersive Room Viewport Container (FULL PAGE) -->
+  <main id="library-viewport-wrapper" style="position: fixed; width: 100vw; height: 100vh; overflow: hidden; top: 0; left: 0;">
     <div id="panorama-container" style="width: 100%; height: 100%;"></div>
 
+    <!-- Card Catalog Drawer (Overlay on top of panorama) -->
+    <div id="card-catalog-drawer" class="catalog-overlay">
+      <div class="catalog-header">
+        <h3 style="font-family: 'Playfair Display', serif; margin: 0;">Card Catalog</h3>
+        <button id="catalog-toggle-btn" class="catalog-minimize-btn" title="Minimize catalog">−</button>
+      </div>
+      <select id="catalog-search-select" onchange="targetCatalogItem(this.value)" class="catalog-select">
+        <option value="">-- Pull open a drawer --</option>
+      </select>
+    </div>
+
     <!-- Smart Guidance Indicators (Hidden by default, driven by math loop) -->
-    <div id="guide-arrow-left" class="nav-guide-arrow" style="display: none; position: absolute; left: 24px; top: 50%; transform: translateY(-50%); cursor: pointer;">←</div>
-    <div id="guide-arrow-right" class="nav-guide-arrow" style="display: none; position: absolute; right: 24px; top: 50%; transform: translateY(-50%); cursor: pointer;">→</div>
+    <div id="guide-arrow-left" class="nav-guide-arrow">←</div>
+    <div id="guide-arrow-right" class="nav-guide-arrow">→</div>
 
     <!-- "Everything Invites" Non-Intrusive Shortcut Invitation Card Toast -->
-    <div id="invitation-toast" style="display: none; position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);">
+    <div id="invitation-toast" class="invitation-toast">
       <p id="invitation-text"></p>
       <div class="toast-actions">
-        <button id="toast-accept-btn">Open Book</button>
-        <button id="toast-dismiss-btn" onclick="dismissToast()">Keep Looking</button>
+        <button id="toast-accept-btn" class="btn-accept">Open Book</button>
+        <button id="toast-dismiss-btn" class="btn-dismiss" onclick="dismissToast()">Keep Looking</button>
       </div>
     </div>
+
+    <!-- Hotspot Overlay Labels (appear on hover) -->
+    <div id="hotspot-label" class="hotspot-label" style="display: none;"></div>
   </main>
 
   <script src="catalog.js"></script>

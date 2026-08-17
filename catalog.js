@@ -14,13 +14,34 @@ const libraryMasterCatalog = [
 
 let diagnosticTimer = null;
 let roomViewer = null;
+let isStaticModeActive = false;
 
 window.setStaticMode = function(enabled) {
   if (!enabled) return;
-  if (diagnosticTimer) clearTimeout(diagnosticTimer);
+  isStaticModeActive = true;
+  
+  if (diagnosticTimer) {
+    clearTimeout(diagnosticTimer);
+    diagnosticTimer = null;
+  }
+  
+  if (roomViewer) {
+    try {
+      roomViewer.destroy();
+    } catch (e) {
+      console.warn("Pannellum destruction skipped or unavailable:", e);
+    }
+    roomViewer = null;
+  }
+
   const container = document.getElementById('panorama-container');
   if (container) {
-    container.innerHTML = '<div style="color:var(--ink); padding:20px; background:var(--paper); height:100%; overflow-y:auto;"><h3>Library Directory</h3><p>Immersive 360 viewer is currently unavailable. Use our text index below:</p><ul id="fallback-list" style="margin-top:15px; list-style:none; padding:0;"></ul></div>';
+    container.innerHTML = `
+      <div style="color:var(--ink); padding:20px; background:var(--paper); height:100%; overflow-y:auto;">
+        <h3>Library Directory</h3>
+        <p>Immersive 360 viewer is currently unavailable. Use our text index below:</p>
+        <ul id="fallback-list" style="margin-top:15px; list-style:none; padding:0;"></ul>
+      </div>`;
     
     const list = document.getElementById('fallback-list');
     if (list) {
@@ -31,9 +52,9 @@ window.setStaticMode = function(enabled) {
         list.appendChild(li);
       });
     }
-    document.getElementById('a11y-fallback-banner')?.remove();
-    document.getElementById('panorama-loading-spinner')?.remove();
   }
+  document.getElementById('a11y-fallback-banner')?.remove();
+  document.getElementById('panorama-loading-spinner')?.remove();
 };
 
 /* ==========================================================================
@@ -60,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize Diagnostic WebGL Decoding Watchdog Timer (4.5s Constraint)
   diagnosticTimer = setTimeout(() => {
-    if (document.getElementById('a11y-fallback-banner')) return;
+    if (document.getElementById('a11y-fallback-banner') || isStaticModeActive) return;
     const banner = document.createElement('div');
     banner.id = 'a11y-fallback-banner';
     banner.setAttribute('role', 'alert');
@@ -74,24 +95,24 @@ document.addEventListener('DOMContentLoaded', () => {
     container.appendChild(banner);
   }, 4500);
 
-  // Mobile Safe Library Verification
-  if (typeof window.pannellum !== 'undefined') {
-    initializeViewer(container);
+  // Mobile Safe Library Verification using ID string target instead of element instance
+  if (typeof window.pannellum !== 'undefined' && !isStaticModeActive) {
+    initializeViewer('panorama-container');
   } else {
     window.setStaticMode(true);
   }
   initializeUIComponents();
 });
+
 /* ==========================================================================
    3. WebGL Room Viewer & Custom Interactive Hotspots
    ========================================================================== */
-function initializeViewer(container) {
+function initializeViewer(containerId) {
   if (!window.pannellum || !window.pannellum.viewer) return;
 
-  // Root-relative pathing mapping matching your live repository name
   const structuralAssetUrl = '/jw-author-site/images/site/victorian_library_360.jpg';
 
-  roomViewer = window.pannellum.viewer(container, {
+  roomViewer = window.pannellum.viewer(containerId, {
     type: 'equirectangular',
     panorama: structuralAssetUrl,
     autoLoad: true,
@@ -100,21 +121,33 @@ function initializeViewer(container) {
       yaw: item.shelfCoordinate.yaw,
       type: 'custom',
       createTooltipFunc: function(hotSpotDiv) {
+        if (isStaticModeActive) return;
+
         hotSpotDiv.classList.add('custom-hotspot');
         hotSpotDiv.style.transform = 'translate3d(0,0,0)';
         hotSpotDiv.setAttribute('tabindex', '0');
         hotSpotDiv.setAttribute('role', 'button');
-        hotSpotDiv.setAttribute('aria-label', `Dewey ${item.dewey}`);
+        hotSpotDiv.setAttribute('aria-label', `Dewey ${item.dewey}: Go to ${item.elementId.replace(/_/g, ' ')}`);
 
         const tooltip = document.createElement('div');
         tooltip.style.cssText = 'position:absolute; bottom:100%; left:50%; transform:translate(-50%,-10px); background:var(--card); color:var(--ink); border:1px solid var(--walnut); padding:6px; border-radius:4px; pointer-events:none; white-space:nowrap; display:none;';
         tooltip.textContent = `Dewey: ${item.dewey}`;
         hotSpotDiv.appendChild(tooltip);
 
-        hotSpotDiv.addEventListener('mouseenter', () => tooltip.style.display = 'block');
-        hotSpotDiv.addEventListener('mouseleave', () => tooltip.style.display = 'none');
-        hotSpotDiv.addEventListener('focus', () => tooltip.style.display = 'block');
-        hotSpotDiv.addEventListener('blur', () => tooltip.style.display = 'none');
+        // Functional click mapping for hotspots
+        hotSpotDiv.addEventListener('click', () => {
+          window.location.href = item.targetUrl;
+        });
+
+        // Combined visual display and visibility handling loops
+        const showVisuals = () => tooltip.style.display = 'block';
+        const hideVisuals = () => tooltip.style.display = 'none';
+
+        hotSpotDiv.addEventListener('mouseenter', showVisuals);
+        hotSpotDiv.addEventListener('mouseleave', hideVisuals);
+        hotSpotDiv.addEventListener('focus', showVisuals);
+        hotSpotDiv.addEventListener('blur', hideVisuals);
+        
         hotSpotDiv.addEventListener('keydown', (e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
@@ -132,17 +165,19 @@ function initializeViewer(container) {
    4. Component Synchronization & Event Interface Loop
    ========================================================================== */
 function clearLoadingIndicators() {
-  if (diagnosticTimer) clearTimeout(diagnosticTimer);
-  const spinner = document.getElementById('panorama-loading-spinner');
-  if (spinner) spinner.remove();
-  const banner = document.getElementById('a11y-fallback-banner');
-  if (banner) banner.remove();
+  if (diagnosticTimer) {
+    clearTimeout(diagnosticTimer);
+    diagnosticTimer = null;
+  }
+  document.getElementById('panorama-loading-spinner')?.remove();
+  document.getElementById('a11y-fallback-banner')?.remove();
 }
 
 function initializeUIComponents() {
-  // Wire up the Interactive Menu Select Elements safely within DOM cycle
   const selectMenu = document.getElementById('catalog-search-select');
   if (selectMenu) {
+    // Prevent duplicate entries if initialization fires twice
+    selectMenu.innerHTML = '<option value="">-- Choose a Shelf Section --</option>';
     libraryMasterCatalog.forEach(item => {
       const opt = document.createElement('option');
       opt.value = item.targetUrl;
@@ -157,15 +192,23 @@ function initializeUIComponents() {
     });
   }
 
-  // Wire up the Drawer Close Minimization Actions safely within DOM cycle
+  // Wire up structural Drawer Close Minimization Actions safely 
   const toggleBtn = document.getElementById('catalog-toggle-btn');
   const drawerPanel = document.getElementById('card-catalog-drawer');
+  
   if (toggleBtn && drawerPanel) {
     toggleBtn.addEventListener('click', () => {
-      const isMinimized = drawerPanel.classList.toggle('minimized');
-      toggleBtn.textContent = isMinimized ? '+' : '−';
-      toggleBtn.setAttribute('aria-label', isMinimized ? 'Expand catalog window' : 'Minimize catalog window');
+      const isMinimized = drawerPanel.classList.contains('minimized') || drawerPanel.getAttribute('aria-hidden') === 'true';
+      
+      if (isMinimized) {
+        drawerPanel.classList.remove('minimized');
+        drawerPanel.setAttribute('aria-hidden', 'false');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+      } else {
+        drawerPanel.classList.add('minimized');
+        drawerPanel.setAttribute('aria-hidden', 'true');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      }
     });
   }
 }
-

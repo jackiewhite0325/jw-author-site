@@ -20,12 +20,21 @@ window.setStaticMode = function(enabled) {
   if (diagnosticTimer) clearTimeout(diagnosticTimer);
   const container = document.getElementById('panorama-container');
   if (container) {
-    container.innerHTML = '<div style="color:var(--ink); padding:20px; background:var(--paper); height:100%;">Basic Text Layout Active.</div>';
+    container.innerHTML = '<div style="color:var(--ink); padding:20px; background:var(--paper); height:100%; overflow-y:auto;"><h3>Basic Text Layout Active</h3><ul id="fallback-list" style="margin-top:15px; list-style:none; padding:0;"></ul></div>';
+    
+    const list = document.getElementById('fallback-list');
+    if (list) {
+      libraryMasterCatalog.forEach(item => {
+        const li = document.createElement('li');
+        li.style.marginBottom = "10px";
+        li.innerHTML = `<a href="${item.targetUrl}" style="color:var(--amber); font-weight:bold; text-decoration:underline;">[Dewey ${item.dewey}] View ${item.elementId.replace(/_/g, ' ')}</a>`;
+        list.appendChild(li);
+      });
+    }
     document.getElementById('a11y-fallback-banner')?.remove();
     document.getElementById('panorama-loading-spinner')?.remove();
   }
 };
-
 /* ==========================================================================
    2. DOM Viewport Engineering & Diagnostic Timers
    ========================================================================== */
@@ -64,30 +73,26 @@ document.addEventListener('DOMContentLoaded', () => {
     container.appendChild(banner);
   }, 4500);
 
-  // Mobile WebGL Library Safeguard Check
-  if (typeof pannellum !== 'undefined') {
+  // Safeguard step: only try loading the viewer if the window library variable exists
+  if (typeof window.pannellum !== 'undefined') {
     initializeViewer(container);
+  } else {
+    window.setStaticMode(true);
   }
   initializeUIComponents();
 });
-/* ==========================================================================
+
 /* ==========================================================================
    3. WebGL Room Viewer & Custom Interactive Hotspots
    ========================================================================== */
 function initializeViewer(container) {
-  if (typeof pannellum === 'undefined' || !pannellum.viewer) return;
-  
-  // Safely intercept and classify the low-power mobile viewport states
-  const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || window.innerWidth < 768;
-  
-  // Update path structures to your unified site asset location 
-  // TIP: If mobile still times out, save a compressed version as victorian_library_360_mobile.jpg
-  const mobileOptimizedAsset = 'images/site/victorian_library_360.jpg'; 
-  const desktopHighResAsset = 'images/site/victorian_library_360.jpg';
-  
-  roomViewer = pannellum.viewer(container, {
+  if (!window.pannellum || !window.pannellum.viewer) return;
+
+  const liveAssetUrl = 'https://github.io';
+
+  roomViewer = window.pannellum.viewer(container, {
     type: 'equirectangular',
-    panorama: isMobile ? mobileOptimizedAsset : desktopHighResAsset,
+    panorama: liveAssetUrl,
     autoLoad: true,
     hotSpots: libraryMasterCatalog.map(item => ({
       pitch: item.shelfCoordinate.pitch,
@@ -122,8 +127,7 @@ function initializeViewer(container) {
   roomViewer.on('load', clearLoadingIndicators);
 }
 
-
-  /* ==========================================================================
+/* ==========================================================================
    4. Component Synchronization & Event Interface Loop
    ========================================================================== */
 function clearLoadingIndicators() {

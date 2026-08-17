@@ -272,6 +272,16 @@ window.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
+  roomViewer.on('error', (error) => {
+    recordLifecycle('viewer-runtime-error', { error: error?.message || String(error) });
+    console.error('Immersive library reported a viewer error.', error);
+    showLoadingFallback(
+      'The immersive scene could not finish loading. You can still use the direct links below.',
+      classifyFailure('viewer-runtime-error', error),
+      error
+    );
+  });
+
   roomViewer.on('load', () => {
     recordLifecycle('viewer-load-success');
     clearLoadingStatus();
@@ -288,16 +298,6 @@ window.addEventListener('DOMContentLoaded', () => {
     renderBadgeConstellation();
     populateSelectorDropdown();
     setupHotspotClickHandling();
-  });
-
-  roomViewer.on('error', (error) => {
-    recordLifecycle('viewer-runtime-error', { error: error?.message || String(error) });
-    console.error('Immersive library reported a viewer error.', error);
-    showLoadingFallback(
-      'The immersive scene could not finish loading. You can still use the direct links below.',
-      classifyFailure('viewer-runtime-error', error),
-      error
-    );
   });
 
   const minimizeBtn = document.getElementById('catalog-toggle-btn');

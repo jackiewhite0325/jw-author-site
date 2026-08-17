@@ -1,0 +1,229 @@
+/* Core Styling Variables */
+:root {
+  --canvas-bg: #FDFBF7; /* Warm Paper */
+  --module-bg: #F2F5F3; /* Morning Mist Container Well */
+  --charcoal-txt: #2B2B2B; /* High-legibility text */
+  --amber-gold: #D4A373; /* Core Interactive Pointer Focus */
+  --sage-divider: #A3B19B; /* Metadata dividers and accents */
+}
+
+/* Reset & Base */
+* { box-sizing: border-box; }
+body {
+  background-color: var(--canvas-bg);
+  color: var(--charcoal-txt);
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+h1, h2, h3, .literary-font {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  text-transform: none;
+}
+
+/* Card Catalog Drawer (Overlay on Panorama) */
+#card-catalog-drawer {
+  position: fixed;
+  top: 32px;
+  left: 32px;
+  z-index: 10;
+  background-color: var(--module-bg);
+  padding: 0;
+  border-radius: 4px;
+  border: 1px solid var(--sage-divider);
+  box-shadow: 0 4px 12px rgba(43, 43, 43, 0.15);
+  width: 320px;
+  max-width: 90vw;
+  transition: all 0.3s ease;
+}
+
+.catalog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid var(--sage-divider);
+}
+
+.catalog-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.catalog-minimize-btn {
+  background: none;
+  border: none;
+  color: var(--charcoal-txt);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.catalog-minimize-btn:hover {
+  transform: scale(1.1);
+}
+
+#card-catalog-drawer.minimized {
+  width: auto;
+  padding: 0;
+}
+
+#card-catalog-drawer.minimized .catalog-select {
+  display: none;
+}
+
+.catalog-select {
+  font-family: 'Inter', sans-serif;
+  padding: 12px 16px;
+  color: var(--charcoal-txt);
+  background-color: var(--canvas-bg);
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.catalog-select:hover {
+  background-color: rgba(212, 163, 115, 0.05);
+}
+
+.catalog-select:focus {
+  outline: 2px solid var(--amber-gold);
+  outline-offset: -2px;
+}
+
+/* Guidance Pointer Arrow Elements */
+.nav-guide-arrow {
+  position: fixed;
+  font-size: 48px;
+  color: var(--amber-gold);
+  text-shadow: 0 2px 8px rgba(212, 163, 115, 0.4);
+  animation: pointerFloat 1.5s infinite ease-in-out;
+  user-select: none;
+  z-index: 5;
+  display: none;
+}
+
+#guide-arrow-left {
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#guide-arrow-right {
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@keyframes pointerFloat {
+  0%, 100% { transform: translateY(-50%) translateX(0px); }
+  50% { transform: translateY(-50%) translateX(8px); }
+}
+
+/* "Everything Invites" Banner Card Toast */
+.invitation-toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--canvas-bg);
+  color: var(--charcoal-txt);
+  padding: 24px 32px;
+  border-radius: 4px;
+  border-top: 3px solid var(--amber-gold);
+  box-shadow: 0 4px 20px rgba(212, 163, 115, 0.2);
+  width: 450px;
+  max-width: 90vw;
+  z-index: 100;
+  display: none;
+}
+
+.invitation-toast p {
+  margin: 0 0 16px 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.toast-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-accept, .btn-dismiss {
+  font-family: 'Inter', sans-serif;
+  padding: 8px 16px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  font-size: 0.9rem;
+  border: 1px solid var(--sage-divider);
+}
+
+.btn-accept {
+  background-color: var(--amber-gold);
+  border-color: var(--amber-gold);
+  color: white;
+}
+
+.btn-accept:hover {
+  box-shadow: 0 2px 8px rgba(212, 163, 115, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-dismiss {
+  background-color: var(--module-bg);
+  color: var(--charcoal-txt);
+}
+
+.btn-dismiss:hover {
+  background-color: var(--canvas-bg);
+  box-shadow: 0 2px 8px rgba(212, 163, 115, 0.1);
+}
+
+/* Hotspot Label (on hover) */
+.hotspot-label {
+  position: fixed;
+  background-color: rgba(253, 251, 247, 0.95);
+  color: var(--charcoal-txt);
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--sage-divider);
+  font-size: 0.85rem;
+  z-index: 50;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+
+/* Pannellum Custom Hotspot Styling */
+.pnlm-hotspot {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.library-custom-hotspot {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(212, 163, 115, 0.3) !important;
+  border: 2px solid var(--amber-gold) !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+.library-custom-hotspot:hover {
+  transform: scale(1.3) !important;
+  background-color: rgba(212, 163, 115, 0.5) !important;
+  box-shadow: 0 0 12px rgba(212, 163, 115, 0.4) !important;
+}

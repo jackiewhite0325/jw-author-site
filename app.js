@@ -1,4 +1,5 @@
 let roomViewer;
+let hasReportedFatalFailure = false;
 
 const PANORAMA_ASSET = './images/site/victorian_library_360.png';
 const PANORAMA_DIMENSIONS = { width: 1456, height: 720 };
@@ -37,8 +38,8 @@ function readCdnStatus() {
   const script = document.getElementById('pannellum-script');
   const css = document.getElementById('pannellum-css');
   return {
-    scriptStatus: diagnostics.cdnScriptStatus || script?.dataset?.status || (window.pannellum ? 'loaded' : 'unknown'),
-    cssStatus: diagnostics.cdnCssStatus || css?.dataset?.status || 'unknown',
+    scriptStatus: diagnostics.cdn?.scriptStatus || script?.dataset?.status || (window.pannellum ? 'loaded' : 'unknown'),
+    cssStatus: diagnostics.cdn?.cssStatus || css?.dataset?.status || 'unknown',
     scriptUrl: script?.src || null,
     cssUrl: css?.href || null
   };
@@ -182,7 +183,7 @@ function showLoadingFallback(message, category, error) {
     copy.textContent = message;
   }
 
-  if (category) {
+  if (category && !hasReportedFatalFailure) {
     diagnostics.failures.push({
       stage: diagnostics.lifecycle[diagnostics.lifecycle.length - 1]?.stage || 'unknown',
       category,
@@ -193,7 +194,10 @@ function showLoadingFallback(message, category, error) {
   fallback.hidden = false;
   clearLoadingStatus();
   renderDiagnosticsPanel();
-  console.warn('Immersive library diagnostics', buildDiagnosticSummary(), error || '');
+  if (!hasReportedFatalFailure) {
+    hasReportedFatalFailure = true;
+    console.warn('Immersive library diagnostics', buildDiagnosticSummary(), error || '');
+  }
 }
 
 window.addEventListener('DOMContentLoaded', () => {

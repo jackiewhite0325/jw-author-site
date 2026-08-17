@@ -71,14 +71,23 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeUIComponents();
 });
 /* ==========================================================================
+/* ==========================================================================
    3. WebGL Room Viewer & Custom Interactive Hotspots
    ========================================================================== */
 function initializeViewer(container) {
   if (typeof pannellum === 'undefined' || !pannellum.viewer) return;
   
+  // Safely intercept and classify the low-power mobile viewport states
+  const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || window.innerWidth < 768;
+  
+  // Update path structures to your unified site asset location 
+  // TIP: If mobile still times out, save a compressed version as victorian_library_360_mobile.jpg
+  const mobileOptimizedAsset = 'images/site/victorian_library_360.jpg'; 
+  const desktopHighResAsset = 'images/site/victorian_library_360.jpg';
+  
   roomViewer = pannellum.viewer(container, {
     type: 'equirectangular',
-    panorama: 'library.jpg',
+    panorama: isMobile ? mobileOptimizedAsset : desktopHighResAsset,
     autoLoad: true,
     hotSpots: libraryMasterCatalog.map(item => ({
       pitch: item.shelfCoordinate.pitch,
@@ -113,7 +122,8 @@ function initializeViewer(container) {
   roomViewer.on('load', clearLoadingIndicators);
 }
 
-/* ==========================================================================
+
+  /* ==========================================================================
    4. Component Synchronization & Event Interface Loop
    ========================================================================== */
 function clearLoadingIndicators() {

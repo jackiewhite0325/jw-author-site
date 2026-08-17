@@ -23,7 +23,7 @@ function showLoadingFallback(message) {
   }
 
   fallback.hidden = false;
-  setLoadingStatus('Unable to load the immersive library.');
+  setLoadingStatus(message || 'Unable to load the immersive library.');
 }
 
 window.addEventListener('DOMContentLoaded', () => {

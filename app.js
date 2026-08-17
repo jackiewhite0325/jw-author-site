@@ -98,12 +98,16 @@ function classifyFailure(stage, error) {
   const message = (error && (error.message || error.reason || error.statusText)) || (typeof error === 'string' ? error : '');
   const combined = `${stage} ${message}`.toLowerCase();
 
-  if (stage === 'missing-pannellum' || diagnostics.libraryAssets.scriptStatus === 'error') {
+  if (stage === 'missing-pannellum') {
     return 'asset-load-failure';
   }
 
-  if (!diagnostics.webgl.supported) {
+  if (stage === 'webgl-unavailable' || !diagnostics.webgl.supported) {
     return 'webgl-unsupported';
+  }
+
+  if (diagnostics.libraryAssets.scriptStatus === 'error') {
+    return 'asset-load-failure';
   }
 
   if (/webgl|context|shader|gl |gpu|renderer|texture/i.test(combined)) {

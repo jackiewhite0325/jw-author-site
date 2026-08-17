@@ -1,4 +1,4 @@
-// Improved library-engine.js (focus trap + scene highlighting + class-based results + debounced search)
+// Improved library-engine.js (focus trap + scene highlighting + class-based results + debounced search + accessibility polish)
 (function () {
   'use strict';
 
@@ -12,7 +12,6 @@
   }
 
   // Centralized Database for All Authors under Sigil and Scribe LLC
-  // Each book may contain cameraYRotation (for scene orientation) and elementId (A-Frame entity id to highlight)
   const libraryMasterCatalog = [
     {
       title: "Muffin Gets the Wiggles",
@@ -85,19 +84,17 @@
   // Scene highlighting helpers
   let lastHighlightedEl = null;
   function highlightSceneElement(elementId) {
-    // clear any previous highlight
     clearSceneHighlight();
 
     if (!elementId) return;
     const el = document.getElementById(elementId);
     if (!el) return;
 
-    // add a subtle pulsing scale animation using aframe's animation component
     try {
+      el.setAttribute('material', 'color: #b8873f; opacity: 0.9; transparent: true');
       el.setAttribute('animation__highlight', 'property: scale; to: 1.08 1.08 1.08; dir: alternate; dur: 600; loop: true; easing: easeInOutSine');
       lastHighlightedEl = el;
     } catch (err) {
-      // gracefully fail if the scene doesn't support animation attributes
       try { el.object3D.scale.set(1.08, 1.08, 1.08); lastHighlightedEl = el; } catch (e) { /* ignore */ }
     }
   }
@@ -105,6 +102,7 @@
     if (!lastHighlightedEl) return;
     try {
       lastHighlightedEl.removeAttribute('animation__highlight');
+      lastHighlightedEl.removeAttribute('material');
       lastHighlightedEl.setAttribute('scale', '1 1 1');
     } catch (err) {
       try { lastHighlightedEl.object3D.scale.set(1,1,1); } catch (e) { /* ignore */ }
@@ -112,7 +110,20 @@
     lastHighlightedEl = null;
   }
 
-  // Cached DOM nodes
+  // Retry helper if entity not ready
+  function highlightSceneElementWithRetry(elementId, attempts = 6) {
+    if (!elementId) return;
+    let tries = 0;
+    const tryNow = () => {
+      const el = document.getElementById(elementId);
+      if (el) { highlightSceneElement(elementId); return; }
+      tries++;
+      if (tries < attempts) setTimeout(tryNow, 250);
+    };
+    tryNow();
+  }
+
+  // Cached DOM nodes & startup
   document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('catalogSearch');
     const resultsContainer = document.getElementById('catalogResults');
@@ -121,10 +132,22 @@
     const modalContent = document.getElementById('modalContent');
     const closeBtn = modal ? modal.querySelector('.close-btn') : null;
 
+    const exploreIntro = document.getElementById('exploreIntro');
+    const exploreBtn = document.getElementById('exploreBtn');
+    const showCatalogBtn = document.getElementById('showCatalogBtn');
+    const staticModeBtn = document.getElementById('staticModeBtn');
+    const exploreToggle = document.getElementById('exploreToggle');
+    const cardCatalog = document.getElementById('cardCatalogDrawer');
+    const catalogSearch = searchInput;
+    const exitStaticBtn = document.getElementById('exitStaticBtn');
+    const siteAnnounce = document.getElementById('siteAnnouncement');
+
     if (!searchInput || !resultsContainer || !modal || !modalTitle || !modalContent) {
       console.warn('library-engine: missing required DOM elements. Aborting initialization.');
       return;
     }
+
+    function announce(msg) { if (siteAnnounce) siteAnnounce.textContent = msg; }
 
     // Prevent body scroll while modal is open
     function preventBodyScroll() { document.body.style.overflow = 'hidden'; }
@@ -155,6 +178,7 @@
 
       // trap focus inside the modal
       trapFocus(modal);
+      announce(`${title} opened`);
 
       // listen for Escape to close
       const escHandler = function (e) { if (e.key === 'Escape') closeParchment(); };
@@ -169,27 +193,33 @@
       releaseFocus();
       if (modal._escHandler) document.removeEventListener('keydown', modal._escHandler);
       if (lastFocusedEl && typeof lastFocusedEl.focus === 'function') lastFocusedEl.focus();
-      // clear any scene highlight when closing
+      const prev = document.querySelector('.catalog-result.selected');
+      if (prev) prev.classList.remove('selected');
       clearSceneHighlight();
+      announce('Closed details');
     }
 
-    // wire the close button
+    // wire close button
     if (closeBtn) {
       closeBtn.addEventListener('click', closeParchment);
       closeBtn.addEventListener('keydown', (ev) => {
-        if (ev.key === 'Enter' || ev.key === ' ') {
-          ev.preventDefault();
-          closeParchment();
-        }
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); closeParchment(); }
       });
     }
 
     // click backdrop to close
     modal.addEventListener('click', (ev) => { if (ev.target === modal) closeParchment(); });
 
-    // helper: safe HTML escape for snippets (used sparingly)
+    // helper: safe HTML escape for snippets
     function escapeHtml(str) {
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    // rotate/face bookshelf helper (best-effort)
+    function highlightBookshelfZone(targetDegrees) {
+      const rig = document.getElementById('cameraRig') || document.querySelector('[camera]');
+      if (!rig) return;
+      try { rig.setAttribute('rotation', `0 ${targetDegrees} 0`); } catch (err) { if (rig.style) rig.style.transform = `rotateY(${targetDegrees}deg)`; }
     }
 
     // create accessible result button
@@ -205,18 +235,18 @@
       btn.appendChild(titleLine);
 
       const metaLine = document.createElement('div');
-      metaLine.style.fontSize = '0.95rem';
-      metaLine.style.opacity = '0.95';
+      metaLine.className = 'meta';
       const seriesText = book.seriesName && book.seriesName !== 'None' ? `Vol ${book.volume} of ${book.seriesName}` : 'Standalone';
       metaLine.textContent = `By ${book.author} | ${seriesText}`;
       btn.appendChild(metaLine);
 
       btn.addEventListener('click', () => {
-        // rotate scene to face book area (best-effort)
-        try { highlightBookshelfZone(book.cameraYRotation || 0); } catch (e) { /* ignore */ }
+        const prev = document.querySelector('.catalog-result.selected');
+        if (prev) prev.classList.remove('selected');
+        btn.classList.add('selected');
 
-        // visually highlight the related A-Frame element
-        highlightSceneElement(book.elementId);
+        try { highlightBookshelfZone(book.cameraYRotation || 0); } catch (e) { /* ignore */ }
+        highlightSceneElementWithRetry(book.elementId);
 
         const wrapper = document.createElement('div');
         const authorLine = document.createElement('p');
@@ -248,6 +278,7 @@
       no.className = 'catalog-result';
       no.textContent = `No results for "${query}".`;
       resultsContainer.appendChild(no);
+      announce(`No results for ${query}`);
     }
 
     // main search handler (debounced)
@@ -274,6 +305,7 @@
       const frag = document.createDocumentFragment();
       matches.forEach(book => frag.appendChild(createResultButton(book)));
       resultsContainer.appendChild(frag);
+      announce(`${matches.length} results for ${query}`);
     }, 200);
 
     searchInput.addEventListener('input', handleSearch);
@@ -281,16 +313,90 @@
     searchInput.value = '';
     handleSearch({ target: searchInput });
 
-    // expose (only if other inline handlers rely on them)
+    // Expose for inline handlers
     window.openParchment = openParchment;
     window.closeParchment = closeParchment;
 
-    // helper to rotate the room to target the physical bookshelf area (kept as best-effort)
-    function highlightBookshelfZone(targetDegrees) {
-      const rig = document.getElementById('cameraRig') || document.querySelector('[camera]');
-      if (!rig) return;
-      try { rig.setAttribute('rotation', `0 ${targetDegrees} 0`); } catch (err) { if (rig.style) rig.style.transform = `rotateY(${targetDegrees}deg)`; }
+    // Onboarding + Explore toggle wiring with accessibility
+    // siteAnnounce is an aria-live polite region (screen-reader announcements)
+    if (exploreIntro && !localStorage.getItem('sawExploreIntro')) { exploreIntro.style.display = 'block'; }
+    else if (exploreIntro) { exploreIntro.style.display = 'none'; }
+
+    if (exploreBtn) {
+      exploreBtn.addEventListener('click', () => {
+        localStorage.setItem('sawExploreIntro', '1');
+        exploreIntro.style.display = 'none';
+        brieflyShowHotspots();
+        announce('Exploration started');
+      });
     }
+
+    if (showCatalogBtn) {
+      showCatalogBtn.addEventListener('click', () => {
+        if (exploreIntro) exploreIntro.style.display = 'none';
+        if (cardCatalog) { cardCatalog.classList.remove('hidden'); if (catalogSearch) catalogSearch.focus(); }
+        announce('Catalog opened');
+      });
+    }
+
+    // helper that briefly hints at hotspots
+    function brieflyShowHotspots() {
+      const hotspotIds = libraryMasterCatalog.map(b => b.elementId).filter(Boolean);
+      hotspotIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        try { el.setAttribute('material', 'color: #b8873f; opacity: 0.65; transparent: true'); } catch (e) {}
+        setTimeout(() => { try { el.setAttribute('material', 'opacity: 0.01; transparent: true'); } catch (e) {} }, 1400);
+      });
+    }
+
+    // Explore toggle (floating)
+    if (exploreToggle) {
+      exploreToggle.setAttribute('aria-pressed', 'false');
+      exploreToggle.addEventListener('click', () => {
+        const pressed = exploreToggle.getAttribute('aria-pressed') === 'true';
+        exploreToggle.setAttribute('aria-pressed', String(!pressed));
+        if (cardCatalog) {
+          cardCatalog.classList.toggle('hidden');
+          if (!cardCatalog.classList.contains('hidden') && catalogSearch) catalogSearch.focus();
+          announce(cardCatalog.classList.contains('hidden') ? 'Catalog hidden' : 'Catalog shown');
+        }
+      });
+    }
+
+    // Static mode toggle
+    if (staticModeBtn) {
+      staticModeBtn.setAttribute('aria-pressed', String(!!localStorage.getItem('staticMode')));
+      staticModeBtn.addEventListener('click', () => {
+        const pressed = staticModeBtn.getAttribute('aria-pressed') === 'true';
+        const newMode = !pressed;
+        staticModeBtn.setAttribute('aria-pressed', String(newMode));
+        if (typeof window.setStaticMode === 'function') window.setStaticMode(newMode);
+        announce(newMode ? 'Static view enabled' : 'Interactive view enabled');
+      });
+    }
+
+    if (exitStaticBtn) {
+      exitStaticBtn.addEventListener('click', () => {
+        if (typeof window.setStaticMode === 'function') window.setStaticMode(false);
+        if (staticModeBtn) staticModeBtn.setAttribute('aria-pressed','false');
+        announce('Interactive view enabled');
+      });
+    }
+
+    // Keyboard shortcut: press 'm' to toggle static mode (when not focused in an input)
+    document.addEventListener('keydown', (e) => {
+      const tag = document.activeElement && document.activeElement.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable) return;
+      if (e.key && e.key.toLowerCase() === 'm') {
+        // toggle
+        const current = !!localStorage.getItem('staticMode');
+        const newMode = !current;
+        if (typeof window.setStaticMode === 'function') window.setStaticMode(newMode);
+        if (staticModeBtn) staticModeBtn.setAttribute('aria-pressed', String(newMode));
+        announce(newMode ? 'Static view enabled' : 'Interactive view enabled');
+      }
+    });
 
   });
 })();

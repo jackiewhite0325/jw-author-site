@@ -81,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   initializeUIComponents();
 });
-
 /* ==========================================================================
    3. WebGL Room Viewer & Custom Interactive Hotspots
    ========================================================================== */
@@ -167,4 +166,5 @@ function initializeUIComponents() {
     });
   }
 }
+
 

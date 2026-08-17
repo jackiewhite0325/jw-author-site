@@ -6,7 +6,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize Pannellum Room with Newly Generated Asset Blueprint Layout
   roomViewer = pannellum.viewer('panorama-container', {
     "type": "equirectangular",
-    "panorama": "assets/images/library_360_room.jpg", // Confirm your saved local target directory string matches this asset
+    "panorama": "assets/images/victorian_library_360.png",
     "autoLoad": true,
     "showControls": false,
     "mouseZoom": false,

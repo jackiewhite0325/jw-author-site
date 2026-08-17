@@ -32,7 +32,8 @@ window.triggerStaticFallbackList = function() {
   }
 };
 
-/* ==========================================================================
+
+/* ==/* ==========================================================================
    2. DOM Watchdog Lifecycle & UI Sync Loop
    ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
@@ -57,7 +58,7 @@ function setupDrawerControls() {
       });
     }
 
-    // Safely remove existing listeners by clone replacement if needed, or bind cleanly
+    // Safely bind actions cleanly
     selectMenu.addEventListener('change', (e) => {
       if (e.target.value) window.location.href = e.target.value;
     });
@@ -72,4 +73,6 @@ function setupDrawerControls() {
       toggleBtn.setAttribute('aria-label', isMinimized ? 'Expand window' : 'Minimize window');
     });
   }
+}
+
 }

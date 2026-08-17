@@ -1,12 +1,5 @@
 let roomViewer;
 
-function setLoadingStatus(message) {
-  const status = document.getElementById('library-loading-status');
-  if (!status) return;
-  status.hidden = false;
-  status.textContent = message;
-}
-
 function clearLoadingStatus() {
   const status = document.getElementById('library-loading-status');
   if (!status) return;

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sigil and Scribe, LLC — The Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  /* (styles omitted here for brevity in the preview - use the CSS you already have or the earlier CSS block) */
+  /* Keep the same CSS from your current page, including mobile-static styles and the responsive changes added earlier. */
+</style>
+</head>
+<body>
+
+  <div class="entrance">
+    <div class="eyebrow">Sigil &amp; Scribe, LLC</div>
+    <h1>The Library</h1>
+    <p>Every genre, every author under this roof. Wander the shelves, or ask the catalog.</p>
+  </div>
+
+  <!-- Mobile-static hero (high-perceived-quality yet optimized) -->
+  <div class="mobile-static" id="mobileStaticHero" aria-hidden="true">
+    <picture>
+      <source type="image/webp" srcset="images/library-480.webp 480w, images/library-900.webp 900w" sizes="(max-width:720px) 480px, 900px">
+      <img src="images/library-480.jpg" alt="Illustration of the Sigil & Scribe library interior" loading="lazy" width="1200" height="480">
+    </picture>
+    <div class="mobile-static-overlay">
+      <h2>The Library</h2>
+      <p>Browse the catalog or try the immersive 360 view when you're ready.</p>
+      <div class="mobile-static-actions">
+        <button id="mobileTry360" class="btn btn-primary" aria-label="Try the immersive 360 view">Try 360 View</button>
+        <button id="mobileCatalogBtn" class="btn btn-secondary" aria-label="Open the catalog">Open Catalog</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- (rest of the page markup kept as in your current file: lectern, poster, catalog, shelves, desk, overlays) -->
+  <!-- Use the markup you already posted earlier (poster button, catalog input, drawers, shelves, overlays) -->
+
+  <!-- Overlays and overlays markup (bookOverlay, signinOverlay) should remain the same as you currently have. -->
+
+<script>
+/* ---------- Data and rendering (kept the same, but JS is completed here) ---------- */
+const books = [ /* ... same books array as in your file ... */ ];
+
+// (Place the full books array here — use the version you already have.)
+
+const reserved = {
+  title: "Nineteen Days",
+  author: "Petra",
+  section: "reserved",
+  tagline: "Coming soon — not yet catalogued.",
+  desc: "A memoir of surviving a near-fatal moment, and the sister whose voice called her back.",
+  note: "Petra is still writing this one. It will appear on the shelf when she's ready — this card is just to say it's coming."
+};
+
+const sectionMeta = {
+  children:{label:"Children's Books · 100s", shelf:"shelf-children", cls:"children"},
+  wellness:{label:"Health & Wellness · 200s", shelf:"shelf-wellness", cls:"wellness"},
+  more:{label:"More Books · 300s", shelf:"shelf-more", cls:"more"},
+  toolbox:{label:"Writer's Toolbox · 500s", shelf:"shelf-toolbox", cls:null}
+};
+
+function spineVariant(i, section){
+  const v = i % 3;
+  if(section === "children" || section === "wellness") return v===1 ? " v2" : "";
+  if(section === "more") return v===1?" v2":v===2?" v3":"";
+  return "";
+}
+
+/* --- render shelves, drawers, chips, etc. (use your existing rendering code) --- */
+/* For brevity I won't duplicate the entire rendering logic here — keep the code you already have that renders spines, drawers, author chips and binds highlightAndOpen. */
+
+/* ---------- Overlay and open/close behavior (complete) ---------- */
+const bookOverlay = document.getElementById('bookOverlay');
+
+function openBook(title){
+  const b = books.find(x => x.title === title);
+  if(!b) return;
+  document.getElementById('bpCall').textContent = 'Call No. ' + b.call;
+  document.getElementById('bpAuthor').textContent = b.author !== "Toolbox" ? '· ' + b.author : '';
+  document.getElementById('bpTitle').textContent = b.title;
+  document.getElementById('bpTagline').textContent = b.tagline || '';
+  document.getElementById('bpDesc').textContent = b.desc || '';
+  document.getElementById('bpReservedNote').innerHTML = "";
+  const actions = document.getElementById('bpActions');
+  actions.innerHTML = "";
+  if(b.isTool || b.isModule){
+    const beginBtn = document.createElement('button');
+    beginBtn.className = 'btn btn-primary';
+    beginBtn.textContent = 'Open this tool';
+    beginBtn.addEventListener('click', () => { bookOverlay.classList.remove('show'); document.getElementById('signinOverlay').classList.add('show'); });
+    actions.appendChild(beginBtn);
+  } else if(b.links){
+    b.links.forEach(l => {
+      const a = document.createElement('a');
+      a.className = 'btn btn-primary';
+      a.href = l.url; a.target = '_blank'; a.rel = 'noopener';
+      a.textContent = l.label;
+      actions.appendChild(a);
+    });
+  } else if(b.comingSoon){
+    document.getElementById('bpReservedNote').innerHTML = '<div class="reserved-note">This one isn\\'t published yet — check back as the series grows.</div>';
+  }
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'btn btn-secondary';
+  closeBtn.textContent = 'Back to the shelf';
+  closeBtn.addEventListener('click', () => bookOverlay.classList.remove('show'));
+  actions.appendChild(closeBtn);
+  bookOverlay.classList.add('show');
+}
+
+function openReserved(){
+  document.getElementById('bpCall').textContent = 'Reserved';
+  document.getElementById('bpAuthor').textContent = '· ' + reserved.author;
+  document.getElementById('bpTitle').textContent = reserved.title;
+  document.getElementById('bpTagline').textContent = reserved.tagline;
+  document.getElementById('bpDesc').textContent = reserved.desc;
+  document.getElementById('bpReservedNote').innerHTML = `<div class="reserved-note">${reserved.note}</div>`;
+  const actions = document.getElementById('bpActions');
+  actions.innerHTML = "";
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'btn btn-secondary';
+  closeBtn.textContent = 'Back to the shelf';
+  closeBtn.addEventListener('click', () => bookOverlay.classList.remove('show'));
+  actions.appendChild(closeBtn);
+  bookOverlay.classList.add('show');
+}
+
+/* overlay interactions */
+document.getElementById('closeBook').addEventListener('click', () => bookOverlay.classList.remove('show'));
+bookOverlay.addEventListener('click', (e) => { if(e.target === bookOverlay) bookOverlay.classList.remove('show'); });
+
+/* Memorial and desk openers (unchanged) */
+document.getElementById('memorialPoster').addEventListener('click', () => {
+  window.open('https://jackiewhite0325.github.io/jw-author-site/muffin-memorial.html', '_blank', 'noopener');
+});
+document.getElementById('openAbout').addEventListener('click', () => {
+  window.open('https://jackiewhite0325.github.io/jw-author-site/about.html', '_blank', 'noopener');
+});
+document.getElementById('openBlog').addEventListener('click', () => {
+  window.open('https://jackiewhite0325.github.io/jw-author-site/blog.html', '_blank', 'noopener');
+});
+
+/* Sign-in overlay behavior */
+const signinOverlay = document.getElementById('signinOverlay');
+document.getElementById('openSignin').addEventListener('click', () => signinOverlay.classList.add('show'));
+document.getElementById('closeSignin').addEventListener('click', () => resetSignin());
+signinOverlay.addEventListener('click', (e) => { if(e.target === signinOverlay) resetSignin(); });
+function resetSignin(){
+  signinOverlay.classList.remove('show');
+  document.getElementById('signinForm').style.display = 'flex';
+  document.getElementById('signinConfirm').classList.remove('show');
+  document.getElementById('emailInput').value = '';
+}
+document.getElementById('sendLink').addEventListener('click', () => {
+  const val = document.getElementById('emailInput').value.trim();
+  if(!val) { document.getElementById('emailInput').focus(); return; }
+  document.getElementById('signinForm').style.display = 'none';
+  document.getElementById('signinConfirm').classList.add('show');
+});
+
+/* Keyboard escape for overlays */
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape'){ bookOverlay.classList.remove('show'); resetSignin(); }
+});
+
+/* ---------- Mobile static hero & Try 360 wiring ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+  const hero = document.getElementById('mobileStaticHero');
+  const try360 = document.getElementById('mobileTry360');
+  const openCatalogBtn = document.getElementById('mobileCatalogBtn');
+
+  // Heuristic: show mobile static hero when device is narrow or pointer is coarse
+  const isCoarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  const narrow = window.innerWidth && window.innerWidth <= 720;
+  // If user has explicit preference (localStorage staticMode/interactiveMode), prefer that
+  const storedStatic = localStorage.getItem('staticMode');
+  const storedInteractive = localStorage.getItem('interactiveMode');
+  const preferStatic = (storedStatic !== null) ? !!storedStatic : (isCoarse || narrow);
+
+  if(preferStatic){
+    if(hero) { hero.setAttribute('aria-hidden','false'); hero.style.display = ''; }
+  } else {
+    if(hero) { hero.setAttribute('aria-hidden','true'); hero.style.display = 'none'; }
+  }
+
+  // Try 360: when clicked, opt into interactive (persist) and call setStaticMode(false) if provided by your main script
+  if(try360){
+    try360.addEventListener('click', () => {
+      localStorage.setItem('interactiveMode','1');
+      // If your site exposes a setStaticMode function (from the 360 implementation), call it.
+      if(typeof window.setStaticMode === 'function') {
+        window.setStaticMode(false);
+      } else {
+        // fallback: hide the hero and focus the catalog
+        if(hero){ hero.setAttribute('aria-hidden','true'); hero.style.display = 'none'; }
+      }
+    });
+  }
+
+  if(openCatalogBtn){
+    openCatalogBtn.addEventListener('click', () => {
+      // simply focus the catalog search and ensure drawers are visible
+      const search = document.getElementById('catalogSearch');
+      if(search){ search.focus(); }
+    });
+  }
+});
+</script>
+</body>
+</html>

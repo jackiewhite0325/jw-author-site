@@ -6,6 +6,10 @@ window.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
+  // Allow enabling debug via URL param: ?hotspotDebug=1
+  const urlParams = new URLSearchParams(window.location.search);
+  const debugMode = urlParams.get('hotspotDebug') === '1' || urlParams.get('hotspotDebug') === 'true';
+
   const viewer = pannellum.viewer('library-panorama', {
     "type": "equirectangular",
     // Use the existing repo image path — change if you add a different 360 image
@@ -14,8 +18,8 @@ window.addEventListener('DOMContentLoaded', () => {
     "compass": false,
     "showControls": false,
     "mouseZoom": false,
-    // Production: disable hotSpotDebug; set to true only while tuning
-    "hotSpotDebug": false,
+    // Use URL param to enable debug without code edits
+    "hotSpotDebug": !!debugMode,
     "hotSpots": [
       {
         "pitch": -5.2,

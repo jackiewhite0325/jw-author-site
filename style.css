@@ -1,14 +1,21 @@
-/* Core Styling Variables */
+/* ==========================================================================
+   1. DESIGN SYSTEM DESIGN TOKENS & BASE SETUPS
+   ========================================================================== */
 :root {
-  --canvas-bg: #FDFBF7; /* Warm Paper */
-  --module-bg: #F2F5F3; /* Morning Mist Container Well */
-  --charcoal-txt: #2B2B2B; /* High-legibility text */
-  --amber-gold: #D4A373; /* Core Interactive Pointer Focus */
-  --sage-divider: #A3B19B; /* Metadata dividers and accents */
+  --canvas-bg: #FDFBF7;       /* Warm Paper */
+  --module-bg: #F2F5F3;       /* Morning Mist Container Well */
+  --charcoal-txt: #2B2B2B;    /* High-legibility text */
+  --amber-gold: #D4A373;      /* Core Interactive Pointer Focus */
+  --sage-divider: #A3B19B;    /* Metadata dividers and accents */
+  
+  --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* Reset & Base */
-* { box-sizing: border-box; }
+/* Structural Reset & Global Base Configuration Hooks */
+* { 
+  box-sizing: border-box; 
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -21,6 +28,7 @@ body {
   background-color: var(--canvas-bg);
   color: var(--charcoal-txt);
   font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, .literary-font {
@@ -29,8 +37,31 @@ h1, h2, h3, .literary-font {
   text-transform: none;
 }
 
-/* Main wrapper - full viewport */
+/* Screen Reader Only Utility */
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  clip-path: inset(50%);
+}
+
+/* Keyboard Target Focus Rings */
+:focus-visible {
+  outline: 3px solid var(--amber-gold);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   2. IMMERSIVE VIEWPORT ELEMENTS & LAYOUT SYSTEMS
+   ========================================================================== */
 #library-viewport-wrapper {
+  position: relative;
   width: 100vw;
   height: 100vh;
 }
@@ -38,25 +69,28 @@ h1, h2, h3, .literary-font {
 #panorama-container {
   width: 100%;
   height: 100%;
+  position: relative;
 }
 
-/* Card Catalog Drawer (Fixed on Librarian Desk) */
-#card-catalog-drawer {
+/* Card Catalog Drawer (Fixed Layout Position Alignment) */
+#card-catalog-drawer,
+.card-catalog-drawer {
   position: fixed;
   bottom: 80px;
   right: 48px;
-  z-index: 10;
+  z-index: 1010;
   background-color: var(--module-bg);
   padding: 0;
   border-radius: 4px;
   border: 1px solid var(--sage-divider);
-  box-shadow: 0 4px 12px rgba(43, 43, 43, 0.15);
-  width: 200px;
+  box-shadow: 0 10px 28px rgba(43, 43, 43, 0.18);
+  width: 260px;
   max-width: 90vw;
-  transition: all 0.3s ease;
+  transition: var(--transition-smooth);
   max-height: 240px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .catalog-header {
@@ -66,11 +100,13 @@ h1, h2, h3, .literary-font {
   padding: 12px;
   border-bottom: 1px solid var(--sage-divider);
   flex-shrink: 0;
+  background-color: rgba(43, 43, 43, 0.02);
 }
 
 .catalog-header h3 {
   margin: 0;
   font-size: 0.95rem;
+  letter-spacing: 0.02em;
 }
 
 .catalog-minimize-btn {
@@ -89,21 +125,26 @@ h1, h2, h3, .literary-font {
 }
 
 .catalog-minimize-btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
-#card-catalog-drawer.minimized {
-  width: auto;
-  max-height: none;
+/* Minimized Drawer State Transitions */
+#card-catalog-drawer.minimized,
+.card-catalog-drawer.minimized {
+  width: 160px;
+  max-height: 48px;
 }
 
-#card-catalog-drawer.minimized .catalog-select {
-  display: none;
+#card-catalog-drawer.minimized .catalog-select,
+.card-catalog-drawer.minimized .catalog-select,
+#card-catalog-drawer.minimized #catalogResults,
+.card-catalog-drawer.minimized #catalogResults {
+  display: none !important;
 }
 
 .catalog-select {
   font-family: 'Inter', sans-serif;
-  padding: 8px 12px;
+  padding: 10px 12px;
   color: var(--charcoal-txt);
   background-color: var(--canvas-bg);
   border: none;
@@ -112,66 +153,76 @@ h1, h2, h3, .literary-font {
   transition: background-color 0.2s ease;
   font-size: 0.85rem;
   overflow-y: auto;
-  max-height: 180px;
+  outline: none;
 }
 
 .catalog-select:hover {
-  background-color: rgba(212, 163, 115, 0.05);
+  background-color: rgba(212, 163, 115, 0.06);
 }
 
 .catalog-select:focus {
-  outline: 2px solid var(--amber-gold);
-  outline-offset: -2px;
+  background-color: rgba(212, 163, 115, 0.08);
 }
 
-/* Guidance Pointer Arrow Elements */
+/* ==========================================================================
+   3. NAVIGATION GUIDE ARROWS & ANIMATION TIMINGS
+   ========================================================================== */
 .nav-guide-arrow {
   position: fixed;
   font-size: 48px;
   color: var(--amber-gold);
-  text-shadow: 0 2px 8px rgba(212, 163, 115, 0.4);
-  animation: pointerFloat 1.5s infinite ease-in-out;
+  text-shadow: 0 4px 14px rgba(212, 163, 115, 0.5);
   user-select: none;
-  z-index: 5;
+  z-index: 1005;
   display: none;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 #guide-arrow-left {
   left: 24px;
-  top: 50%;
-  transform: translateY(-50%);
+  animation: pointerFloatLeft 1.5s infinite ease-in-out;
 }
 
 #guide-arrow-right {
   right: 24px;
-  top: 50%;
-  transform: translateY(-50%);
+  animation: pointerFloatRight 1.5s infinite ease-in-out;
 }
 
-@keyframes pointerFloat {
-  0%, 100% { transform: translateY(-50%) translateX(0px); }
-  50% { transform: translateY(-50%) translateX(8px); }
+@keyframes pointerFloatLeft {
+  0%, 100% { transform: translateY(-50%) translateX(0); }
+  50%      { transform: translateY(-50%) translateX(-8px); }
 }
 
-/* "Everything Invites" Banner Card Toast */
-.invitation-toast {
+@keyframes pointerFloatRight {
+  0%, 100% { transform: translateY(-50%) translateX(0); }
+  50%      { transform: translateY(-50%) translateX(8px); }
+}
+
+/* ==========================================================================
+   4. INVITATION TOAST & SYSTEM NOTIFICATIONS
+   ========================================================================== */
+.invitation-toast,
+#invitation-toast {
   position: fixed;
   bottom: 32px;
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--canvas-bg);
   color: var(--charcoal-txt);
-  padding: 24px 32px;
-  border-radius: 4px;
-  border-top: 3px solid var(--amber-gold);
-  box-shadow: 0 4px 20px rgba(212, 163, 115, 0.2);
-  width: 450px;
-  max-width: 90vw;
-  z-index: 100;
+  padding: 20px 28px;
+  border-radius: 6px;
+  border-top: 4px solid var(--amber-gold);
+  box-shadow: 0 12px 36px rgba(212, 163, 115, 0.25);
+  width: 440px;
+  max-width: 92vw;
+  z-index: 1050;
   display: none;
+  transition: var(--transition-smooth);
 }
 
-.invitation-toast p {
+.invitation-toast p,
+#invitation-toast p {
   margin: 0 0 16px 0;
   font-size: 0.95rem;
   line-height: 1.5;
@@ -182,24 +233,28 @@ h1, h2, h3, .literary-font {
   gap: 12px;
 }
 
-.btn-accept, .btn-dismiss {
+.btn-accept, .btn-dismiss,
+#toast-accept-btn, .btn-dismiss {
   font-family: 'Inter', sans-serif;
-  padding: 8px 16px;
-  border-radius: 2px;
+  padding: 10px 18px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: var(--transition-smooth);
   font-size: 0.9rem;
+  font-weight: 500;
   border: 1px solid var(--sage-divider);
 }
 
-.btn-accept {
+.btn-accept,
+#toast-accept-btn {
   background-color: var(--amber-gold);
   border-color: var(--amber-gold);
-  color: white;
+  color: var(--canvas-bg);
 }
 
-.btn-accept:hover {
-  box-shadow: 0 2px 8px rgba(212, 163, 115, 0.3);
+.btn-accept:hover,
+#toast-accept-btn:hover {
+  box-shadow: 0 4px 12px rgba(212, 163, 115, 0.4);
   transform: translateY(-1px);
 }
 
@@ -210,57 +265,61 @@ h1, h2, h3, .literary-font {
 
 .btn-dismiss:hover {
   background-color: var(--canvas-bg);
-  box-shadow: 0 2px 8px rgba(212, 163, 115, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* Hotspot Label (on hover) */
-.hotspot-label {
-  position: fixed;
-  background-color: rgba(253, 251, 247, 0.95);
-  color: var(--charcoal-txt);
-  padding: 8px 12px;
-  border-radius: 4px;
-  border: 1px solid var(--sage-divider);
-  font-size: 0.85rem;
-  z-index: 50;
-  pointer-events: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  white-space: nowrap;
-}
-
-/* Pannellum Custom Hotspot Styling */
+/* ==========================================================================
+   5. PANNELLUM CUSTOM HOTSPOT INTERFACE CASCADE OVERRIDES
+   ========================================================================== */
 .pnlm-hotspot {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  transition: all 0.3s ease !important;
   cursor: pointer !important;
 }
 
+/* Enforce defensive centering coordinates for Pannellum viewport nodes */
 .library-custom-hotspot {
-  width: 40px !important;
-  height: 40px !important;
-  background-color: rgba(212, 163, 115, 0.3) !important;
+  width: 32px !important;
+  height: 32px !important;
+  margin-top: -16px !important;
+  margin-left: -16px !important;
+  background-color: rgba(253, 251, 247, 0.85) !important;
   border: 2px solid var(--amber-gold) !important;
   border-radius: 50% !important;
-  cursor: pointer !important;
-  transition: all 0.3s ease !important;
+  transition: var(--transition-smooth) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
 }
 
 .library-custom-hotspot:hover {
-  transform: scale(1.3) !important;
-  background-color: rgba(212, 163, 115, 0.5) !important;
-  box-shadow: 0 0 12px rgba(212, 163, 115, 0.4) !important;
+  transform: scale(1.25) !important;
+  background-color: var(--canvas-bg) !important;
+  box-shadow: 0 0 16px rgba(212, 163, 115, 0.6) !important;
 }
 
-/* Badge constellation overlays */
+/* Native Pannellum Hotspot Custom Tooltip Class overrides */
+.library-custom-hotspot .pnlm-tooltip-text {
+  font-family: 'Inter', sans-serif !important;
+  background-color: rgba(43, 43, 43, 0.94) !important;
+  color: var(--canvas-bg) !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 6px 10px !important;
+  font-size: 0.8rem !important;
+  letter-spacing: 0.01em !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ==========================================================================
+   6. BADGE CONSTELLATION OVERLAYS & LAYERS
+   ========================================================================== */
 .badge-constellation {
   position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
-  z-index: 8;
+  z-index: 1008;
   pointer-events: none;
 }
 
@@ -273,27 +332,30 @@ h1, h2, h3, .literary-font {
   border-radius: 50%;
   cursor: pointer;
   pointer-events: auto;
-  transition: all 0.2s ease;
+  transition: var(--transition-smooth);
   transform: translate(-50%, -50%);
-  z-index: 9;
+  z-index: 1009;
 }
 
 .badge-marker:hover {
-  transform: translate(-50%, -50%) scale(1.4);
+  transform: translate(-50%, -50%) scale(1.35);
   background-color: rgba(212, 163, 115, 0.7);
-  box-shadow: 0 0 12px rgba(212, 163, 115, 0.5);
+  box-shadow: 0 0 14px rgba(212, 163, 115, 0.6);
 }
 
 .badge-label {
   position: absolute;
-  background-color: var(--module-bg);
+  background-color: rgba(253, 251, 247, 0.98);
   color: var(--charcoal-txt);
-  padding: 4px 8px;
-  border-radius: 2px;
+  padding: 6px 10px;
+  border-radius: 4px;
   font-size: 0.75rem;
+  font-weight: 500;
   white-space: nowrap;
   display: none;
   border: 1px solid var(--sage-divider);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
 }
 
 .badge-marker:hover + .badge-label {

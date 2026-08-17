@@ -70,11 +70,16 @@ const libraryRegistry = [
     "seriesName": "Badge & Progression Sync",
     "shelfCoordinate": { "pitch": 11.5, "yaw": 118.0 },
     "targetUrl": "welcome.html",
+    /* 
+       Calibrated Badge Spherical Array:
+       Converted from raw 2D pixel coordinates into absolute spherical metrics 
+       revolving cleanly around the Poster Base Coordinate center anchor point.
+    */
     "badgeLocations": [
-      { "id": "muffin01", "x": 15, "y": 20, "label": "First Post" },
-      { "id": "muffin02", "x": 45, "y": 30, "label": "Writer's Spark" },
-      { "id": "muffin03", "x": 75, "y": 45, "label": "Consistency" },
-      { "id": "muffin04", "x": 50, "y": 60, "label": "Muffin's Legacy" }
+      { "id": "muffin01", "pitch": 14.0, "yaw": 114.5, "label": "First Post" },
+      { "id": "muffin02", "pitch": 12.5, "yaw": 117.5, "label": "Writer's Spark" },
+      { "id": "muffin03", "pitch": 10.0, "yaw": 120.5, "label": "Consistency" },
+      { "id": "muffin04", "pitch": 8.5,  "yaw": 118.0, "label": "Muffin's Legacy" }
     ]
   }
 ];

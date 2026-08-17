@@ -9,13 +9,13 @@
 <meta property="og:image" content="images/site/social-share.jpg">
 <link rel="icon" href="images/site/favicon.ico">
 <link rel="apple-touch-icon" href="images/site/favicon-180.png">
-<link rel="preconnect" href="https://googleapis.com">
-<link href="https://googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
-<!-- Mailchimp Validation Stylesheet -->
-<link href="//://mailchimp.com" rel="stylesheet" type="text/css">
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <header class="site-header">
   <div class="container">
@@ -37,9 +37,10 @@
     </nav>
   </div>
 </header>
+<main id="main-content">
 
 <section class="container" style="text-align:center; padding:3.5rem 1.5rem;">
-  <img src="images/fiction/fiction-coming-soon.jpg" alt="The Ties That Tear, coming soon" style="max-width:500px; margin:0 auto;">
+  <img src="images/fiction/fiction-coming-soon.jpg" loading="lazy" alt="The Ties That Tear, coming soon" style="max-width:500px; margin:0 auto;">
   
   <div style="max-width:38em; margin:2.5rem auto 0; text-align: center; line-height: 1.6;">
     <h1 style="font-family: 'Poppins', sans-serif; font-size: 2.2rem; text-align: center; margin-bottom: 0.5rem;">The past doesn't stay buried. It stays knotted.</h1>
@@ -53,7 +54,7 @@
 
     <!-- Book 1 Working Cover Artwork -->
     <div style="margin: 2.5rem auto; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border-radius: 4px; overflow: hidden;">
-      <img src="images/fiction/ttt1.1-working-cover1.png" alt="The Ties That Tear Book 1 Working Cover Art" style="width: 100%; height: auto; display: block;">
+      <img src="images/fiction/ttt1.1-working-cover1.png" loading="lazy" alt="The Ties That Tear Book 1 Working Cover Art" style="width: 100%; height: auto; display: block;">
     </div>
 
     <h2 style="font-family: 'Poppins', sans-serif; font-size: 1.4rem; margin-top: 2rem; margin-bottom: 0.75rem;">What to expect in Book 1:</h2>
@@ -72,7 +73,7 @@
       <p style="font-size: 0.95rem; color: #666; margin-bottom: 1.5rem;">Sign up to get updates, release alerts, and exclusive behind-the-scenes content.</p>
       
       <div id="mc_embed_signup">
-        <form action="https://list-manage.com" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+        <form action="https://list-manage.com/subscribe/post" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
           <div id="mc_embed_signup_scroll" style="text-align: center;">
             
             <div class="mc-field-group" style="margin-bottom: 1rem; text-align: center;">
@@ -108,28 +109,17 @@
   </div>
 </section>
 
+</main>
 <footer class="site-footer">
   <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
 </footer>
 
-<!-- Mailchimp Validation JavaScript scripts -->
-<script type="text/javascript" src="//://amazonaws.com"></script>
+<!-- Mailchimp validation (vanilla JS — no jQuery dependency) -->
 <script type="text/javascript">
-  (function($) {
-    window.fnames = new Array(); 
-    window.ftypes = new Array();
-    window.fnames='EMAIL';
-    window.ftypes='email';
-    window.fnames='FNAME';
-    window.ftypes='text';
-    window.fnames='LNAME';
-    window.ftypes='text';
-    window.fnames='ADDRESS';
-    window.ftypes='address';
-    window.fnames='PHONE';
-    window.ftypes='phone';
-  }(jQuery));
-  var $mcj = jQuery.noConflict(true);
+  (function() {
+    window.fnames = ['EMAIL', 'FNAME', 'LNAME', 'ADDRESS', 'PHONE'];
+    window.ftypes = ['email', 'text', 'text', 'address', 'phone'];
+  }());
 </script>
 <script src="js/main.js"></script>
 </body>

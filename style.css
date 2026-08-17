@@ -94,7 +94,7 @@ h1, h2, h3, .literary-font {
 
 #card-catalog-drawer.minimized {
   width: auto;
-  max-height: auto;
+  max-height: none;
 }
 
 #card-catalog-drawer.minimized .catalog-select {

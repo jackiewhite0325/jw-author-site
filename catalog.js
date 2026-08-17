@@ -1,5 +1,5 @@
 /* ==========================================================================
-   1. Data Collection & Global State Management
+   1. Data Collection & Global State Engine
    ========================================================================== */
 const libraryMasterCatalog = [
   { elementId: "i_finally_wrote_it", targetUrl: "fiction.html", shelfCoordinate: { pitch: -3.5, yaw: -52.0 }, dewey: "808.02" },
@@ -16,14 +16,16 @@ let diagnosticTimer = null;
 let roomViewer = null;
 
 window.setStaticMode = function(enabled) {
-  if (enabled) {
-    if (diagnosticTimer) clearTimeout(diagnosticTimer);
-    const container = document.getElementById('panorama-container');
-    if (container) {
-      container.innerHTML = '<div style="color:var(--ink); padding:20px; background:var(--paper); height:100%;">Basic Text Layout Active.</div>';
-    }
+  if (!enabled) return;
+  if (diagnosticTimer) clearTimeout(diagnosticTimer);
+  const container = document.getElementById('panorama-container');
+  if (container) {
+    container.innerHTML = '<div style="color:var(--ink); padding:20px; background:var(--paper); height:100%;">Basic Text Layout Active.</div>';
+    document.getElementById('a11y-fallback-banner')?.remove();
+    document.getElementById('panorama-loading-spinner')?.remove();
   }
 };
+
 
 /* ==========================================================================
    2. DOM Viewport Engineering & Diagnostic Timers
@@ -64,7 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 4500);
 
   initializeViewer(container);
+  initializeUIComponents();
 });
+
 
 /* ==========================================================================
    3. WebGL Room Viewer & Custom Interactive Hotspots
@@ -118,31 +122,36 @@ function clearLoadingIndicators() {
   if (banner) banner.remove();
 }
 
-// Wire up the Interactive Menu Select Elements
-const selectMenu = document.getElementById('catalog-search-select');
-if (selectMenu) {
-  libraryMasterCatalog.forEach(item => {
-    const opt = document.createElement('option');
-    opt.value = item.targetUrl;
-    opt.textContent = `Dewey ${item.dewey} : ${item.elementId.replace(/_/g, ' ')}`;
-    selectMenu.appendChild(opt);
-  });
+function initializeUIComponents() {
+  // Wire up the Interactive Menu Select Elements safely within DOM cycle
+  const selectMenu = document.getElementById('catalog-search-select');
+  if (selectMenu) {
+    libraryMasterCatalog.forEach(item => {
+      const opt = document.createElement('option');
+      opt.value = item.targetUrl;
+      opt.textContent = `Dewey ${item.dewey} : ${item.elementId.replace(/_/g, ' ')}`;
+      selectMenu.appendChild(opt);
+    });
 
-  selectMenu.addEventListener('change', (e) => {
-    if (e.target.value) {
-      window.location.href = e.target.value;
-    }
-  });
+    selectMenu.addEventListener('change', (e) => {
+      if (e.target.value) {
+        window.location.href = e.target.value;
+      }
+    });
+  }
+
+  // Wire up the Drawer Close Minimization Actions safely within DOM cycle
+  const toggleBtn = document.getElementById('catalog-toggle-btn');
+  const drawerPanel = document.getElementById('card-catalog-drawer');
+  if (toggleBtn && drawerPanel) {
+    toggleBtn.addEventListener('click', () => {
+      const isMinimized = drawerPanel.classList.toggle('minimized');
+      toggleBtn.textContent = isMinimized ? '+' : '−';
+      toggleBtn.setAttribute('aria-label', isMinimized ? 'Expand catalog window' : 'Minimize catalog window');
+    });
+  }
 }
 
-// Wire up the Drawer Close Minimization Actions
-const toggleBtn = document.getElementById('catalog-toggle-btn');
-const drawerPanel = document.getElementById('card-catalog-drawer');
-if (toggleBtn && drawerPanel) {
-  toggleBtn.addEventListener('click', () => {
-    const isMinimized = drawerPanel.classList.toggle('minimized');
-    toggleBtn.textContent = isMinimized ? '+' : '−';
-    toggleBtn.setAttribute('aria-label', isMinimized ? 'Expand catalog window' : 'Minimize catalog window');
-  });
-}
+
+
 

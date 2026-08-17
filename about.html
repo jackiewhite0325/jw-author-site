@@ -1,39 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About | J. White</title>
-<meta name="description" content="Meet J. White, author of the Muffin the Pitbull Puppy series and other books from Sigil and Scribe.">
-<meta property="og:title" content="About | J. White">
-<meta property="og:image" content="images/site/social-share.jpg">
-<link rel="icon" href="images/site/favicon.ico">
-<link rel="apple-touch-icon" href="images/site/favicon-180.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About | J. White</title>
+  <meta name="description" content="Meet J. White, author of the Muffin the Pitbull Puppy series and other books from Sigil and Scribe.">
+  
+  <!-- Open Graph Social Protocol Configurations -->
+  <meta property="og:title" content="About | J. White">
+  <meta property="og:image" content="images/site/social-share.jpg">
+  
+  <!-- Favicon Configurations -->
+  <link rel="icon" href="images/site/favicon.ico">
+  <link rel="apple-touch-icon" href="images/site/favicon-180.png">
+  
+  <!-- Global Typography Font Sync -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  
+  <!-- Core Design Application Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <style>
+    /* About Workspace Page Specific Component Style Hooks */
+    .author-portrait-wrap {
+      text-align: center; 
+      padding-top: 4rem;
+      padding-bottom: 2rem;
+    }
+    
+    .author-portrait-wrap img {
+      max-width: 220px; 
+      width: 100%;
+      height: auto;
+      border-radius: 50%; 
+      margin: 0 auto; 
+      border: 4px solid var(--amber, #D4A373);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+      display: block;
+      object-fit: cover;
+    }
+    
+    .author-portrait-wrap h1 {
+      margin-top: 1.75rem;
+      font-size: clamp(1.85rem, 5vw, 2.75rem);
+    }
+    
+    .author-biography {
+      max-width: 700px; 
+      margin: 0 auto;
+      text-align: center; 
+      padding: 0 1.5rem 4rem;
+    }
+    
+    .author-biography p {
+      margin: 0 0 1.5rem 0;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      opacity: 0.9;
+    }
+    
+    .author-biography p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .biography-highlight-box {
+      background-color: var(--mist, #F2F5F3);
+      border-left: 4px solid var(--amber, #D4A373);
+      padding: 1.25rem 1.75rem;
+      border-radius: 0 6px 6px 0;
+      text-align: left;
+      margin: 2rem 0;
+    }
+    
+    .biography-highlight-box p {
+      margin: 0;
+      font-style: italic;
+    }
+  </style>
 </head>
 <body>
-<a href="#main-content" class="skip-link">Skip to main content</a>
 
-<header class="site-header">
-  <div class="container">
-    <a href="index.html" class="logo-link">
-      <img src="images/site/logo-banner.png" alt="J. White, Sigil and Scribe">
-    </a>
-    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
-    <nav class="site-nav">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="children.html">Children's Books</a></li>
-        <li><a href="health-wellness.html">Health &amp; Wellness</a></li>
-        <li><a href="more-books.html">More Books</a></li>
-        <li><a href="fiction.html">Fiction</a></li>
-        <li><a href="muffin-memorial.html">Muffin's Memorial</a></li>
-        <li><a href="about.html" class="active">About</a></li>
-        <li><a href="blog.html">Blog</a></li>
-      </ul>
+  <!-- Accessible Navigation Skip Target Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Global Application Site Header Context -->
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="logo-link">
+        <img src="images/site/logo-banner.png" alt="J. White, Sigil and Scribe">
+      </a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="children.html">Children's Books</a></li>
+          <li><a href="health-wellness.html">Health &amp; Wellness</a></li>
+          <li><a href="more-books.html">More Books</a></li>
+          <li><a href="fiction.html">Fiction</a></li>
+          <li><a href="muffin-memorial.html">Muffin's Memorial</a></li>
+          <li><a href="about.html" class="active">About</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Central Payload Document Workspace -->
+  <main id="main-content">
+    
+    <section class="container author-portrait-wrap">
+      <img src="images/site/author-portrait.jpg" alt="Portrait of J. White">
+      <h1>About J. White</h1>
+    </section>
+      
+    <section class="container author-biography">
+      <p>
+        J. White writes picture books for kids whose bodies and feelings work a little
+        differently, and for the grown-ups who love them. The Muffin Series (26 books and
+        counting) grew out of the real Muffin, a rescued pitbull with a masked face and a
+        seizure disorder, who taught her that asking for help is brave and that a body which
+        works differently is still a wonderful body.
+      </p>
+      
+      <div class="biography-highlight-box">
+        <p>
+          A portion of every Muffin Series sale goes directly to support the ongoing medical missions of St. Jude Children's Research Hospital.
+        </p>
+      </div>
+      
+      <p>
+        J. White is also the author of <em>Don't Quote Me: Smart Mouths</em>, <em>Axolotl Dreams: A
+        Coloring Journey</em>, <em>The Bingo Card of Chronic Illness</em>, and <em>The Many Faces of Grace</em>.
+      </p>
+    </section>
+
+  </main>
+
+  <!-- Universal Footer Element -->
+  <footer class="site-footer">
+    <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
+  </footer>
+
+  <!-- Site Disclosure Navigation Script Logic Execution Layer -->
+  <script src="js/main.js"></script>
+</body>
+</html>
     </nav>
   </div>
 </header>

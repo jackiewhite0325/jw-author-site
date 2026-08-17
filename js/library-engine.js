@@ -98,3 +98,15 @@ document.getElementById('catalogSearch').addEventListener('input', function(e) {
         resultsContainer.appendChild(item);
     });
 });
+// Handles the mobile menu button toggle safely without breaking the 3D room canvas
+document.addEventListener('DOMContentLoaded', () => {
+    const navToggle = document.querySelector('.nav-toggle');
+    const siteNav = document.querySelector('.site-nav');
+
+    if (navToggle && siteNav) {
+        navToggle.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            siteNav.classList.toggle('open');
+        });
+    }
+});

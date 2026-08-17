@@ -6,34 +6,34 @@ const libraryRegistry = [
     "deweyClassification": "808.02",
     "seriesName": "The Writer's Toolbox Series, Vol. 1",
     "shelfCoordinate": { "pitch": -3.5, "yaw": -52.0 },
-    "targetUrl": "write/index.html"
+    "targetUrl": "fiction.html"
   },
   {
     "id": "partner_book_placeholder",
-    "title": "Untitled Gothic Mystery",
-    "authorName": "Partner Author",
+    "title": "More Books & Fiction",
+    "authorName": "Sigil & Scribe LLC",
     "deweyClassification": "813.6",
-    "seriesName": "Ink & Key Chronicles, Vol. 1",
+    "seriesName": "Literary Collections",
     "shelfCoordinate": { "pitch": -8.2, "yaw": -24.0 },
-    "targetUrl": "books/gothic-mystery/index.html"
+    "targetUrl": "more-books.html"
   },
   {
     "id": "kids_corner_anchor",
-    "title": "Children's Reading Tub",
+    "title": "Children's Stories",
     "authorName": "Sigil & Scribe LLC",
     "deweyClassification": "808.83",
     "seriesName": "Kids' Corner Catalog",
     "shelfCoordinate": { "pitch": -16.5, "yaw": -125.0 },
-    "targetUrl": "kids/index.html"
+    "targetUrl": "children.html"
   },
   {
     "id": "meditation_space_anchor",
-    "title": "Author Wellness & Meditation",
+    "title": "Health & Wellness",
     "authorName": "Sigil & Scribe LLC",
     "deweyClassification": "158.12",
     "seriesName": "Writer Mindset & Relaxation",
     "shelfCoordinate": { "pitch": -6.0, "yaw": 58.5 },
-    "targetUrl": "wellness/index.html"
+    "targetUrl": "health-wellness.html"
   },
   {
     "id": "librarians_desk_papers",
@@ -42,7 +42,7 @@ const libraryRegistry = [
     "deweyClassification": "027.1",
     "seriesName": "Business Foundations",
     "shelfCoordinate": { "pitch": -17.0, "yaw": 14.5 },
-    "targetUrl": "about/index.html"
+    "targetUrl": "about.html"
   },
   {
     "id": "librarians_desk_typewriter",
@@ -51,7 +51,7 @@ const libraryRegistry = [
     "deweyClassification": "070.41",
     "seriesName": "Community Announcements",
     "shelfCoordinate": { "pitch": -14.5, "yaw": -1.5 },
-    "targetUrl": "blog/index.html"
+    "targetUrl": "blog.html"
   },
   {
     "id": "muffins_memorial_portrait",
@@ -60,21 +60,21 @@ const libraryRegistry = [
     "deweyClassification": "636.7",
     "seriesName": "Site Foundations",
     "shelfCoordinate": { "pitch": 13.0, "yaw": -138.5 },
-    "targetUrl": "memorial.html"
+    "targetUrl": "muffin-memorial.html"
   },
   {
     "id": "muffins_constellation_poster",
-    "title": "The Muffin Constellation Chart",
+    "title": "Coming Soon",
     "authorName": "Achievement Engine",
     "deweyClassification": "523.8",
     "seriesName": "Badge & Progression Sync",
     "shelfCoordinate": { "pitch": 11.5, "yaw": 118.0 },
-    "targetUrl": "badges/index.html",
+    "targetUrl": "welcome.html",
     "badgeLocations": [
       { "id": "muffin01", "x": 15, "y": 20, "label": "First Post" },
       { "id": "muffin02", "x": 45, "y": 30, "label": "Writer's Spark" },
       { "id": "muffin03", "x": 75, "y": 45, "label": "Consistency" },
-      { "id": "muffin04", "x": -138.5, "y": 11.5, "label": "Muffin's Legacy" }
+      { "id": "muffin04", "x": 50, "y": 60, "label": "Muffin's Legacy" }
     ]
   }
 ];

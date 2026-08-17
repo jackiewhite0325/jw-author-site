@@ -13,72 +13,67 @@ window.addEventListener('DOMContentLoaded', () => {
     "autoRotate": -0.5
   });
 
-  // 2. Loop and Add Hotspots Programmatically from catalog.js Database Source
+  // 2. Add Hotspots Programmatically from catalog.js Database Source
   roomViewer.on('load', () => {
-    libraryRegistry.forEach((item, index) => {
-      // Use 'info' type to prevent Pannellum's default URL handling
-      roomViewer.addHotSpot({
-        "pitch": item.shelfCoordinate.pitch,
-        "yaw": item.shelfCoordinate.yaw,
-        "type": "info",
-        "text": `[Dewey ${item.deweyClassification}] ${item.title}`,
-        "cssClass": "library-custom-hotspot"
-      }, index);
-    });
+    if (typeof libraryRegistry !== 'undefined') {
+      libraryRegistry.forEach((item, index) => {
+        roomViewer.addHotSpot({
+          "pitch": item.shelfCoordinate.pitch,
+          "yaw": item.shelfCoordinate.yaw,
+          "type": "info",
+          "text": `[Dewey ${item.deweyClassification}] ${item.title}`,
+          "cssClass": "library-custom-hotspot",
+          // Pass identification parameters cleanly into the hotspot's data context
+          "createTooltipFunc": (hotspotElement) => {
+            hotspotElement.setAttribute('data-registry-id', item.id);
+            hotspotElement.setAttribute('data-registry-index', index);
+          }
+        });
+      });
+    }
     
-    // Render badge constellation for muffin poster
     renderBadgeConstellation();
     populateSelectorDropdown();
     setupHotspotClickHandling();
   });
 
-  // 3. Setup catalog minimize button
+  // 3. Setup catalog minimize button state toggles
   const minimizeBtn = document.getElementById('catalog-toggle-btn');
   const catalogDrawer = document.getElementById('card-catalog-drawer');
-  if (minimizeBtn) {
+  if (minimizeBtn && catalogDrawer) {
     minimizeBtn.addEventListener('click', () => {
       catalogDrawer.classList.toggle('minimized');
+      const isMinimized = catalogDrawer.classList.contains('minimized');
+      minimizeBtn.setAttribute('aria-label', isMinimized ? 'Expand catalog window' : 'Minimize catalog window');
+      minimizeBtn.textContent = isMinimized ? '+' : '−';
     });
   }
 });
 
+// Refactored to map natively into Pannellum coordinates instead of static canvas space
 function renderBadgeConstellation() {
-  const muffinItem = libraryRegistry.find(i => i.id === 'muffins_constellation_poster');
+  const muffinItem = typeof libraryRegistry !== 'undefined' ? libraryRegistry.find(i => i.id === 'muffins_constellation_poster') : null;
   if (!muffinItem || !muffinItem.badgeLocations) return;
 
-  const container = document.getElementById('panorama-container');
-  const constellationDiv = document.createElement('div');
-  constellationDiv.className = 'badge-constellation';
-  constellationDiv.id = 'badge-constellation-overlay';
-
   muffinItem.badgeLocations.forEach(badge => {
-    const marker = document.createElement('div');
-    marker.className = 'badge-marker';
-    marker.id = `badge-${badge.id}`;
-    marker.title = badge.label;
-    marker.style.left = badge.x + '%';
-    marker.style.top = badge.y + '%';
-
-    const label = document.createElement('div');
-    label.className = 'badge-label';
-    label.textContent = badge.label;
-
-    constellationDiv.appendChild(marker);
-    constellationDiv.appendChild(label);
-
-    marker.addEventListener('click', () => {
-      if (muffinItem.targetUrl) {
-        window.location.href = muffinItem.targetUrl + `?badge=${badge.id}`;
+    roomViewer.addHotSpot({
+      "pitch": badge.pitch, // Ensure database definitions are converted to pitch/yaw
+      "yaw": badge.yaw,
+      "type": "info",
+      "text": badge.label,
+      "cssClass": "badge-marker-hotspot",
+      "createTooltipFunc": (hotspotElement) => {
+        hotspotElement.addEventListener('click', () => {
+          window.location.href = `${muffinItem.targetUrl}?badge=${badge.id}`;
+        });
       }
     });
   });
-
-  container.appendChild(constellationDiv);
 }
 
 function populateSelectorDropdown() {
   const selector = document.getElementById('catalog-search-select');
-  if (!selector) return;
+  if (!selector || typeof libraryRegistry === 'undefined') return;
   
   libraryRegistry.forEach(item => {
     const opt = document.createElement('option');
@@ -88,25 +83,18 @@ function populateSelectorDropdown() {
   });
 }
 
-// Handle direct clicking on hotspots in the panorama
+// Rewritten target execution utilizing data attribute mappings safely
 function setupHotspotClickHandling() {
   const container = document.getElementById('panorama-container');
   if (!container) return;
 
   container.addEventListener('click', (e) => {
-    // Check if click target is a hotspot
     const hotspot = e.target.closest('.pnlm-hotspot');
-    if (hotspot && hotspot.classList.contains('library-custom-hotspot')) {
-      // Find which item this hotspot belongs to by checking the text content
-      const hotspotText = hotspot.textContent || '';
-      
-      // Match against libraryRegistry to find the corresponding item
-      const matchedItem = libraryRegistry.find(item => 
-        hotspotText.includes(item.title) || hotspotText.includes(item.deweyClassification)
-      );
+    if (hotspot && hotspot.hasAttribute('data-registry-id')) {
+      const targetId = hotspot.getAttribute('data-registry-id');
+      const matchedItem = libraryRegistry.find(item => item.id === targetId);
       
       if (matchedItem && matchedItem.targetUrl) {
-        // Direct navigation on hotspot click
         window.location.href = matchedItem.targetUrl;
       }
     }
@@ -123,8 +111,30 @@ function targetCatalogItem(itemId) {
   const targetItem = libraryRegistry.find(i => i.id === itemId);
   if (!targetItem) return;
 
-  // Direct navigation from catalog
-  window.location.href = targetItem.targetUrl;
+  // Pan the camera perspective smoothly over to the target shelf location 
+  roomViewer.lookAt(targetItem.shelfCoordinate.pitch, targetItem.shelfCoordinate.yaw, 60, 1500, () => {
+    // Fire interactive shortcut invitation banner upon panning completion
+    triggerInvitationToast(targetItem);
+  });
+}
+
+function triggerInvitationToast(item) {
+  const toast = document.getElementById('invitation-toast');
+  const text = document.getElementById('invitation-text');
+  const acceptBtn = document.getElementById('toast-accept-btn');
+  
+  if (!toast || !text || !acceptBtn) return;
+  
+  text.textContent = `You discovered "${item.title}". Would you like to check it out?`;
+  toast.style.display = "block";
+  
+  // Clean off old target hooks before setting fresh instances
+  const newAcceptBtn = acceptBtn.cloneNode(true);
+  acceptBtn.parentNode.replaceChild(newAcceptBtn, acceptBtn);
+  
+  newAcceptBtn.addEventListener('click', () => {
+    window.location.href = item.targetUrl;
+  });
 }
 
 function dismissToast() {

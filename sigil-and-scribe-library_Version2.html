@@ -1,213 +1,761 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sigil and Scribe, LLC — The Library</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<style>
-  /* (styles omitted here for brevity in the preview - use the CSS you already have or the earlier CSS block) */
-  /* Keep the same CSS from your current page, including mobile-static styles and the responsive changes added earlier. */
-</style>
-</head>
-<body>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sigil and Scribe, LLC — The Library</title>
+  
+  <!-- Typography Fonts -->
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Pannellum 360 Core Stylesheets -->
+  <link rel="stylesheet" href="https://jsdelivr.net">
 
-  <div class="entrance">
+  <style>
+    /* ==========================================================================
+       1. SYSTEM VARIABLES & DESIGN TOKENS 
+       ========================================================================== */
+    :root {
+      --paper: #FDFBF7;
+      --mist: #F2F5F3;
+      --ink: #2B2B2B;
+      --amber: #D4A373;
+      --amber-deep: #B8874F;
+      --sage: #A3B19B;
+      --sage-deep: #7E8F76;
+      --walnut: #6B4A34;
+      --walnut-dark: #4A3324;
+      --walnut-deep: #38251A;
+      --card: #F7EFDD;
+      
+      --transition-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+      --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; width: 100%; }
+
+    body {
+      background: radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.08), transparent 55%), var(--paper);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    ::selection { background: var(--amber); color: var(--paper); }
+    a { color: inherit; text-decoration: none; }
+
+    /* Accessibility Utilities */
+    .sr-only {
+      position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; clip-path: inset(50%);
+    }
+    .skip-link {
+      position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden;
+    }
+    .skip-link:focus {
+      left: 8px; top: 8px; width: auto; height: auto; background-color: var(--paper);
+      color: var(--ink); padding: 8px 12px; border-radius: 4px; z-index: 10010;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); outline: none;
+    }
+    :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+
+    /* Layout Toggle Utilities */
+    body.static-layout-enabled .interactive-element { display: none !important; }
+    body.interactive-layout-enabled .static-element { display: none !important; }
+
+    /* ==========================================================================
+       2. TYPOGRAPHIC ENTRANCE & BASE COMPONENTS
+       ========================================================================== */
+    .entrance { max-width: 1100px; margin: 0 auto; padding: 32px 24px 8px; text-align: center; }
+    .eyebrow {
+      font-family: 'Courier Prime', monospace; letter-spacing: 0.18em;
+      text-transform: uppercase; font-size: 12px; color: var(--walnut); opacity: 0.75;
+    }
+    .entrance h1 {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: clamp(28px, 5vw, 46px); margin: 8px 0 6px;
+    }
+    .entrance p {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 16px; color: #5b5b5b; max-width: 640px; margin: 0 auto;
+    }
+
+    .mobile-static {
+      display: block; position: relative; overflow: hidden; border-radius: 8px;
+      margin: 20px 16px 6px; max-width: 1100px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+    .mobile-static img { width: 100%; height: auto; display: block; object-fit: cover; }
+    .mobile-static-overlay {
+      position: absolute; left: 12px; right: 12px; bottom: 12px;
+      background: rgba(255, 255, 255, 0.95); padding: 16px; border-radius: 8px;
+    }
+    .mobile-static h2 { margin: 0 0 6px; font-family: 'Playfair Display', serif; font-size: 1.25rem; }
+    .mobile-static p { margin: 0 0 12px; color: #5b5b5b; font-size: 0.9rem; line-height: 1.4; }
+    .mobile-static-actions { display: flex; gap: 8px; }
+    
+    .btn {
+      font-family: 'Inter', sans-serif; padding: 10px 16px; border-radius: 4px;
+      cursor: pointer; font-size: 0.85rem; font-weight: 500; border: 1px solid var(--sage);
+      transition: var(--transition-smooth);
+    }
+    .btn-primary { background-color: var(--amber); border-color: var(--amber); color: var(--paper); }
+    .btn-primary:hover { background-color: var(--amber-deep); box-shadow: 0 4px 12px rgba(212,163,115,0.3); }
+    .btn-secondary { background-color: var(--mist); color: var(--ink); }
+    .btn-secondary:hover { background-color: var(--paper); }
+
+        /* ==========================================================================
+       3. STATIC LAYOUT DESIGN COMPONENTS
+       ========================================================================== */
+    .lectern-wrap { display: flex; justify-content: center; margin: 24px auto 8px; padding: 0 16px; }
+    .lectern {
+      position: relative; width: min(560px, 92vw); padding: 18px 22px 16px;
+      background: linear-gradient(180deg, #FBF6EC, #F3EAD6);
+      border: 1px solid rgba(107, 74, 52, 0.18); border-radius: 6px;
+      box-shadow: 0 12px 24px -12px rgba(74, 51, 36, 0.28);
+    }
+    .lectern-label {
+      font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--amber-deep); margin-bottom: 6px;
+    }
+    .lectern-prompt { font-family: 'Playfair Display', serif; font-size: 18px; line-height: 1.5; }
+    .lectern-note { margin-top: 8px; font-size: 12px; color: #8a8a8a; }
+
+    .wall { max-width: 1180px; margin: 26px auto 0; padding: 0 24px; }
+    .poster-frame {
+      display: flex; align-items: center; gap: 16px; padding: 14px 16px; cursor: pointer;
+      background: linear-gradient(180deg, #F4EEDF, #EAE0C9); border: 8px solid var(--walnut-dark);
+      border-radius: 4px; box-shadow: 0 18px 30px -18px rgba(74, 51, 36, 0.45);
+      transition: var(--transition-smooth); touch-action: manipulation;
+    }
+    .poster-frame:hover, .poster-frame:focus-visible {
+      transform: translateY(-2px); box-shadow: 0 22px 36px -20px rgba(74, 51, 36, 0.5); outline: none;
+    }
+    .poster-photo {
+      width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0; display: flex;
+      align-items: center; justify-content: center; color: var(--paper);
+      font-family: 'Playfair Display', serif; font-size: 22px; overflow: hidden;
+      background: linear-gradient(160deg, var(--amber), var(--sage-deep));
+    }
+    .poster-text h3 { font-family: 'Playfair Display', serif; margin: 0 0 4px; font-size: 18px; }
+    .poster-text p { margin: 0; font-size: 13px; color: #6b6b6b; line-height: 1.5; }
+    .poster-tag {
+      font-family: 'Courier Prime', monospace; font-size: 10px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--sage-deep); display: inline-block; margin-top: 4px;
+    }
+
+    .room { max-width: 1180px; margin: 34px auto 0; padding: 0 24px 20px; display: grid; grid-template-columns: 1fr; gap: 28px; align-items: start; }
+
+    /* Static Catalog Drawer Panels */
+    .catalog {
+      background: linear-gradient(180deg, var(--walnut) 0%, var(--walnut-dark) 100%);
+      border-radius: 6px; padding: 12px; box-shadow: 0 18px 32px -20px rgba(56, 37, 26, 0.45);
+    }
+    .catalog-title { font-family: 'Playfair Display', serif; color: var(--card); font-size: 15px; text-align: center; margin: 2px 0 6px; }
+    .catalog-sub { font-family: 'Courier Prime', monospace; color: rgba(243, 231, 208, 0.7); font-size: 10px; text-align: center; margin-bottom: 10px; }
+    .catalog-search {
+      width: 100%; padding: 9px 11px; border-radius: 4px; border: 1px solid rgba(0, 0, 0, 0.12);
+      font-family: 'Courier Prime', monospace; font-size: 13px; background: var(--card); color: var(--ink); margin-bottom: 8px;
+    }
+    .catalog-search:focus { outline: 2px solid var(--amber); outline-offset: 1px; }
+    
+    .drawers { display: flex; flex-direction: column; gap: 8px; }
+    .catalog-card {
+      background: var(--card); font-family: 'Courier Prime', monospace; font-size: 11.5px;
+      line-height: 1.5; border-radius: 3px; padding: 9px 10px; margin-bottom: 7px;
+      cursor: pointer; border: 1px solid rgba(107, 74, 52, 0.18); transition: var(--transition-smooth);
+      touch-action: manipulation; color: var(--ink); text-align: left; width: 100%; display: block;
+    }
+    .catalog-card:hover, .catalog-card:focus-visible { transform: translateX(3px); box-shadow: 0 4px 12px rgba(212, 163, 115, 0.28); outline: none; }
+    .catalog-card .cc-num { color: var(--amber-deep); font-weight: 700; margin-right: 4px; }
+    .catalog-card .cc-title { display: block; font-weight: 700; margin: 2px 0; }
+    .catalog-card .cc-author { display: block; font-style: italic; opacity: 0.75; margin-bottom: 2px; }
+
+    /* ==========================================================================
+       4. INTERACTIVE 360 LAYOUT COMPONENT OVERLAYS
+       ========================================================================== */
+    #library-viewport-wrapper { position: relative; width: 100vw; height: 80vh; min-height: 500px; margin-top: 20px; }
+    #panorama-container { width: 100%; height: 100%; position: relative; background-color: var(--mist); }
+
+    .card-catalog-drawer {
+      position: absolute; bottom: 24px; right: 24px; z-index: 1010;
+      background-color: var(--mist); border-radius: 4px; border: 1px solid var(--sage);
+      box-shadow: 0 10px 28px rgba(43, 43, 43, 0.18); width: 280px; max-width: 90vw;
+      transition: var(--transition-smooth); max-height: 320px; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .card-catalog-drawer.minimized { width: 180px; max-height: 44px; }
+    .card-catalog-drawer.minimized .catalog-select, 
+    .card-catalog-drawer.minimized #catalogResults { display: none !important; }
+
+    .catalog-header {
+      display: flex; justify-content: space-between; align-items: center; padding: 12px;
+      border-bottom: 1px solid var(--sage); flex-shrink: 0; background-color: rgba(43, 43, 43, 0.02);
+    }
+    .catalog-header h3 { margin: 0; font-size: 0.95rem; letter-spacing: 0.02em; }
+    .catalog-minimize-btn {
+      background: none; border: none; color: var(--ink); font-size: 1.2rem;
+      cursor: pointer; padding: 0; width: 24px; height: 24px; display: flex;
+      align-items: center; justify-content: center; transition: transform 0.2s ease;
+    }
+    .catalog-minimize-btn:hover { transform: scale(1.15); }
+
+    .catalog-select-wrapper { padding: 8px; border-bottom: 1px solid var(--sage); background-color: rgba(43,43,43,0.02); }
+    .catalog-select {
+      font-family: 'Inter', sans-serif; padding: 10px 12px; color: var(--ink);
+      background-color: var(--paper); border: none; width: 100%; cursor: pointer;
+      font-size: 0.85rem; outline: none; transition: background-color 0.2s ease;
+    }
+    .catalog-select:hover { background-color: rgba(212, 163, 115, 0.06); }
+    #catalogResults { overflow-y: auto; padding: 8px; flex-grow: 1; background-color: rgba(255,255,255,0.3); }
+
+    .nav-guide-arrow {
+      position: absolute; font-size: 48px; color: var(--amber);
+      text-shadow: 0 4px 14px rgba(212, 163, 115, 0.5); user-select: none; z-index: 1005;
+      display: none; top: 50%; transform: translateY(-50%);
+    }
+    #guide-arrow-left { left: 16px; animation: pointerFloatLeft 1.5s infinite ease-in-out; }
+    #guide-arrow-right { right: 16px; animation: pointerFloatRight 1.5s infinite ease-in-out; }
+    @keyframes pointerFloatLeft { 0%, 100% { transform: translateY(-50%) translateX(0); } 50% { transform: translateY(-50%) translateX(-6px); } }
+    @keyframes pointerFloatRight { 0%, 100% { transform: translateY(-50%) translateX(0); } 50% { transform: translateY(-50%) translateX(6px); } }
+
+    .invitation-toast {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background-color: var(--paper); color: var(--ink); padding: 16px 24px;
+      border-radius: 6px; border-top: 4px solid var(--amber); box-shadow: 0 12px 36px rgba(212, 163, 115, 0.25);
+      width: 420px; max-width: 92vw; z-index: 1050; display: none;
+    }
+    .invitation-toast p { margin: 0 0 12px 0; font-size: 0.9rem; line-height: 1.4; }
+    .toast-actions { display: flex; gap: 8px; }
+
+    .pnlm-hotspot { background: transparent !important; border: none !important; box-shadow: none !important; cursor: pointer !important; }
+    .library-custom-hotspot {
+      width: 32px !important; height: 32px !important; margin-top: -16px !important; margin-left: -16px !important;
+      background-color: rgba(253, 251, 247, 0.85) !important; border: 2px solid var(--amber) !important;
+      border-radius: 50% !important; transition: var(--transition-smooth) !important; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    }
+    .library-custom-hotspot:hover { transform: scale(1.2) !important; background-color: var(--paper) !important; box-shadow: 0 0 16px rgba(212, 163, 115, 0.6) !important; }
+    .library-custom-hotspot .pnlm-tooltip-text {
+      font-family: 'Inter', sans-serif !important; background-color: rgba(43, 43, 43, 0.96) !important;
+      color: var(--paper) !important; border: none !important; border-radius: 4px !important;
+      padding: 6px 10px !important; font-size: 0.8rem !important; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* ==========================================================================
+       5. PARCHMENT ARCHIVE DIALOG OVERLAYS & MEDIA RESPONSIVENESS
+       ========================================================================== */
+    .parchment-modal {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background-color: rgba(43, 43, 43, 0.4); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center; z-index: 2000;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease; padding: 16px;
+    }
+    .parchment-modal.modal-active { opacity: 1; pointer-events: auto; }
+    .modal-frame {
+      background-color: var(--paper); border: 1px solid var(--sage); border-radius: 6px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15); width: 540px; max-width: 100%;
+      padding: 28px; position: relative; background: linear-gradient(180deg, #FDFBF7, #F5F1E6);
+    }
+    .modal-frame h2 { margin: 0 0 12px 0; font-family: 'Playfair Display', serif; font-size: 1.5rem; border-bottom: 1px solid var(--sage); padding-bottom: 8px; }
+
+    .modal-body { font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #3b3b3b; margin-bottom: 20px; white-space: pre-line; }.modal-footer { display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--sage); padding-top: 14px; }@media (min-width: 768px) {.room { grid-template-columns: 300px 1fr; }.catalog { position: sticky; top: 20px; }#library-viewport-wrapper { height: 85vh; }}
+    <body class="interactive-layout-enabled">
+
+  <!-- Accessible Skip Navigation Anchor -->
+  <a href="#mainEntryFocusTarget" class="skip-link">Skip to library catalog view</a>
+
+  <!-- Hidden Live Region for Dynamic Screen Reader Feedback -->
+  <div id="siteAnnouncement" class="sr-only" aria-live="polite">Immersive panorama workspace enabled.</div>
+
+  <!-- Primary Header & Global Interface Switches -->
+  <header class="entrance">
     <div class="eyebrow">Sigil &amp; Scribe, LLC</div>
-    <h1>The Library</h1>
+    <h1 id="mainEntryFocusTarget">The Library</h1>
     <p>Every genre, every author under this roof. Wander the shelves, or ask the catalog.</p>
-  </div>
+    <div style="margin-top:14px;">
+      <button id="staticModeBtn" class="btn btn-secondary interactive-element" aria-label="Switch to accessible standard layout list">Use Basic Text Layout</button>
+      <button id="exitStaticBtn" class="btn btn-secondary static-element" aria-label="Switch back to standard graphics rendering workspace">Use Graphics Workspace</button>
+    </div>
+  </header>
 
-  <!-- Mobile-static hero (high-perceived-quality yet optimized) -->
-  <div class="mobile-static" id="mobileStaticHero" aria-hidden="true">
-    <picture>
-      <source type="image/webp" srcset="images/library-480.webp 480w, images/library-900.webp 900w" sizes="(max-width:720px) 480px, 900px">
-      <img src="images/library-480.jpg" alt="Illustration of the Sigil & Scribe library interior" loading="lazy" width="1200" height="480">
-    </picture>
-    <div class="mobile-static-overlay">
-      <h2>The Library</h2>
-      <p>Browse the catalog or try the immersive 360 view when you're ready.</p>
-      <div class="mobile-static-actions">
-        <button id="mobileTry360" class="btn btn-primary" aria-label="Try the immersive 360 view">Try 360 View</button>
-        <button id="mobileCatalogBtn" class="btn btn-secondary" aria-label="Open the catalog">Open Catalog</button>
+  <!-- ==========================================================================
+     LAYOUT SEGMENT A: STATIC ACCESSIBLE READBACK (Fallback Interface View)
+     ========================================================================== -->
+  <main class="static-element">
+    <div class="mobile-static" id="mobileStaticHero" aria-hidden="true">
+      <picture>
+        <source type="image/webp" srcset="images/library-480.webp 480w, images/library-900.webp 900w" sizes="(max-width:720px) 480px, 900px">
+        <img src="images/library-480.jpg" alt="Illustration of the Sigil & Scribe library interior" loading="lazy" width="1200" height="480">
+      </picture>
+      <div class="mobile-static-overlay">
+        <h2>Static Reading Mode</h2>
+        <p>Browsing a standard structured breakdown of all active registry items.</p>
+      </div>
+    </div>
+
+    <div class="lectern-wrap">
+      <div class="lectern">
+        <div class="lectern-label">The Library Desk</div>
+        <div class="lectern-prompt" id="openAbout" role="button" tabindex="0">Review Desk Papers &amp; About Files &rarr;</div>
+        <div class="lectern-note">Clicking shifts focus straight to archival biography document arrays.</div>
+      </div>
+    </div>
+
+    <div class="wall">
+      <div class="poster-frame" id="memorialPoster" role="button" tabindex="0">
+        <div class="poster-photo">M</div>
+        <div class="poster-text">
+          <h3>Muffin's Constellation</h3>
+          <p>Review the puppy memorial board and tracking badge locations.</p>
+          <span class="poster-tag">Children's Memorial</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="room">
+      <div class="catalog">
+        <div class="catalog-title">Archive Catalog Box</div>
+        <div class="catalog-sub">Sigil &amp; Scribe Registries</div>
+        <input type="text" id="staticSearchInput" class="catalog-search" placeholder="Type query filter values..." aria-label="Filter database list records">
+        <div class="drawers" id="staticCatalogContainer">
+          <!-- Populated dynamically by script engine pipeline -->
+        </div>
+      </div>
+      
+      <div class="lectern" style="width:100%;">
+        <div class="lectern-label">Workspace Writing Engine Desk</div>
+        <div class="lectern-prompt" id="openBlog" role="button" tabindex="0">Examine Typewriter Blog Feeds &rarr;</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+     LAYOUT SEGMENT B: IMMERSIVE 360 WORKSPACE (Primary Graphic Interactive View)
+     ========================================================================== -->
+  <main class="interactive-element">
+    <div id="library-viewport-wrapper">
+      <!-- Native Pannellum Element Mount Target -->
+      <div id="panorama-container"></div>
+
+      <!-- Directional Navigation Pulse Arrows -->
+      <div id="guide-arrow-left" class="nav-guide-arrow" aria-hidden="true">&lsquo;</div>
+      <div id="guide-arrow-right" class="nav-guide-arrow" aria-hidden="true">&rsquo;</div>
+
+      <!-- Desk Overlay Panel File Catalog -->
+      <div class="card-catalog-drawer" id="cardCatalogDrawer" aria-hidden="false">
+        <div class="catalog-header">
+          <h3>Card Catalog</h3>
+          <button id="catalog-toggle-btn" class="catalog-minimize-btn" aria-label="Minimize catalog panel">&minus;</button>
+        </div>
+        <div class="catalog-select-wrapper">
+          <select id="catalog-search-select" class="catalog-select" aria-label="Quick jump focus view selectors">
+            <option value="">Select a shelf volume...</option>
+          </select>
+        </div>
+        <div class="catalog-select-wrapper" style="border-bottom:none;">
+          <input type="text" id="catalogSearch" class="catalog-search" style="margin-bottom:0;" placeholder="Search catalog cards..." aria-label="Filter catalog cards">
+        </div>
+        <div id="catalogResults">
+          <!-- Populated dynamically by script engine pipeline -->
+        </div>
+      </div>
+
+      <!-- Targeted Discovery Toast Banner -->
+      <div class="invitation-toast" id="invitation-toast" aria-hidden="true">
+        <p id="invitation-text">You targeted a volume shelf marker.</p>
+        <div class="toast-actions">
+          <button id="toast-accept-btn" class="btn btn-primary">Check it out</button>
+          <button class="btn btn-dismiss" onclick="dismissToast()">Return to room</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+     LAYOUT SEGMENT C: PARCHMENT DOCUMENT DISPLAY MODAL (Shared Archive Dialog)
+     ========================================================================== -->
+  <div class="parchment-modal" id="parchmentModal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
+    <div class="modal-frame">
+      <h2 id="modalTitle">Parchment Record</h2>
+      <div class="modal-body" id="modalContent">
+        Loading requested record parameters safely...
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary close-btn" aria-label="Close document viewport panel">Back to Library</button>
       </div>
     </div>
   </div>
 
-  <!-- (rest of the page markup kept as in your current file: lectern, poster, catalog, shelves, desk, overlays) -->
-  <!-- Use the markup you already posted earlier (poster button, catalog input, drawers, shelves, overlays) -->
+  <!-- Load Third-Party Dependency Libraries Safely Before Core Application Code -->
+  <script src="https://jsdelivr.net"></script>
 
-  <!-- Overlays and overlays markup (bookOverlay, signinOverlay) should remain the same as you currently have. -->
+      <script>
+    /* ==========================================================================
+       ENGINE MODULE LAYER 1: DATA CORE CATALOG ARCHIVE REGISTRIES
+       ========================================================================== */
+    const libraryMasterCatalog = [
+      {
+        title: "Muffin Gets the Wiggles",
+        author: "J. White",
+        dewey: "813.6",
+        genre: "Children's Books",
+        summary: "Follow the charming first adventures of Muffin the Pitbull puppy.",
+        cameraYRotation: -45,
+        shelfCoordinate: { pitch: -5, yaw: -45 },
+        elementId: 'muffinPoster',
+        targetUrl: 'https://github.io'
+      },
+      {
+        title: "The Bingo Card of Chronic Illness",
+        author: "J. White",
+        dewey: "616.09",
+        genre: "Health & Wellness",
+        summary: "An honest read offering grace and vulnerability while managing ongoing chronic conditions.",
+        cameraYRotation: 0,
+        shelfCoordinate: { pitch: -12, yaw: 0 },
+        elementId: 'aboutDeskPapers',
+        targetUrl: 'https://github.io'
+      },
+      {
+        title: "Don't Quote Me: Smart Mouths",
+        author: "J. White",
+        dewey: "818.6",
+        genre: "More Books",
+        summary: "A beautifully curated collection of wit, smart expressions, and interactive drawing paths.",
+        cameraYRotation: 45,
+        shelfCoordinate: { pitch: -3, yaw: 45 },
+        elementId: 'blogTypewriter',
+        targetUrl: 'https://github.io'
+      }
+    ];
 
-<script>
-/* ---------- Data and rendering (kept the same, but JS is completed here) ---------- */
-const books = [ /* ... same books array as in your file ... */ ];
+    /* ==========================================================================
+       ENGINE MODULE LAYER 2: INTERACTION ORCHESTRATION & DYNAMIC ENGINE VIEW 
+       ========================================================================== */
+    (function () {
+      'use strict';
 
-// (Place the full books array here — use the version you already have.)
+      function debounce(fn, wait = 200) {
+        let t;
+        return function (...args) {
+          clearTimeout(t);
+          t = setTimeout(() => fn.apply(this, args), wait);
+        };
+      }
 
-const reserved = {
-  title: "Nineteen Days",
-  author: "Petra",
-  section: "reserved",
-  tagline: "Coming soon — not yet catalogued.",
-  desc: "A memoir of surviving a near-fatal moment, and the sister whose voice called her back.",
-  note: "Petra is still writing this one. It will appear on the shelf when she's ready — this card is just to say it's coming."
-};
+      function announce(msg) {
+        const live = document.getElementById('siteAnnouncement');
+        if (!live) return;
+        live.textContent = '';
+        setTimeout(() => { live.textContent = msg; }, 50);
+      }
 
-const sectionMeta = {
-  children:{label:"Children's Books · 100s", shelf:"shelf-children", cls:"children"},
-  wellness:{label:"Health & Wellness · 200s", shelf:"shelf-wellness", cls:"wellness"},
-  more:{label:"More Books · 300s", shelf:"shelf-more", cls:"more"},
-  toolbox:{label:"Writer's Toolbox · 500s", shelf:"shelf-toolbox", cls:null}
-};
+      let _trapHandler = null;
+      function trapFocus(modalEl) {
+        const selector = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])';
+        const focusable = Array.from(modalEl.querySelectorAll(selector)).filter(el => {
+          const style = window.getComputedStyle(el);
+          return !el.hidden && style.display !== 'none' && style.visibility !== 'hidden';
+        });
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
 
-function spineVariant(i, section){
-  const v = i % 3;
-  if(section === "children" || section === "wellness") return v===1 ? " v2" : "";
-  if(section === "more") return v===1?" v2":v===2?" v3":"";
-  return "";
-}
+        _trapHandler = function (e) {
+          if (e.key !== 'Tab') return;
+          if (e.shiftKey) {
+            if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+          } else {
+            if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+          }
+        };
+        document.addEventListener('keydown', _trapHandler);
+        first.focus();
+      }
 
-/* --- render shelves, drawers, chips, etc. (use your existing rendering code) --- */
-/* For brevity I won't duplicate the entire rendering logic here — keep the code you already have that renders spines, drawers, author chips and binds highlightAndOpen. */
+      function releaseFocus() {
+        if (_trapHandler) {
+          document.removeEventListener('keydown', _trapHandler);
+          _trapHandler = null;
+        }
+      }
 
-/* ---------- Overlay and open/close behavior (complete) ---------- */
-const bookOverlay = document.getElementById('bookOverlay');
+      document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('catalogSearch');
+        const staticSearchInput = document.getElementById('staticSearchInput');
+        const resultsContainer = document.getElementById('catalogResults');
+        const staticCatalogContainer = document.getElementById('staticCatalogContainer');
+        const modal = document.getElementById('parchmentModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const closeBtn = modal ? modal.querySelector('.close-btn') : null;
+        const cardCatalog = document.getElementById('cardCatalogDrawer');
+        const staticModeBtn = document.getElementById('staticModeBtn');
+        const exitStaticBtn = document.getElementById('exitStaticBtn');
 
-function openBook(title){
-  const b = books.find(x => x.title === title);
-  if(!b) return;
-  document.getElementById('bpCall').textContent = 'Call No. ' + b.call;
-  document.getElementById('bpAuthor').textContent = b.author !== "Toolbox" ? '· ' + b.author : '';
-  document.getElementById('bpTitle').textContent = b.title;
-  document.getElementById('bpTagline').textContent = b.tagline || '';
-  document.getElementById('bpDesc').textContent = b.desc || '';
-  document.getElementById('bpReservedNote').innerHTML = "";
-  const actions = document.getElementById('bpActions');
-  actions.innerHTML = "";
-  if(b.isTool || b.isModule){
-    const beginBtn = document.createElement('button');
-    beginBtn.className = 'btn btn-primary';
-    beginBtn.textContent = 'Open this tool';
-    beginBtn.addEventListener('click', () => { bookOverlay.classList.remove('show'); document.getElementById('signinOverlay').classList.add('show'); });
-    actions.appendChild(beginBtn);
-  } else if(b.links){
-    b.links.forEach(l => {
-      const a = document.createElement('a');
-      a.className = 'btn btn-primary';
-      a.href = l.url; a.target = '_blank'; a.rel = 'noopener';
-      a.textContent = l.label;
-      actions.appendChild(a);
-    });
-  } else if(b.comingSoon){
-    document.getElementById('bpReservedNote').innerHTML = '<div class="reserved-note">This one isn\\'t published yet — check back as the series grows.</div>';
-  }
-  const closeBtn = document.createElement('button');
-  closeBtn.className = 'btn btn-secondary';
-  closeBtn.textContent = 'Back to the shelf';
-  closeBtn.addEventListener('click', () => bookOverlay.classList.remove('show'));
-  actions.appendChild(closeBtn);
-  bookOverlay.classList.add('show');
-}
+        let lastFocusedEl = null;
+        
+        window.openParchment = function(title, contents) {
+          lastFocusedEl = document.activeElement;
+          modalTitle.textContent = title || '';
+          modalContent.innerHTML = '';
+          modalContent.textContent = String(contents);
 
-function openReserved(){
-  document.getElementById('bpCall').textContent = 'Reserved';
-  document.getElementById('bpAuthor').textContent = '· ' + reserved.author;
-  document.getElementById('bpTitle').textContent = reserved.title;
-  document.getElementById('bpTagline').textContent = reserved.tagline;
-  document.getElementById('bpDesc').textContent = reserved.desc;
-  document.getElementById('bpReservedNote').innerHTML = `<div class="reserved-note">${reserved.note}</div>`;
-  const actions = document.getElementById('bpActions');
-  actions.innerHTML = "";
-  const closeBtn = document.createElement('button');
-  closeBtn.className = 'btn btn-secondary';
-  closeBtn.textContent = 'Back to the shelf';
-  closeBtn.addEventListener('click', () => bookOverlay.classList.remove('show'));
-  actions.appendChild(closeBtn);
-  bookOverlay.classList.add('show');
-}
+          modal.classList.add('modal-active');
+          modal.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
 
-/* overlay interactions */
-document.getElementById('closeBook').addEventListener('click', () => bookOverlay.classList.remove('show'));
-bookOverlay.addEventListener('click', (e) => { if(e.target === bookOverlay) bookOverlay.classList.remove('show'); });
+          trapFocus(modal);
+          announce(`${title} record details opened`);
 
-/* Memorial and desk openers (unchanged) */
-document.getElementById('memorialPoster').addEventListener('click', () => {
-  window.open('https://jackiewhite0325.github.io/jw-author-site/muffin-memorial.html', '_blank', 'noopener');
-});
-document.getElementById('openAbout').addEventListener('click', () => {
-  window.open('https://jackiewhite0325.github.io/jw-author-site/about.html', '_blank', 'noopener');
-});
-document.getElementById('openBlog').addEventListener('click', () => {
-  window.open('https://jackiewhite0325.github.io/jw-author-site/blog.html', '_blank', 'noopener');
-});
+          const escHandler = function (e) { if (e.key === 'Escape') closeParchment(); };
+          document.addEventListener('keydown', escHandler);
+          modal._escHandler = escHandler;
+        };
 
-/* Sign-in overlay behavior */
-const signinOverlay = document.getElementById('signinOverlay');
-document.getElementById('openSignin').addEventListener('click', () => signinOverlay.classList.add('show'));
-document.getElementById('closeSignin').addEventListener('click', () => resetSignin());
-signinOverlay.addEventListener('click', (e) => { if(e.target === signinOverlay) resetSignin(); });
-function resetSignin(){
-  signinOverlay.classList.remove('show');
-  document.getElementById('signinForm').style.display = 'flex';
-  document.getElementById('signinConfirm').classList.remove('show');
-  document.getElementById('emailInput').value = '';
-}
-document.getElementById('sendLink').addEventListener('click', () => {
-  const val = document.getElementById('emailInput').value.trim();
-  if(!val) { document.getElementById('emailInput').focus(); return; }
-  document.getElementById('signinForm').style.display = 'none';
-  document.getElementById('signinConfirm').classList.add('show');
-});
+        function closeParchment() {
+          modal.classList.remove('modal-active');
+          modal.setAttribute('aria-hidden', 'true');
+          document.body.style.overflow = '';
+          releaseFocus();
+          
+          if (modal._escHandler) {
+            document.removeEventListener('keydown', modal._escHandler);
+            modal._escHandler = null;
+          }
+          
+          announce('Modal view dismissed');
+          if (lastFocusedEl && typeof lastFocusedEl.focus === 'function') { lastFocusedEl.focus(); }
+        }
 
-/* Keyboard escape for overlays */
-document.addEventListener('keydown', (e) => {
-  if(e.key === 'Escape'){ bookOverlay.classList.remove('show'); resetSignin(); }
-});
+        if (closeBtn) closeBtn.addEventListener('click', closeParchment);
 
-/* ---------- Mobile static hero & Try 360 wiring ---------- */
-document.addEventListener('DOMContentLoaded', () => {
-  const hero = document.getElementById('mobileStaticHero');
-  const try360 = document.getElementById('mobileTry360');
-  const openCatalogBtn = document.getElementById('mobileCatalogBtn');
+        window.setStaticMode = function(isStatic) {
+          if (isStatic) {
+            document.body.classList.add('static-layout-enabled');
+            document.body.classList.remove('interactive-layout-enabled');
+            if (cardCatalog) cardCatalog.setAttribute('aria-hidden', 'true');
+            announce('Switched layout grid to basic structural text layout');
+          } else {
+            document.body.classList.remove('static-layout-enabled');
+            document.body.classList.add('interactive-layout-enabled');
+            if (cardCatalog) cardCatalog.setAttribute('aria-hidden', 'false');
+            announce('Switched layout grid to graphics immersive panorama viewer space');
+          }
+        };
 
-  // Heuristic: show mobile static hero when device is narrow or pointer is coarse
-  const isCoarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-  const narrow = window.innerWidth && window.innerWidth <= 720;
-  // If user has explicit preference (localStorage staticMode/interactiveMode), prefer that
-  const storedStatic = localStorage.getItem('staticMode');
-  const storedInteractive = localStorage.getItem('interactiveMode');
-  const preferStatic = (storedStatic !== null) ? !!storedStatic : (isCoarse || narrow);
+        function initModeTriggers() {
+          if (staticModeBtn) staticModeBtn.addEventListener('click', () => { localStorage.setItem('staticMode', 'true'); localStorage.removeItem('interactiveMode'); window.setStaticMode(true); });
+          if (exitStaticBtn) exitStaticBtn.addEventListener('click', () => { localStorage.setItem('interactiveMode', 'true'); localStorage.removeItem('staticMode'); window.setStaticMode(false); });
+          
+          const storedStatic = localStorage.getItem('staticMode');
+          const isCoarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+          const isNarrow = window.innerWidth && window.innerWidth <= 720;
+          const defaultStaticHeuristic = isCoarse || isNarrow;
+          
+          const resolveInitialLayoutMode = (storedStatic !== null) ? (storedStatic === 'true') : defaultStaticHeuristic;
+          window.setStaticMode(resolveInitialLayoutMode);
+        }
 
-  if(preferStatic){
-    if(hero) { hero.setAttribute('aria-hidden','false'); hero.style.display = ''; }
-  } else {
-    if(hero) { hero.setAttribute('aria-hidden','true'); hero.style.display = 'none'; }
-  }
+        function renderViewCatalogs(items, container, isStaticContainer = false) {
+          container.innerHTML = '';
+          if (items.length === 0) {
+            container.innerHTML = '<p style="padding:12px;font-size:0.8rem;opacity:0.75;">No search match records found.</p>';
+            return;
+          }
 
-  // Try 360: when clicked, opt into interactive (persist) and call setStaticMode(false) if provided by your main script
-  if(try360){
-    try360.addEventListener('click', () => {
-      localStorage.setItem('interactiveMode','1');
-      // If your site exposes a setStaticMode function (from the 360 implementation), call it.
-      if(typeof window.setStaticMode === 'function') {
-        window.setStaticMode(false);
-      } else {
-        // fallback: hide the hero and focus the catalog
-        if(hero){ hero.setAttribute('aria-hidden','true'); hero.style.display = 'none'; }
+          items.forEach(item => {
+            const card = document.createElement('button');
+            card.className = 'catalog-card';
+            card.setAttribute('type', 'button');
+            card.innerHTML = `
+              <span class="cc-num">${item.dewey}</span>
+              <strong class="cc-title">${item.title}</strong>
+              <span class="cc-author">By ${item.author}</span>
+            `;
+
+            card.addEventListener('click', () => {
+              if (isStaticContainer) {
+                window.openParchment(item.title, `${item.summary}\n\nClassification Section: ${item.genre}`);
+              } else {
+                if (typeof window.targetCatalogItem === 'function') { window.targetCatalogItem(item.elementId); }
+              }
+            });
+            container.appendChild(card);
+          });
+        }
+
+        const handleInteractiveSearch = debounce(() => {
+          const query = searchInput.value.toLowerCase().trim();
+          const filtered = libraryMasterCatalog.filter(i => i.title.toLowerCase().includes(query) || i.author.toLowerCase().includes(query) || i.dewey.includes(query));
+          renderViewCatalogs(filtered, resultsContainer, false);
+        }, 200);
+
+        const handleStaticSearch = debounce(() => {
+          const query = staticSearchInput.value.toLowerCase().trim();
+          const filtered = libraryMasterCatalog.filter(i => i.title.toLowerCase().includes(query) || i.author.toLowerCase().includes(query) || i.dewey.includes(query));
+          renderViewCatalogs(filtered, staticCatalogContainer, true);
+        }, 200);
+
+        if (searchInput) searchInput.addEventListener('input', handleInteractiveSearch);
+        if (staticSearchInput) staticSearchInput.addEventListener('input', handleStaticSearch);
+
+        document.getElementById('memorialPoster').addEventListener('click', () => { window.open('https://github.io', '_blank', 'noopener'); });
+        document.getElementById('openAbout').addEventListener('click', () => { window.open('https://github.io', '_blank', 'noopener'); });
+
+                                         document.getElementById('openBlog').addEventListener('click', () => { window.open('https://github.io', '_blank', 'noopener'); });
+
+        initModeTriggers();
+        renderViewCatalogs(libraryMasterCatalog, resultsContainer, false);
+        renderViewCatalogs(libraryMasterCatalog, staticCatalogContainer, true);
+      });
+    })();
+
+    /* ==========================================================================
+       ENGINE MODULE LAYER 3: 360 PANNELLUM IMAGING VIEWPORT SUITE CONTROLLER
+       ========================================================================== */
+    let roomViewer;
+
+    window.addEventListener('load', () => {
+      const targetPanoContainer = document.getElementById('panorama-container');
+      if (!targetPanoContainer) return;
+
+      // 1. Initialize Immersive Viewer Space
+      roomViewer = pannellum.viewer('panorama-container', {
+        "type": "equirectangular",
+        "panorama": "./images/site/victorian_library_360.png",
+        "autoLoad": true,
+        "showControls": false,
+        "mouseZoom": false,
+        "friction": 0.05,
+        "autoRotate": -0.3
+      });
+
+      // Global window hook so external links can command the camera
+      window.panSetYaw = function(yaw) {
+        if (roomViewer && typeof roomViewer.setYaw === 'function') { 
+          roomViewer.setYaw(yaw, true); 
+        }
+      };
+
+      // 2. Add Shelf Indicators on Pan Initialization Complete
+      roomViewer.on('load', () => {
+        libraryMasterCatalog.forEach((item, index) => {
+          roomViewer.addHotSpot({
+            "pitch": item.shelfCoordinate.pitch,
+            "yaw": item.shelfCoordinate.yaw,
+            "type": "info",
+            "text": `[Dewey ${item.dewey}] ${item.title}`,
+            "cssClass": "library-custom-hotspot",
+            "createTooltipFunc": (hotspotElement) => {
+              // Map key identification attributes to avoid breaking event listeners
+              hotspotElement.setAttribute('data-registry-id', item.elementId);
+              
+              const span = document.createElement('span');
+              span.className = 'pnlm-tooltip-text';
+              span.textContent = `[Dewey ${item.dewey}] ${item.title}`;
+              hotspotElement.appendChild(span);
+              return span;
+            }
+          });
+        });
+
+        // Initialize user input triggers and listeners
+        populateSelectorDropdown();
+        setupHotspotClickHandling();
+      });
+
+      // 3. Minimize Drawer Action UI Triggers
+      const minimizeBtn = document.getElementById('catalog-toggle-btn');
+      const catalogDrawer = document.getElementById('cardCatalogDrawer');
+      if (minimizeBtn && catalogDrawer) {
+        minimizeBtn.addEventListener('click', () => {
+          catalogDrawer.classList.toggle('minimized');
+          const isMin = catalogDrawer.classList.contains('minimized');
+          minimizeBtn.setAttribute('aria-label', isMin ? 'Expand panel' : 'Minimize panel');
+          minimizeBtn.textContent = isMin ? '+' : '−';
+        });
       }
     });
-  }
 
-  if(openCatalogBtn){
-    openCatalogBtn.addEventListener('click', () => {
-      // simply focus the catalog search and ensure drawers are visible
-      const search = document.getElementById('catalogSearch');
-      if(search){ search.focus(); }
-    });
-  }
-});
-</script>
+    function populateSelectorDropdown() {
+      const select = document.getElementById('catalog-search-select');
+      if (!select) return;
+      
+      libraryMasterCatalog.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.elementId;
+        option.textContent = `[${item.dewey}] ${item.title}`;
+        select.appendChild(option);
+      });
+
+      select.addEventListener('change', (e) => {
+        if (e.target.value) { 
+          window.targetCatalogItem(e.target.value); 
+        }
+      });
+    }
+
+    function setupHotspotClickHandling() {
+      const container = document.getElementById('panorama-container');
+      if (!container) return;
+
+      container.addEventListener('click', (e) => {
+        // Safe delegated event lookup check for Pannellum wrapper hot zones
+        const hotspot = e.target.closest('.pnlm-hotspot');
+        if (hotspot && hotspot.hasAttribute('data-registry-id')) {
+          const id = hotspot.getAttribute('data-registry-id');
+          const matched = libraryMasterCatalog.find(i => i.elementId === id);
+          if (matched) { 
+            window.openParchment(matched.title, `${matched.summary}\n\nLocation Section: ${matched.genre}`); 
+          }
+        }
+      });
+    }
+
+    window.targetCatalogItem = function(itemId) {
+      if (!itemId) return;
+      const matched = libraryMasterCatalog.find(i => i.elementId === itemId);
+      if (!matched) return;
+
+      if (roomViewer && typeof roomViewer.lookAt === 'function') {
+        roomViewer.lookAt(matched.shelfCoordinate.pitch, matched.shelfCoordinate.yaw, 60, 1500, () => {
+          triggerInvitationToast(matched);
+        });
+      }
+    };
+
+    function triggerInvitationToast(item) {
+      const toast = document.getElementById('invitation-toast');
+      const text = document.getElementById('invitation-text');
+      const acceptBtn = document.getElementById('toast-accept-btn');
+      if (!toast || !text || !acceptBtn) return;
+
+      text.textContent = `You targeted "${item.title}". View archive parchment logs now?`;
+      toast.style.display = 'block';
+      toast.setAttribute('aria-hidden', 'false');
+
+      // Prevent event loop stack duplication clones
+      const clonedBtn = acceptBtn.cloneNode(true);
+      acceptBtn.parentNode.replaceChild(clonedBtn, acceptBtn);
+
+      clonedBtn.addEventListener('click', () => {
+        dismissToast();
+        window.openParchment(item.title, `${item.summary}\n\nLocation Section: ${item.genre}`);
+      });
+    }
+
+    window.dismissToast = function() {
+      const toast = document.getElementById('invitation-toast');
+      if (toast) { 
+        toast.style.display = 'none'; 
+        toast.setAttribute('aria-hidden', 'true'); 
+      }
+    };
+  </script>
 </body>
 </html>
+                                             

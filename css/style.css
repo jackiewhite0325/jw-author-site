@@ -362,6 +362,99 @@ a.btn-outline:hover {
 }
 
 /* ---------------------------------------------------------------
+   CELESTIAL BADGE CONSTELLATION HOOKS
+--------------------------------------------------------------- */
+
+/* Overriding default Pannellum canvas layers for custom nodes */
+.badge-marker-hotspot {
+  width: 20px;
+  height: 20px;
+  background: var(--canvas-bg);
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(212, 163, 115, 0.4), inset 0 0 4px rgba(212, 163, 115, 0.2);
+  transition: transform 0.25s var(--transition-ease), background-color 0.2s ease;
+}
+
+/* Pulsing aura effect simulating a glowing star */
+.badge-marker-hotspot::after {
+  content: '';
+  position: absolute;
+  top: -6px; left: -6px; right: -6px; bottom: -6px;
+  border: 1px dashed var(--accent);
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: constellationPulse 4s linear infinite;
+}
+
+/* Interactive Hover States */
+.badge-marker-hotspot:hover {
+  transform: scale(1.2);
+  background-color: var(--accent);
+  box-shadow: 0 0 16px var(--accent);
+}
+
+/* Hidden visual states for default underlying tooltip components */
+.badge-marker-hotspot .pnlm-tooltip {
+  display: none !important;
+}
+
+/* ---------------------------------------------------------------
+   CELESTIAL TOOLTIP OVERLAYS
+--------------------------------------------------------------- */
+.badge-custom-tooltip {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--charcoal);
+  color: var(--canvas-bg);
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 3px;
+  border: 1px solid var(--accent);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease, bottom 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Smooth fade-in presentation when inspecting a target node */
+.badge-marker-hotspot:hover .badge-custom-tooltip {
+  opacity: 1;
+  bottom: 32px;
+}
+
+/* Decorative alignment pinpoint triangle */
+.badge-custom-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 6px;
+  height: 6px;
+  background-color: var(--charcoal);
+  border-right: 1px solid var(--accent);
+  border-bottom: 1px solid var(--accent);
+}
+
+/* ---------------------------------------------------------------
+   ANIMATION KEYFRAMES
+--------------------------------------------------------------- */
+@keyframes constellationPulse {
+  0% { transform: rotate(0deg); opacity: 0.3; }
+  50% { opacity: 0.6; }
+  100% { transform: rotate(360deg); opacity: 0.3; }
+}
+
+
+/* ---------------------------------------------------------------
    SITE FOOTER
 --------------------------------------------------------------- */
 .site-footer {

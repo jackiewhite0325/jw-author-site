@@ -99,7 +99,7 @@ function classifyFailure(stage, error) {
   const combined = `${stage} ${message}`.toLowerCase();
 
   if (stage === 'missing-pannellum' || diagnostics.cdn.scriptStatus === 'error') {
-    return 'cdn-load-failure';
+    return 'asset-load-failure';
   }
 
   if (!diagnostics.webgl.supported) {
@@ -119,8 +119,8 @@ function classifyFailure(stage, error) {
 
 function summarizeFailure(category) {
   switch (category) {
-    case 'cdn-load-failure':
-      return 'Pannellum did not load from the CDN before startup.';
+    case 'asset-load-failure':
+      return 'Pannellum did not load before startup.';
     case 'webgl-unsupported':
       return 'This browser/device did not expose a usable WebGL context.';
     case 'webgl-runtime-failure':

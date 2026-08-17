@@ -6,7 +6,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize Pannellum Room with Full-Page Immersion
   roomViewer = pannellum.viewer('panorama-container', {
     "type": "equirectangular",
-    "panorama": "images/site/victorian_library_360.png",
+    "panorama": "./images/site/victorian_library_360.png",
     "autoLoad": true,
     "showControls": false,
     "mouseZoom": false,

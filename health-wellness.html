@@ -1,76 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Health &amp; Wellness | J. White</title>
-<meta name="description" content="Honest, humor-filled reads on chronic illness and grace from author J. White.">
-<meta property="og:title" content="Health &amp; Wellness | J. White">
-<meta property="og:image" content="images/site/social-share.jpg">
-<link rel="icon" href="images/site/favicon.ico">
-<link rel="apple-touch-icon" href="images/site/favicon-180.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health &amp; Wellness | J. White</title>
+  <meta name="description" content="Honest, humor-filled reads on chronic illness and grace from author J. White.">
+  
+  <!-- Open Graph Social Protocol Configurations -->
+  <meta property="og:title" content="Health &amp; Wellness | J. White">
+  <meta property="og:image" content="images/site/social-share.jpg">
+  
+  <!-- Favicon Asset Configurations -->
+  <link rel="icon" href="images/site/favicon.ico">
+  <link rel="apple-touch-icon" href="images/site/favicon-180.png">
+  
+  <!-- Global Typography Font Arrays Sync -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://googleapis.com" rel="stylesheet">
+  
+  <!-- Core Design Application Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <style>
+    /* Health & Wellness Page Specific Component Style Hooks */
+    .site-hero {
+      text-align: center;
+      padding: 4rem 1.5rem 2rem;
+    }
+    
+    .site-hero h1 {
+      font-size: clamp(2rem, 6vw, 3.25rem);
+      margin: 0;
+    }
+    
+    .site-hero p {
+      font-size: 1.15rem;
+      max-width: 38em;
+      margin: 0.75rem auto 0;
+      opacity: 0.85;
+      line-height: 1.5;
+    }
+
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2.5rem;
+      padding: 2rem 1.5rem 5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .book-card {
+      background: var(--paper, #FDFBF7);
+      border: 1px solid var(--sage-divider, #A3B19B);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition-smooth, transform 0.3s ease);
+    }
+
+    .book-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(43, 43, 43, 0.08);
+    }
+
+    .book-card img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4/5;
+      object-fit: cover;
+      display: block;
+      border-bottom: 1px solid var(--sage-divider, #A3B19B);
+    }
+
+    .book-info {
+      padding: 1.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .book-info h3 {
+      font-size: 1.25rem;
+      margin: 0 0 0.5rem 0;
+      line-height: 1.4;
+    }
+
+    .book-info .sub-tagline {
+      font-style: italic; 
+      font-size: 0.95rem;
+      opacity: 0.8;
+      margin: 0 0 1rem 0;
+      line-height: 1.4;
+    }
+
+    .book-info p {
+      margin: 0 0 1.25rem 0;
+      font-size: 0.95rem;
+      opacity: 0.85;
+      line-height: 1.5;
+    }
+
+    .book-info .price {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.9rem;
+      color: var(--amber-deep, #B8874F);
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      margin-top: auto;
+    }
+
+    .book-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .book-actions .btn {
+      flex: 1;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-<a href="#main-content" class="skip-link">Skip to main content</a>
 
-<header class="site-header">
-  <div class="container">
-    <a href="index.html" class="logo-link">
-      <img src="images/site/logo-banner.png" alt="J. White, Sigil and Scribe">
-    </a>
-    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
-    <nav class="site-nav">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="children.html">Children's Books</a></li>
-        <li><a href="health-wellness.html" class="active">Health &amp; Wellness</a></li>
-        <li><a href="more-books.html">More Books</a></li>
-        <li><a href="fiction.html">Fiction</a></li>
-        <li><a href="muffin-memorial.html">Muffin's Memorial</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="blog.html">Blog</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
-<main id="main-content">
+  <!-- Accessible Navigation Skip Target Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<section class="site-hero">
-  <h1>Health &amp; Wellness</h1>
-  <p>Honest, humor-filled reads on chronic illness, grace, and getting through hard days.</p>
-</section>
-  
-<section class="container">
-  <div class="book-grid">
-    <div class="book-card">
-      <img src="images/health-wellness/bingo-cover-v2.jpg" loading="lazy" alt="The Bingo Card of Chronic Illness">
-      <div class="book-info">
-        <h3>The Bingo Card of Chronic Illness</h3>
-        <p style="font-style:italic; font-size:0.9rem;">Have You Tried This? Surviving the Advice Parade...</p>
-        <p class="price">Ebook $4.99 &middot; Paperback $14.99</p>
-        <a href="https://books2read.com/u/meNaLz" class="btn">Get the Book</a>
-      </div>
+  <!-- Global Application Site Header Context -->
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="logo-link">
+        <img src="images/site/logo-banner.png" alt="J. White, Sigil and Scribe">
+      </a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="children.html">Children's Books</a></li>
+          <li><a href="health-wellness.html" class="active">Health &amp; Wellness</a></li>
+          <li><a href="more-books.html">More Books</a></li>
+          <li><a href="fiction.html">Fiction</a></li>
+          <li><a href="muffin-memorial.html">Muffin's Memorial</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </nav>
     </div>
-    <div class="book-card">
-      <img src="images/health-wellness/grace-cover-v2.png" loading="lazy" alt="The Many Faces of Grace">
-      <div class="book-info">
-        <h3>The Many Faces of Grace</h3>
-        <p class="price">Ebook $3.99 &middot; Paperback $9.99</p>
-        <a href="https://books2read.com/u/mga6XD" class="btn">Get the Book</a>
+  </header>
+
+  <!-- Central Payload Document Workspace -->
+  <main id="main-content">
+
+    <section class="site-hero">
+      <h1>Health &amp; Wellness</h1>
+      <p>Honest, humor-filled reads on chronic illness, grace, and getting through hard days.</p>
+    </section>
+      
+    <section class="container">
+      <div class="book-grid">
+        
+        <!-- Book Card 1 -->
+        <div class="book-card">
+          <img src="images/health-wellness/bingo-cover-v2.jpg" loading="lazy" alt="Front cover artwork of The Bingo Card of Chronic Illness">
+          <div class="book-info">
+            <h3>The Bingo Card of Chronic Illness</h3>
+            <p class="sub-tagline">Have You Tried This? Surviving the Advice Parade...</p>
+            <p>An honest read offering validation, grace, and refreshing vulnerability while managing ongoing chronic health conditions without losing your sense of humor.</p>
+            <p class="price">Ebook $4.99 &middot; Paperback $14.99</p>
+            <div class="book-actions">
+              <a href="https://books2read.com/u/meNaLz" class="btn btn-primary" target="_blank" rel="noopener">Get the Book</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Book Card 2 -->
+        <div class="book-card">
+          <img src="images/health-wellness/grace-cover-v2.png" loading="lazy" alt="Front cover artwork of The Many Faces of Grace">
+          <div class="book-info">
+            <h3>The Many Faces of Grace</h3>
+            <p>A beautifully personal exploration of how giving yourself permission to adapt can change the way you face complex life struggles and lingering symptoms.</p>
+            <p class="price">Ebook $3.99 &middot; Paperback $9.99</p>
+            <div class="book-actions">
+              <a href="https://books2read.com/u/mga6XD" class="btn btn-primary" target="_blank" rel="noopener">Get the Book</a>
+            </div>
+          </div>
+        </div>
+
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-</main>
-<footer class="site-footer">
-  <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
-</footer>
+  </main>
 
-<script src="js/main.js"></script>
+  <!-- Universal Footer Element -->
+  <footer class="site-footer">
+    <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
+  </footer>
+
+  <!-- Universal Core Application Navigation Script Logic -->
+  <script src="js/main.js"></script>
 </body>
 </html>

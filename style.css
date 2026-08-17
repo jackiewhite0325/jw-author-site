@@ -40,6 +40,59 @@ h1, h2, h3, .literary-font {
   height: 100%;
 }
 
+.library-loading-status,
+.library-fallback {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  width: min(32rem, calc(100vw - 2rem));
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--sage-divider);
+  border-radius: 8px;
+  background: rgba(253, 251, 247, 0.96);
+  box-shadow: 0 12px 32px rgba(43, 43, 43, 0.18);
+  text-align: center;
+}
+
+.library-loading-status {
+  font-size: 1rem;
+}
+
+.library-fallback h1 {
+  margin: 0 0 0.75rem;
+  font-size: 1.75rem;
+}
+
+.library-fallback p {
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+.library-fallback nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.library-fallback a {
+  display: inline-block;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--sage-divider);
+  border-radius: 999px;
+  background: var(--module-bg);
+  color: var(--charcoal-txt);
+  text-decoration: none;
+}
+
+.library-fallback a:hover,
+.library-fallback a:focus {
+  border-color: var(--amber-gold);
+  outline: none;
+}
+
 /* Card Catalog Drawer (Fixed on Librarian Desk) */
 #card-catalog-drawer {
   position: fixed;

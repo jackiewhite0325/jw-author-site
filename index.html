@@ -10,6 +10,7 @@
   <meta property="og:image" content="images/site/social-share.jpg">
   <link rel="icon" href="images/site/favicon.ico">
   <link rel="apple-touch-icon" href="images/site/favicon-180.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
   
   <!-- Pannellum WebGL Engine Libraries -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
@@ -21,6 +22,21 @@
   <!-- Main Immersive Room Viewport Container (FULL PAGE) -->
   <main id="library-viewport-wrapper" style="position: fixed; width: 100vw; height: 100vh; overflow: hidden; top: 0; left: 0;">
     <div id="panorama-container" style="width: 100%; height: 100%;"></div>
+    <div id="library-loading-status" class="library-loading-status" role="status" aria-live="polite">
+      Loading immersive library…
+    </div>
+    <section id="library-fallback" class="library-fallback" aria-live="polite" hidden>
+      <h1>Library is still available</h1>
+      <p>The immersive view could not finish loading. You can still use the direct links below.</p>
+      <nav aria-label="Library fallback links">
+        <a href="fiction.html">Fiction</a>
+        <a href="children.html">Children&apos;s Stories</a>
+        <a href="health-wellness.html">Health &amp; Wellness</a>
+        <a href="more-books.html">More Books</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+      </nav>
+    </section>
 
     <!-- Card Catalog Drawer (Overlay on top of panorama) -->
     <div id="card-catalog-drawer" class="catalog-overlay">
@@ -52,5 +68,11 @@
 
   <script src="catalog.js"></script>
   <script src="app.js"></script>
+  <noscript>
+    <style>
+      #library-loading-status { display: none; }
+      #library-fallback { display: block !important; }
+    </style>
+  </noscript>
 </body>
 </html>

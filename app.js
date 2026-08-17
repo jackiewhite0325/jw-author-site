@@ -1,20 +1,66 @@
 let roomViewer;
 
+function setLoadingStatus(message) {
+  const status = document.getElementById('library-loading-status');
+  if (!status) return;
+  status.hidden = false;
+  status.textContent = message;
+}
+
+function clearLoadingStatus() {
+  const status = document.getElementById('library-loading-status');
+  if (!status) return;
+  status.hidden = true;
+}
+
+function showLoadingFallback(message) {
+  const fallback = document.getElementById('library-fallback');
+  if (!fallback) return;
+
+  const copy = fallback.querySelector('p');
+  if (copy && message) {
+    copy.textContent = message;
+  }
+
+  fallback.hidden = false;
+  setLoadingStatus('Unable to load the immersive library.');
+}
+
 window.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('panorama-container');
+  if (!container) return;
+
+  if (typeof libraryRegistry === 'undefined' || !Array.isArray(libraryRegistry)) {
+    showLoadingFallback('The library catalog is unavailable right now. You can still use the direct links below.');
+    return;
+  }
+
+  if (!window.pannellum || typeof window.pannellum.viewer !== 'function') {
+    showLoadingFallback('The immersive viewer could not be loaded. You can still use the direct links below.');
+    return;
+  }
+
   // 1. Initialize Pannellum Room with Full-Page Immersion
-  roomViewer = pannellum.viewer('panorama-container', {
-    "type": "equirectangular",
-    "panorama": "./images/site/victorian_library_360.png",
-    "autoLoad": true,
-    "showControls": false,
-    "mouseZoom": false,
-    "hotSpotDebug": false,
-    "friction": 0.05,
-    "autoRotate": -0.5
-  });
+  try {
+    roomViewer = pannellum.viewer('panorama-container', {
+      "type": "equirectangular",
+      "panorama": "./images/site/victorian_library_360.png",
+      "autoLoad": true,
+      "showControls": false,
+      "mouseZoom": false,
+      "hotSpotDebug": false,
+      "friction": 0.05,
+      "autoRotate": -0.5
+    });
+  } catch (error) {
+    console.error('Immersive library initialization failed.', error);
+    showLoadingFallback('The immersive library could not be started. You can still use the direct links below.');
+    return;
+  }
 
   // 2. Loop and Add Hotspots Programmatically from catalog.js Database Source
   roomViewer.on('load', () => {
+    clearLoadingStatus();
     libraryRegistry.forEach((item, index) => {
       // Use 'info' type to prevent Pannellum's default URL handling
       roomViewer.addHotSpot({
@@ -30,6 +76,11 @@ window.addEventListener('DOMContentLoaded', () => {
     renderBadgeConstellation();
     populateSelectorDropdown();
     setupHotspotClickHandling();
+  });
+
+  roomViewer.on('error', () => {
+    console.error('Immersive library reported a viewer error.');
+    showLoadingFallback('The immersive scene could not finish loading. You can still use the direct links below.');
   });
 
   // 3. Setup catalog minimize button

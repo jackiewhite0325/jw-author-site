@@ -14,7 +14,8 @@ window.addEventListener('DOMContentLoaded', () => {
     "compass": false,
     "showControls": false,
     "mouseZoom": false,
-    "hotSpotDebug": true,
+    // Production: disable hotSpotDebug; set to true only while tuning
+    "hotSpotDebug": false,
     "hotSpots": [
       {
         "pitch": -5.2,
@@ -33,6 +34,9 @@ window.addEventListener('DOMContentLoaded', () => {
     ]
   });
 
+  // expose viewer for other scripts (library-engine.js can call window.PAN_VIEWER)
+  try { window.PAN_VIEWER = viewer; } catch (e) { /* ignore */ }
+
   // Helpful debug: click canvas to log current viewing angles
   const container = document.getElementById('library-panorama');
   if (container) {
@@ -44,4 +48,20 @@ window.addEventListener('DOMContentLoaded', () => {
       } catch (err) { /* ignore when viewer not ready */ }
     });
   }
+
+  // small helper for library-engine to set yaw smoothly (if supported)
+  window.panSetYaw = function (deg) {
+    try {
+      if (window.PAN_VIEWER && typeof window.PAN_VIEWER.setYaw === 'function') {
+        window.PAN_VIEWER.setYaw(deg);
+        return true;
+      }
+      // older pannellum versions may expose "setView"
+      if (window.PAN_VIEWER && typeof window.PAN_VIEWER.setView === 'function') {
+        window.PAN_VIEWER.setView({ yaw: deg });
+        return true;
+      }
+    } catch (e) { /* ignore */ }
+    return false;
+  };
 });

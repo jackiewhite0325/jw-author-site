@@ -1,55 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Page Not Found | J. White</title>
-<meta name="description" content="The page you were looking for couldn't be found.">
-<link rel="icon" href="images/site/favicon.ico">
-<link rel="apple-touch-icon" href="images/site/favicon-180.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found | J. White</title>
+  <meta name="description" content="The page you were looking for couldn't be found.">
+  
+  <!-- Favicon Assets Configuration -->
+  <link rel="icon" href="images/site/favicon.ico">
+  <link rel="apple-touch-icon" href="images/site/favicon-180.png">
+  
+  <!-- Font Configuration Sync -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  
+  <!-- Master Stylesheet Import -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <style>
+    /* 404 Page Custom Layout Enhancements */
+    .error-404-hero {
+      text-align: center; 
+      padding: 5rem 1.5rem;
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .error-404-hero h1 {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      margin: 0;
+    }
+    
+    .error-404-hero p {
+      max-width: 32em; 
+      margin: 1.25rem auto 0;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      opacity: 0.85;
+    }
+    
+    .error-404-hero .btn-action-wrap {
+      margin-top: 2.5rem;
+    }
+  </style>
 </head>
 <body>
-<a href="#main-content" class="skip-link">Skip to main content</a>
 
-<header class="site-header">
-  <div class="container">
-    <a href="index.html" class="logo-link">
-      <img src="images/site/logo-banner.png" alt="J. White, Sigil and Scribe">
-    </a>
-    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
-    <nav class="site-nav">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="children.html">Children's Books</a></li>
-        <li><a href="health-wellness.html">Health &amp; Wellness</a></li>
-        <li><a href="more-books.html">More Books</a></li>
-        <li><a href="fiction.html">Fiction</a></li>
-        <li><a href="muffin-memorial.html">Muffin's Memorial</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="blog.html">Blog</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+  <!-- Accessible Skip Navigation Anchor -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<main id="main-content">
-<section class="container" style="text-align:center; padding:4rem 1.5rem;">
-  <h1>Page Not Found</h1>
-  <p style="max-width:32em; margin:1rem auto 0;">
-    We couldn't find the page you were looking for. It may have moved or the link may be incorrect.
-  </p>
-  <a href="index.html" class="btn" style="margin-top:2rem;">Back to Home</a>
-</section>
-</main>
+  <!-- Primary Site Header Layout Context -->
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="logo-link">
+        <img src="images/site/logo-banner.png" alt="J. White, Sigil and Scribe">
+      </a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="children.html">Children's Books</a></li>
+          <li><a href="health-wellness.html">Health &amp; Wellness</a></li>
+          <li><a href="more-books.html">More Books</a></li>
+          <li><a href="fiction.html">Fiction</a></li>
+          <li><a href="muffin-memorial.html">Muffin's Memorial</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-<footer class="site-footer">
-  <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
-</footer>
+  <!-- Central Payload Content Anchor -->
+  <main id="main-content">
+    <section class="container error-404-hero">
+      <h1>Page Not Found</h1>
+      <p>
+        We couldn't find the page you were looking for. It may have moved or the link may be incorrect.
+      </p>
+      <div class="btn-action-wrap">
+        <a href="index.html" class="btn btn-primary" aria-label="Return back to the main homepage">Back to Home</a>
+      </div>
+    </section>
+  </main>
 
-<script src="js/main.js"></script>
+  <!-- Global Base Layout Footer Context -->
+  <footer class="site-footer">
+    <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
+  </footer>
+
+  <!-- Universal Core Application Navigation Script Logic -->
+  <script src="js/main.js"></script>
 </body>
 </html>

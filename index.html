@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Sigil and Scribe LLC - Interactive Library</title>
+    
+    <!-- Link your existing brand stylesheet directly -->
+    <link rel="stylesheet" href="style.css">
+    
     <!-- FIXED: Using the direct absolute library path to prevent engine 404 crashes -->
     <script src="https://aframe.io"></script>
+    
     <style>
-        /* Block mobile browsers from dragging the entire page window layout around */
+        /* Block mobile browsers from breaking the canvas window bounds */
         html, body {
             overflow: hidden;
             width: 100%;
@@ -15,7 +20,8 @@
             margin: 0;
             padding: 0;
         }
-        /* Style adjustments for user reading popups */
+
+        /* VINTAGE PARCHMENT MODAL: Styled using your exact branding palette */
         .library-modal {
             display: none;
             position: fixed;
@@ -24,35 +30,95 @@
             transform: translate(-50%, -50%);
             width: 85%;
             max-width: 600px;
-            background: #f4ebd0;
-            border: 6px double #5c4033;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            background: var(--cream);
+            border: 5px double var(--clay-deep);
+            padding: 24px;
+            box-shadow: 0 12px 30px rgba(43, 36, 32, 0.4);
             z-index: 9999;
-            font-family: 'Georgia', serif;
-            color: #2b1d0c;
+            font-family: Georgia, 'Iowan Old Style', serif;
+            color: var(--ink);
+            border-radius: 4px;
+        }
+        .library-modal h2 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.5rem;
+            color: var(--clay-deep);
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 6px;
         }
         .modal-active { display: block; }
-        .close-btn { float: right; cursor: pointer; font-weight: bold; color: #5c4033; }
+        .close-btn { float: right; cursor: pointer; font-weight: bold; color: var(--clay-deep); }
+        
+        /* CARD CATALOG DRAWER: Made to look like a vintage wooden filing chest */
+        #cardCatalogDrawer {
+            position: fixed;
+            bottom: 20px;
+            left: 5%;
+            right: 5%;
+            z-index: 100;
+            background: var(--clay-deep);
+            color: var(--cream);
+            padding: 16px;
+            border-radius: 6px;
+            border-top: 4px solid var(--gold);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            max-width: 90vw;
+        }
+        #cardCatalogDrawer h3 {
+            color: var(--cream);
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+        #catalogSearch {
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 4px;
+            border: 1px solid var(--gold);
+            background: var(--cream);
+            color: var(--ink);
+            font-family: serif;
+        }
+        
+        /* SEARCH CARD RESULTS: Look and feel of clean index library tags */
+        .catalog-item {
+            padding: 8px;
+            border-bottom: 1px solid rgba(230, 217, 200, 0.2);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .catalog-item:hover {
+            background: var(--clay);
+            color: var(--cream);
+        }
+        .catalog-item strong {
+            color: var(--gold);
+        }
+        .catalog-item:hover strong {
+            color: var(--cream);
+        }
     </style>
 </head>
 <body>
 
     <!-- 2D Overlay Interface: Card Catalog Drawer (Mobile Centered Layout) -->
-    <div id="cardCatalogDrawer" style="position:fixed; bottom:20px; left:5%; right:5%; z-index:100; background:#3e2723; color:#fff; padding:12px; border-radius:4px; font-family:serif; max-width: 90vw;">
-        <h3 style="margin-top:0; margin-bottom:8px; font-size: 1.1rem;">📜 Card Catalog Drawer</h3>
-        <input type="text" id="catalogSearch" placeholder="Search Title, Author, or Genre..." style="padding:8px; width:100%; box-sizing: border-box; border-radius: 4px; border: none;">
+    <div id="cardCatalogDrawer">
+        <h3>📜 Card Catalog Drawer</h3>
+        <input type="text" id="catalogSearch" placeholder="Search Title, Author, or Genre...">
         <div id="catalogResults" style="max-height:120px; overflow-y:auto; margin-top:8px;"></div>
     </div>
 
     <!-- UI Overlay Popup for Reading Text Assets -->
     <div id="parchmentModal" class="library-modal">
         <span class="close-btn" onclick="closeParchment()">✕ Close</span>
-        <h2 id="modalTitle" style="margin-top: 0; color: #5c4033;"></h2>
+        <h2 id="modalTitle"></h2>
         <div id="modalContent"></div>
     </div>
 
-    <!-- FIXED: Running a single optimized 3D canvas rendering engine loop -->
+    <!-- SINGLE OPTIMIZED 3D CANVAS RENDERING ENGINE LOOP -->
     <a-scene cursor="rayOrigin: mouse" raycaster="objects: .clickable" embedded renderer="antialias: false; precision: medium;" style="width: 100%; height: 100%;">
         <a-assets>
             <img id="libraryRoom" src="./images/site/victorian_library_360.png" crossorigin="anonymous">
@@ -74,7 +140,7 @@
                material="opacity: 0.01; transparent: true" class="clickable"
                onclick="openParchment('The Scribe\'s Blog', 'Latest Update: Transitioning to our multi-author platform! Stay tuned for upcoming catalog additions from our writing partners.')"></a-box>
 
-        <!-- FIXED: Added back the clean look-around camera container view tracker -->
+        <!-- FIXED: Re-added the device look-controls viewpoint camera system -->
         
     </a-scene>
 

@@ -1,14 +1,9 @@
-// Improved library-engine.js
-// - Scoped, defensive, debounced search
-// - Accessible modal handling (ESC to close, focus management)
-// - Safe DOM creation for search results (uses buttons)
-// - Prevents body scroll when modal is open
-
+// Improved library-engine.js (focus trap + scene highlighting + class-based results + debounced search + accessibility polish)
 (function () {
   'use strict';
 
   // Small utility: debounce
-  function debounce(fn, wait = 250) {
+  function debounce(fn, wait = 200) {
     let t;
     return function (...args) {
       clearTimeout(t);
@@ -16,7 +11,7 @@
     };
   }
 
-  // Local catalog (consider extracting to a JSON/module if it grows)
+  // Centralized Database for All Authors under Sigil and Scribe LLC
   const libraryMasterCatalog = [
     {
       title: "Muffin Gets the Wiggles",
@@ -26,8 +21,8 @@
       seriesName: "The Muffin the Pitbull Puppy series",
       volume: 1,
       summary: "Follow the charming first adventures of Muffin the Pitbull puppy.",
-      // 3D Target: Facing the Left Bookshelf wall coordinates
-      cameraYRotation: 90
+      cameraYRotation: -45,
+      elementId: 'muffinPoster'
     },
     {
       title: "The Bingo Card of Chronic Illness",
@@ -37,8 +32,8 @@
       seriesName: "None",
       volume: 0,
       summary: "An honest read offering grace and vulnerability while managing ongoing chronic conditions.",
-      // 3D Target: Facing the Right Bookshelf wall coordinates
-      cameraYRotation: -90
+      cameraYRotation: 0,
+      elementId: 'aboutDeskPapers'
     },
     {
       title: "Don't Quote Me: Smart Mouths",
@@ -48,153 +43,219 @@
       seriesName: "Quote Journeys",
       volume: 1,
       summary: "A beautifully curated collection of wit, smart expressions, and interactive drawing paths.",
-      // 3D Target: Facing the Deep Back Alcove shelves coordinates
-      cameraYRotation: 180
+      cameraYRotation: 45,
+      elementId: 'blogTypewriter'
     }
   ];
 
-  // Cached DOM nodes (query once)
+  // Focus trap helpers (small, dependency-free)
+  let _trapHandler = null;
+  function trapFocus(modalEl) {
+    const selector = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])';
+    const focusable = Array.from(modalEl.querySelectorAll(selector)).filter(el => el.offsetParent !== null);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    _trapHandler = function (e) {
+      if (e.key !== 'Tab') return;
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', _trapHandler);
+    first.focus();
+  }
+  function releaseFocus() {
+    if (_trapHandler) {
+      document.removeEventListener('keydown', _trapHandler);
+      _trapHandler = null;
+    }
+  }
+
+  // Scene highlighting helpers
+  let lastHighlightedEl = null;
+  function highlightSceneElement(elementId) {
+    clearSceneHighlight();
+
+    if (!elementId) return;
+    const el = document.getElementById(elementId);
+    if (!el) return;
+
+    try {
+      el.setAttribute('material', 'color: #b8873f; opacity: 0.9; transparent: true');
+      el.setAttribute('animation__highlight', 'property: scale; to: 1.08 1.08 1.08; dir: alternate; dur: 600; loop: true; easing: easeInOutSine');
+      lastHighlightedEl = el;
+    } catch (err) {
+      try { if (el.object3D) el.object3D.scale.set(1.08, 1.08, 1.08); lastHighlightedEl = el; } catch (e) { /* ignore */ }
+    }
+  }
+  function clearSceneHighlight() {
+    if (!lastHighlightedEl) return;
+    try {
+      lastHighlightedEl.removeAttribute('animation__highlight');
+      lastHighlightedEl.removeAttribute('material');
+      lastHighlightedEl.setAttribute('scale', '1 1 1');
+    } catch (err) {
+      try { if (lastHighlightedEl.object3D) lastHighlightedEl.object3D.scale.set(1,1,1); } catch (e) { /* ignore */ }
+    }
+    lastHighlightedEl = null;
+  }
+
+  // Retry helper if entity not ready
+  function highlightSceneElementWithRetry(elementId, attempts = 6) {
+    if (!elementId) return;
+    let tries = 0;
+    const tryNow = () => {
+      const el = document.getElementById(elementId);
+      if (el) { highlightSceneElement(elementId); return; }
+      tries++;
+      if (tries < attempts) setTimeout(tryNow, 250);
+    };
+    tryNow();
+  }
+
+  // Utility: announce to aria-live region
+  function announce(msg) {
+    const live = document.getElementById('siteAnnouncement');
+    if (!live) return;
+    live.textContent = '';
+    // small timeout to ensure screen readers detect change
+    setTimeout(() => { live.textContent = msg; }, 50);
+  }
+
+  // Cached DOM nodes & startup
   document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('catalogSearch');
     const resultsContainer = document.getElementById('catalogResults');
     const modal = document.getElementById('parchmentModal');
     const modalTitle = document.getElementById('modalTitle');
     const modalContent = document.getElementById('modalContent');
+    const closeBtn = modal ? modal.querySelector('.close-btn') : null;
+
+    const exploreIntro = document.getElementById('exploreIntro');
+    const exploreBtn = document.getElementById('exploreBtn');
+    const showCatalogBtn = document.getElementById('showCatalogBtn');
+    const staticModeBtn = document.getElementById('staticModeBtn');
+    const exploreToggle = document.getElementById('exploreToggle');
+    const cardCatalog = document.getElementById('cardCatalogDrawer');
+    const catalogSearch = searchInput;
+    const exitStaticBtn = document.getElementById('exitStaticBtn');
+    const mTooltip = document.getElementById('mTooltip');
 
     if (!searchInput || !resultsContainer || !modal || !modalTitle || !modalContent) {
-      console.warn('library-engine: missing required DOM elements. Aborting script initialization.');
+      console.warn('library-engine: missing required DOM elements. Aborting initialization.');
       return;
     }
 
-    // Accessibility: close button reference (assumes markup contains a .close-btn element)
-    const closeBtn = modal.querySelector('.close-btn');
+    // Prevent body scroll while modal is open
+    function preventBodyScroll() { document.body.style.overflow = 'hidden'; }
+    function restoreBodyScroll() { document.body.style.overflow = ''; }
 
-    // Keep track of focus for modal
+    // Open/Close modal with accessibility hooks
     let lastFocusedEl = null;
-
-    function preventBodyScroll() {
-      document.body.style.overflow = 'hidden';
-    }
-    function restoreBodyScroll() {
-      document.body.style.overflow = '';
-    }
-
     function openParchment(title, contents) {
       lastFocusedEl = document.activeElement;
       modalTitle.textContent = title || '';
-      // Clear previous content
       modalContent.innerHTML = '';
-      // If contents is plain string, add it safely
+
       if (typeof contents === 'string') {
-        const p = document.createElement('p');
+        const p = document.createElement('div');
         p.innerText = contents;
         modalContent.appendChild(p);
       } else if (contents instanceof Node) {
         modalContent.appendChild(contents);
       } else {
-        // Fallback: stringify safely
-        const p = document.createElement('p');
+        const p = document.createElement('div');
         p.innerText = String(contents);
         modalContent.appendChild(p);
       }
+
       modal.classList.add('modal-active');
       modal.setAttribute('aria-hidden', 'false');
       preventBodyScroll();
 
-      // Focus management: focus close button if present, otherwise modal
-      if (closeBtn) {
-        closeBtn.focus();
-      } else {
-        modal.focus();
-      }
-      // Add keydown handler for modal-level interactions
-      document.addEventListener('keydown', handleKeyDown);
+      // trap focus inside the modal
+      trapFocus(modal);
+      announce(`${title} opened`);
+
+      // listen for Escape to close
+      const escHandler = function (e) { if (e.key === 'Escape') closeParchment(); };
+      document.addEventListener('keydown', escHandler);
+      modal._escHandler = escHandler;
     }
 
     function closeParchment() {
       modal.classList.remove('modal-active');
       modal.setAttribute('aria-hidden', 'true');
       restoreBodyScroll();
-      document.removeEventListener('keydown', handleKeyDown);
-      if (lastFocusedEl && typeof lastFocusedEl.focus === 'function') {
-        lastFocusedEl.focus();
-      }
+      releaseFocus();
+      if (modal._escHandler) document.removeEventListener('keydown', modal._escHandler);
+      if (lastFocusedEl && typeof lastFocusedEl.focus === 'function') lastFocusedEl.focus();
+      const prev = document.querySelector('.catalog-result.selected');
+      if (prev) prev.classList.remove('selected');
+      clearSceneHighlight();
+      announce('Closed details');
     }
 
-    function handleKeyDown(e) {
-      if (e.key === 'Escape') {
-        closeParchment();
-      }
-      // Tab trapping could be added here if modal contains multiple focusable elements.
-    }
-
-    // Wire close button
+    // wire close button
     if (closeBtn) {
       closeBtn.addEventListener('click', closeParchment);
-      // allow Enter/Space to activate the close control if it's not a button
       closeBtn.addEventListener('keydown', (ev) => {
-        if (ev.key === 'Enter' || ev.key === ' ') {
-          ev.preventDefault();
-          closeParchment();
-        }
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); closeParchment(); }
       });
     }
 
-    // If user clicks outside modal content, close it (optional — only if modal container is backdrop)
-    modal.addEventListener('click', (ev) => {
-      if (ev.target === modal) {
-        closeParchment();
-      }
-    });
+    // click backdrop to close
+    modal.addEventListener('click', (ev) => { if (ev.target === modal) closeParchment(); });
 
-    // Smoothly rotates the room to target the physical bookshelf area (A-Frame integration if present)
-    function highlightBookshelfZone(targetDegrees) {
-      // If an entity with id cameraRig exists, rotate it; otherwise try camera selector
-      const rig = document.getElementById('cameraRig') || document.querySelector('[camera]');
-      if (rig) {
-        // If rig is an A-Frame entity, setAttribute accepts strings or objects
-        try {
-          rig.setAttribute('rotation', `0 ${targetDegrees} 0`);
-        } catch (err) {
-          // Fallback: directly set style transform for non-AFrame fallbacks
-          if (rig.style) rig.style.transform = `rotateY(${targetDegrees}deg)`;
-        }
-      }
+    // helper: safe HTML escape for snippets
+    function escapeHtml(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    // Build a result item safely using DOM APIs (button for keyboard accessibility)
+    // rotate/face bookshelf helper (best-effort)
+    function highlightBookshelfZone(targetDegrees) {
+      const rig = document.getElementById('cameraRig') || document.querySelector('[camera]');
+      if (!rig) return;
+      try { rig.setAttribute('rotation', `0 ${targetDegrees} 0`); } catch (err) { if (rig.style) rig.style.transform = `rotateY(${targetDegrees}deg)`; }
+    }
+
+    // create accessible result button
     function createResultButton(book) {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'catalog-result';
-      btn.style.display = 'block';
-      btn.style.width = '100%';
-      btn.style.textAlign = 'left';
-      btn.style.padding = '8px';
-      btn.style.border = 'none';
-      btn.style.background = 'transparent';
-      btn.style.cursor = 'pointer';
       btn.setAttribute('aria-label', `${book.title} by ${book.author}`);
 
       const titleLine = document.createElement('div');
       titleLine.style.fontWeight = '600';
-      titleLine.textContent = `[Dewey: ${book.dewey}] ${book.title}`;
+      titleLine.innerHTML = `<strong>[Dewey: ${escapeHtml(book.dewey)}]</strong> ${escapeHtml(book.title)}`;
       btn.appendChild(titleLine);
 
       const metaLine = document.createElement('div');
-      metaLine.style.fontSize = '0.9em';
-      metaLine.style.color = '#3e2723';
+      metaLine.className = 'meta';
       const seriesText = book.seriesName && book.seriesName !== 'None' ? `Vol ${book.volume} of ${book.seriesName}` : 'Standalone';
       metaLine.textContent = `By ${book.author} | ${seriesText}`;
       btn.appendChild(metaLine);
 
       btn.addEventListener('click', () => {
-        // Pivot the entire room orientation smoothly (if possible)
-        highlightBookshelfZone(book.cameraYRotation);
+        const prev = document.querySelector('.catalog-result.selected');
+        if (prev) prev.classList.remove('selected');
+        btn.classList.add('selected');
 
-        // Build structured content safely
+        try { highlightBookshelfZone(book.cameraYRotation || 0); } catch (e) { /* ignore */ }
+        highlightSceneElementWithRetry(book.elementId);
+
         const wrapper = document.createElement('div');
-
         const authorLine = document.createElement('p');
         authorLine.innerHTML = `<strong>Author:</strong> ${escapeHtml(book.author)}`;
         wrapper.appendChild(authorLine);
@@ -217,71 +278,197 @@
       return btn;
     }
 
-    // Simple escape for inserted innerHTML snippets (we still build DOM, but use innerHTML for <strong>/<em>).
-    function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
-
-    // Render "no results" message
+    // render no results
     function renderNoResults(query) {
       resultsContainer.innerHTML = '';
       const no = document.createElement('div');
-      no.style.padding = '8px';
-      no.style.color = '#fff';
-      no.textContent = `No results for "${query}". Try different keywords.`;
+      no.className = 'catalog-result';
+      no.textContent = `No results for "${query}".`;
       resultsContainer.appendChild(no);
+      announce(`No results for ${query}`);
     }
 
-    // Main search handler (debounced)
+    // main search handler (debounced)
     const handleSearch = debounce(function (e) {
       const query = (e && e.target) ? e.target.value.trim().toLowerCase() : '';
       resultsContainer.innerHTML = '';
 
       if (!query) {
-        // Could show suggestions or recent searches here
         const hint = document.createElement('div');
-        hint.style.padding = '8px';
-        hint.style.color = '#fff';
+        hint.className = 'catalog-result';
         hint.textContent = 'Start typing a title, author, or genre to search the catalog.';
         resultsContainer.appendChild(hint);
         return;
       }
 
-      // Basic tokenized matching: split query into tokens and make sure each token appears somewhere
       const tokens = query.split(/\s+/).filter(Boolean);
-
       const matches = libraryMasterCatalog.filter((book) => {
         const hay = `${book.title} ${book.author} ${book.genre}`.toLowerCase();
         return tokens.every(tok => hay.includes(tok));
       });
 
-      if (!matches.length) {
-        renderNoResults(query);
-        return;
-      }
+      if (!matches.length) { renderNoResults(query); return; }
 
-      const fragment = document.createDocumentFragment();
-      matches.forEach((book) => {
-        const btn = createResultButton(book);
-        fragment.appendChild(btn);
-      });
-      resultsContainer.appendChild(fragment);
+      const frag = document.createDocumentFragment();
+      matches.forEach(book => frag.appendChild(createResultButton(book)));
+      resultsContainer.appendChild(frag);
+      announce(`${matches.length} results for ${query}`);
     }, 200);
 
-    // Attach
     searchInput.addEventListener('input', handleSearch);
-
-    // Initialize empty state
-    searchInput.value = ''; // optional: restore previous value from localStorage
+    // init empty state
+    searchInput.value = '';
     handleSearch({ target: searchInput });
 
-    // Expose open/close globally only if needed by inline a-frame onclicks (but better to avoid globals)
+    // Expose for inline handlers
     window.openParchment = openParchment;
     window.closeParchment = closeParchment;
+
+    // Populate static list for reduced-motion view (accessible list)
+    function populateStaticList() {
+      const list = document.getElementById('staticBookList');
+      if (!list) return;
+      list.innerHTML = '';
+      libraryMasterCatalog.forEach(book => {
+        const item = document.createElement('div');
+        item.className = 'static-item';
+        item.setAttribute('role','listitem');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = `${book.title} — ${book.author}`;
+        btn.addEventListener('click', () => {
+          try { highlightBookshelfZone(book.cameraYRotation || 0); } catch (e) {}
+          highlightSceneElementWithRetry(book.elementId);
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = `<p><strong>Author:</strong> ${escapeHtml(book.author)}</p><p><strong>Genre Hierarchy:</strong> ${escapeHtml(book.genre)}</p><p><em>${escapeHtml(book.summary)}</em></p>`;
+          openParchment(`${book.title} (Class ${book.dewey})`, wrapper);
+          announce(`${book.title} opened`);
+        });
+        item.appendChild(btn);
+        list.appendChild(item);
+      });
+    }
+
+    // Attach keyboard handlers to hotspot entities so Enter/Space activates them
+    function attachHotspotKeyboardHandlers() {
+      libraryMasterCatalog.forEach(book => {
+        if (!book.elementId) return;
+        const el = document.getElementById(book.elementId);
+        if (!el) return;
+        // ensure keyboard focusable
+        try { el.setAttribute('tabindex', '0'); } catch (e) { /* ignore */ }
+        el.addEventListener('keydown', (ev) => {
+          if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            // trigger click handler (some a-frame elements support click)
+            try { el.click(); } catch (err) {
+              // fallback to openParchment using book data
+              const wrapper = document.createElement('div');
+              wrapper.innerHTML = `<p><strong>Author:</strong> ${escapeHtml(book.author)}</p><p><em>${escapeHtml(book.summary)}</em></p>`;
+              openParchment(`${book.title} (Class ${book.dewey})`, wrapper);
+            }
+          }
+        });
+      });
+    }
+
+    // M-key tooltip helper
+    function showMTooltipOnce() {
+      const tip = document.getElementById('mTooltip');
+      if (!tip) return;
+      if (localStorage.getItem('sawMTooltip')) return;
+      tip.classList.add('visible');
+      announce('Tip: press M to toggle Reduce Motion');
+      setTimeout(() => { tip.classList.remove('visible'); localStorage.setItem('sawMTooltip','1'); }, 4500);
+    }
+
+    // Onboarding + Explore toggle wiring with accessibility
+    if (exploreIntro && !localStorage.getItem('sawExploreIntro')) { exploreIntro.style.display = 'block'; exploreIntro.setAttribute('aria-hidden','false'); }
+    else if (exploreIntro) { exploreIntro.style.display = 'none'; exploreIntro.setAttribute('aria-hidden','true'); }
+
+    if (exploreBtn) {
+      exploreBtn.addEventListener('click', () => {
+        localStorage.setItem('sawExploreIntro', '1');
+        exploreIntro.style.display = 'none';
+        exploreIntro.setAttribute('aria-hidden','true');
+        brieflyShowHotspots();
+        announce('Exploration started');
+      });
+    }
+
+    if (showCatalogBtn) {
+      showCatalogBtn.addEventListener('click', () => {
+        if (exploreIntro) { exploreIntro.style.display = 'none'; exploreIntro.setAttribute('aria-hidden','true'); }
+        if (cardCatalog) { cardCatalog.classList.remove('hidden'); if (catalogSearch) catalogSearch.focus(); }
+        announce('Catalog opened');
+      });
+    }
+
+    // helper that briefly hints at hotspots
+    function brieflyShowHotspots() {
+      const hotspotIds = libraryMasterCatalog.map(b => b.elementId).filter(Boolean);
+      hotspotIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        try { el.setAttribute('material', 'color: #b8873f; opacity: 0.65; transparent: true'); } catch (e) {}
+        setTimeout(() => { try { el.setAttribute('material', 'opacity: 0.01; transparent: true'); } catch (e) {} }, 1400);
+      });
+    }
+
+    // Explore toggle (floating)
+    if (exploreToggle) {
+      exploreToggle.setAttribute('aria-pressed', 'false');
+      exploreToggle.addEventListener('click', () => {
+        const pressed = exploreToggle.getAttribute('aria-pressed') === 'true';
+        exploreToggle.setAttribute('aria-pressed', String(!pressed));
+        if (cardCatalog) {
+          cardCatalog.classList.toggle('hidden');
+          if (!cardCatalog.classList.contains('hidden') && catalogSearch) catalogSearch.focus();
+          announce(cardCatalog.classList.contains('hidden') ? 'Catalog hidden' : 'Catalog shown');
+        }
+      });
+    }
+
+    // Static mode toggle
+    if (staticModeBtn) {
+      staticModeBtn.setAttribute('aria-pressed', String(!!localStorage.getItem('staticMode')));
+      staticModeBtn.addEventListener('click', () => {
+        const pressed = staticModeBtn.getAttribute('aria-pressed') === 'true';
+        const newMode = !pressed;
+        staticModeBtn.setAttribute('aria-pressed', String(newMode));
+        if (typeof window.setStaticMode === 'function') window.setStaticMode(newMode);
+        announce(newMode ? 'Static view enabled' : 'Interactive view enabled');
+        showMTooltipOnce();
+      });
+    }
+
+    if (exitStaticBtn) {
+      exitStaticBtn.addEventListener('click', () => {
+        if (typeof window.setStaticMode === 'function') window.setStaticMode(false);
+        if (staticModeBtn) staticModeBtn.setAttribute('aria-pressed','false');
+        announce('Interactive view enabled');
+      });
+    }
+
+    // Keyboard shortcut: press 'm' to toggle static mode (when not focused in an input)
+    document.addEventListener('keydown', (e) => {
+      const ae = document.activeElement;
+      const tag = ae && ae.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || (ae && ae.isContentEditable)) return;
+      if (e.key && e.key.toLowerCase() === 'm') {
+        e.preventDefault();
+        const current = !!localStorage.getItem('staticMode');
+        const newMode = !current;
+        if (typeof window.setStaticMode === 'function') window.setStaticMode(newMode);
+        if (staticModeBtn) staticModeBtn.setAttribute('aria-pressed', String(newMode));
+        announce(newMode ? 'Static view enabled' : 'Interactive view enabled');
+        showMTooltipOnce();
+      }
+    });
+
+    // Populate static list and hotspot keyboard handlers now
+    populateStaticList();
+    attachHotspotKeyboardHandlers();
+
   });
 })();

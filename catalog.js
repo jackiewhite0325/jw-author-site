@@ -26,7 +26,6 @@ window.setStaticMode = function(enabled) {
   }
 };
 
-
 /* ==========================================================================
    2. DOM Viewport Engineering & Diagnostic Timers
    ========================================================================== */
@@ -65,15 +64,18 @@ document.addEventListener('DOMContentLoaded', () => {
     container.appendChild(banner);
   }, 4500);
 
-  initializeViewer(container);
+  // Mobile WebGL Library Safeguard Check
+  if (typeof pannellum !== 'undefined') {
+    initializeViewer(container);
+  }
   initializeUIComponents();
 });
-
-
 /* ==========================================================================
    3. WebGL Room Viewer & Custom Interactive Hotspots
    ========================================================================== */
 function initializeViewer(container) {
+  if (typeof pannellum === 'undefined' || !pannellum.viewer) return;
+  
   roomViewer = pannellum.viewer(container, {
     type: 'equirectangular',
     panorama: 'library.jpg',
@@ -151,7 +153,4 @@ function initializeUIComponents() {
     });
   }
 }
-
-
-
 

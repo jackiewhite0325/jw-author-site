@@ -13,8 +13,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
   
   <!-- Pannellum WebGL Engine Libraries -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+  <link
+    id="pannellum-css"
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"
+    onload="window.__libraryDiagnostics = window.__libraryDiagnostics || {}; window.__libraryDiagnostics.cdnCssStatus = 'loaded';"
+    onerror="window.__libraryDiagnostics = window.__libraryDiagnostics || {}; window.__libraryDiagnostics.cdnCssStatus = 'error';"
+  >
+  <script
+    id="pannellum-script"
+    type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"
+    onload="window.__libraryDiagnostics = window.__libraryDiagnostics || {}; window.__libraryDiagnostics.cdnScriptStatus = 'loaded';"
+    onerror="window.__libraryDiagnostics = window.__libraryDiagnostics || {}; window.__libraryDiagnostics.cdnScriptStatus = 'error';"
+  ></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -28,6 +40,10 @@
     <section id="library-fallback" class="library-fallback" role="alert" hidden>
       <h1>Library is still available</h1>
       <p>The immersive view could not finish loading. You can still use the direct links below.</p>
+      <details id="library-debug-panel" class="library-debug-panel" hidden>
+        <summary>Technical details</summary>
+        <pre id="library-debug-output" class="library-debug-output"></pre>
+      </details>
       <nav aria-label="Library fallback links">
         <a href="fiction.html">Fiction</a>
         <a href="children.html">Children&apos;s Stories</a>

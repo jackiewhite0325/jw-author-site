@@ -70,6 +70,27 @@ h1, h2, h3, .literary-font {
   line-height: 1.5;
 }
 
+.library-debug-panel {
+  margin: 0 0 1rem;
+  text-align: left;
+}
+
+.library-debug-panel summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.library-debug-output {
+  margin: 0.75rem 0 0;
+  padding: 0.75rem;
+  border-radius: 6px;
+  background: rgba(43, 43, 43, 0.06);
+  color: var(--charcoal-txt);
+  font: 0.8rem/1.45 ui-monospace, SFMono-Regular, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 .library-fallback nav {
   display: flex;
   flex-wrap: wrap;

@@ -1,6 +1,4 @@
 let roomViewer;
-let activeTargetId = null;
-let navigationTrackingInterval = null;
 
 window.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize Pannellum Room with Full-Page Immersion

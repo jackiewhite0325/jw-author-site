@@ -10,10 +10,12 @@
 <link rel="icon" href="images/site/favicon.ico">
 <link rel="apple-touch-icon" href="images/site/favicon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <header class="site-header">
   <div class="container">
@@ -35,9 +37,10 @@
     </nav>
   </div>
 </header>
+<main id="main-content">
 
 <section class="site-hero" style="padding:0; background:none;">
-  <img src="images/children/muffin-series-banner.jpg" alt="Muffin the Pitbull Puppy series" style="width:100%;">
+  <img src="images/children/muffin-series-banner.jpg" loading="lazy" alt="Muffin the Pitbull Puppy series" style="width:100%;">
 </section>
 
 <section class="site-hero">
@@ -48,7 +51,7 @@
 <section class="container">
   <div class="book-grid">
     <div class="book-card">
-      <img src="images/children/book1-cover-v2.png" alt="Muffin Gets the Wiggles">
+      <img src="images/children/book1-cover-v2.png" loading="lazy" alt="Muffin Gets the Wiggles">
       <div class="book-info">
         <h3>Book 1: Muffin Gets the Wiggles</h3>
         <p class="price">Kindle $3.99 &middot; Paperback $9.99</p>
@@ -77,6 +80,7 @@
   </div>
 </section>
 
+</main>
 <footer class="site-footer">
   <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
 </footer>

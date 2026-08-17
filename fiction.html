@@ -1,126 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fiction | J. White</title>
-<meta name="description" content="The Ties That Tear: New fiction from author J. White, coming soon.">
-<meta property="og:title" content="Fiction | J. White">
-<meta property="og:image" content="images/site/social-share.jpg">
-<link rel="icon" href="images/site/favicon.ico">
-<link rel="apple-touch-icon" href="images/site/favicon-180.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiction | J. White</title>
+  <meta name="description" content="The Ties That Tear: New fiction from author J. White, coming soon.">
+  
+  <!-- Open Graph Social Protocol Configurations -->
+  <meta property="og:title" content="Fiction | J. White">
+  <meta property="og:image" content="images/site/social-share.jpg">
+  
+  <!-- Favicon Asset Configurations -->
+  <link rel="icon" href="images/site/favicon.ico">
+  <link rel="apple-touch-icon" href="images/site/favicon-180.png">
+  
+  <!-- Global Typography Font Arrays Sync -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://googleapis.com" rel="stylesheet">
+  
+  <!-- Master Framework Stylesheet Import -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <style>
+    /* Fiction Showcase Custom Structural Rules */
+    .fiction-container {
+      max-width: 750px;
+      margin: 0 auto;
+      padding: 3.5rem 1.5rem 5rem;
+    }
+
+    .hero-teaser-img {
+      max-width: 500px; 
+      width: 100%;
+      height: auto;
+      margin: 0 auto;
+      display: block;
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    }
+
+    .fiction-showcase {
+      margin-top: 3rem;
+      text-align: center;
+    }
+
+    .fiction-showcase h1 {
+      font-size: clamp(1.6rem, 5vw, 2.25rem);
+      line-height: 1.3;
+      margin: 0 0 0.75rem 0;
+    }
+
+    .fiction-showcase .sub-tagline {
+      font-size: 1.15rem;
+      color: var(--charcoal-txt, #2B2B2B);
+      opacity: 0.85;
+      margin: 0 0 2.5rem 0;
+    }
+
+    .fiction-showcase p {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin: 0 0 1.5rem 0;
+      text-align: left;
+    }
+
+    .cover-artwork-frame {
+      margin: 3rem auto; 
+      max-width: 380px; 
+      box-shadow: 0 12px 36px rgba(43, 43, 43, 0.16); 
+      border-radius: 6px; 
+      overflow: hidden;
+      border: 1px solid var(--sage-divider, #A3B19B);
+    }
+
+    .cover-artwork-frame img {
+      width: 100%; 
+      height: auto; 
+      display: block;
+    }
+
+    .fiction-showcase h2 {
+      font-size: 1.4rem; 
+      margin: 2.5rem 0 1.25rem;
+      letter-spacing: 0.02em;
+    }
+
+    .manifest-list-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .manifest-list {
+      text-align: left; 
+      padding-left: 1.25rem; 
+      margin: 0;
+      max-width: 100%;
+    }
+
+    .manifest-list li {
+      margin-bottom: 0.75rem;
+      font-size: 1.05rem;
+      line-height: 1.5;
+    }
+
+    /* Standardized Framework Newsletter Container Well */
+    .newsletter-panel {
+      background-color: var(--mist, #F2F5F3); 
+      padding: 2.5rem; 
+      border-radius: 8px; 
+      margin-top: 4rem; 
+      text-align: center; 
+      border: 1px solid var(--sage-divider, #A3B19B);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.02);
+    }
+
+    .newsletter-panel h3 {
+      font-size: 1.35rem; 
+      margin: 0 0 0.5rem 0;
+    }
+
+    .newsletter-panel p {
+      font-size: 0.95rem; 
+      color: var(--charcoal-txt, #2B2B2B);
+      opacity: 0.8;
+      margin: 0 0 2rem 0;
+      text-align: center;
+    }
+
+    .form-group-block {
+      margin-bottom: 1.5rem; 
+      text-align: center;
+    }
+
+    .form-group-block label {
+      display: block; 
+      font-weight: 500; 
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .form-group-block .asterisk {
+      color: var(--amber-deep, #B8874F);
+      margin-left: 2px;
+    }
+
+    .form-input-text {
+      width: 100%; 
+      max-width: 450px; 
+      padding: 0.85rem 1rem; 
+      border: 1px solid var(--sage-divider, #A3B19B); 
+      border-radius: 4px; 
+      font-size: 1rem; 
+      background-color: var(--paper, #FDFBF7);
+      color: var(--ink, #2B2B2B);
+      margin: 0 auto; 
+      display: block;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-input-text:focus {
+      border-color: var(--amber-gold, #D4A373);
+      box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.15);
+    }
+
+    .newsletter-submit-action {
+      display: block;
+      margin: 0 auto;
+      min-width: 180px;
+    }
+
+    .fiction-footer-note {
+      text-align: center; 
+      font-style: italic; 
+      margin-top: 4rem; 
+      border-top: 1px solid var(--sage-divider, #A3B19B); 
+      padding-top: 2rem;
+      font-size: 0.95rem;
+      opacity: 0.85;
+    }
+  </style>
 </head>
 <body>
-<a href="#main-content" class="skip-link">Skip to main content</a>
 
-<header class="site-header">
-  <div class="container">
-    <a href="index.html" class="logo-link">
-      <img src="images/site/logo-banner.png" alt="J. White, Sigil and Scribe">
-    </a>
-    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
-    <nav class="site-nav">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="children.html">Children's Books</a></li>
-        <li><a href="health-wellness.html">Health &amp; Wellness</a></li>
-        <li><a href="more-books.html">More Books</a></li>
-        <li><a href="fiction.html" class="active">Fiction</a></li>
-        <li><a href="muffin-memorial.html">Muffin's Memorial</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="blog.html">Blog</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
-<main id="main-content">
+  <!-- Accessible Skip Target Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<section class="container" style="text-align:center; padding:3.5rem 1.5rem;">
-  <img src="images/fiction/fiction-coming-soon.jpg" loading="lazy" alt="The Ties That Tear, coming soon" style="max-width:500px; margin:0 auto;">
-  
-  <div style="max-width:38em; margin:2.5rem auto 0; text-align: center; line-height: 1.6;">
-    <h1 style="font-family: 'Poppins', sans-serif; font-size: 2.2rem; text-align: center; margin-bottom: 0.5rem;">The past doesn't stay buried. It stays knotted.</h1>
-    <p style="font-size: 1.1rem; text-align: center; color: #555; margin-bottom: 2rem;">
-      Introducing <strong>The Ties That Tear</strong>, the explosive first installment of the <em>Trinity Tension Saga</em>.
-    </p>
-    
-    <p style="margin-bottom: 1.5rem;">
-      Follow Clara, a solo protagonist yanked from the modern day and forced to become a reluctant instrument of a cosmic balancing system. Her first assignment? The most famous marital disaster in history.
-    </p>
-
-    <!-- Book 1 Working Cover Artwork -->
-    <div style="margin: 2.5rem auto; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border-radius: 4px; overflow: hidden;">
-      <img src="images/fiction/ttt1.1-working-cover1.png" loading="lazy" alt="The Ties That Tear Book 1 Working Cover Art" style="width: 100%; height: auto; display: block;">
+  <!-- Primary Site Header Layout Component Context -->
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="logo-link">
+        <img src="images/site/logo-banner.png" alt="J. White, Sigil and Scribe">
+      </a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="children.html">Children's Books</a></li>
+          <li><a href="health-wellness.html">Health &amp; Wellness</a></li>
+          <li><a href="more-books.html">More Books</a></li>
+          <li><a href="fiction.html" class="active">Fiction</a></li>
+          <li><a href="muffin-memorial.html">Muffin's Memorial</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </nav>
     </div>
+  </header>
 
-    <h2 style="font-family: 'Poppins', sans-serif; font-size: 1.4rem; margin-top: 2rem; margin-bottom: 0.75rem;">What to expect in Book 1:</h2>
-    <div style="text-align: center; margin-bottom: 2rem;">
-      <ul style="display: inline-block; text-align: left; padding-left: 1.5rem; margin: 0;">
-        <li style="margin-bottom: 0.5rem;">A dual-timeline jump from modern day to Tudor England.</li>
-        <li style="margin-bottom: 0.5rem;">A deep dive into the psychological rot of Henry VIII's court.</li>
-        <li style="margin-bottom: 0.5rem;">A magic system where emotional trauma manifests as physical strings.</li>
-        <li style="margin-bottom: 0.5rem;">A high-stakes race against time that sets a 21-book saga in motion.</li>
-      </ul>
-    </div>
-
-    <!-- Integrated Mailchimp Signup Container -->
-    <div style="background-color: #f9f9f9; padding: 2rem; border-radius: 8px; margin-top: 3rem; text-align: center; border: 1px solid #eee;">
-      <h3 style="font-family: 'Poppins', sans-serif; font-size: 1.25rem; margin-bottom: 0.5rem;">Be the first to step into the saga</h3>
-      <p style="font-size: 0.95rem; color: #666; margin-bottom: 1.5rem;">Sign up to get updates, release alerts, and exclusive behind-the-scenes content.</p>
+  <!-- Central Payload Document Workspace -->
+  <main id="main-content">
+    <section class="container fiction-container">
       
-      <div id="mc_embed_signup">
-        <form action="https://ACCOUNT.us1.list-manage.com/subscribe/post?u=USERID&amp;id=LISTID" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
-          <div id="mc_embed_signup_scroll" style="text-align: center;">
-            
-            <div class="mc-field-group" style="margin-bottom: 1rem; text-align: center;">
-              <label for="mce-EMAIL" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Email Address <span class="asterisk" style="color: red;">*</span></label>
-              <input type="email" name="EMAIL" class="required email" id="mce-EMAIL" required value="" style="width: 100%; max-width: 450px; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; box-sizing: border-box; margin: 0 auto; display: block;">
-            </div>
+      <img src="images/fiction/fiction-coming-soon.jpg" alt="Teaser illustration for the upcoming novel The Ties That Tear" class="hero-teaser-img" loading="lazy">
+      
+      <div class="fiction-showcase">
+        <h1>The past doesn't stay buried. It stays knotted.</h1>
+        <p class="sub-tagline">
+          Introducing <strong>The Ties That Tear</strong>, the explosive first installment of the <em>Trinity Tension Saga</em>.
+        </p>
+        
+        <p>
+          Follow Clara, a solo protagonist yanked from the modern day and forced to become a reluctant instrument of a cosmic balancing system. Her first assignment? The most famous marital disaster in history.
+        </p>
 
-            <div id="mce-responses" class="clear foot" style="margin-bottom: 1rem;">
-              <div class="response" id="mce-error-response" style="display: none;"></div>
-              <div class="response" id="mce-success-response" style="display: none;"></div>
-            </div>
+        <!-- Book 1 Working Cover Artwork Container Module -->
+        <div class="cover-artwork-frame">
+          <img src="images/fiction/ttt1.1-working-cover1.png" alt="The Ties That Tear Book 1 Working Cover Artwork Layout View" loading="lazy">
+        </div>
 
-            <!-- Bot protection field do not remove -->
-            <div aria-hidden="true" style="position: absolute; left: -5000px;">
-              <input type="text" name="b_b60ca17a6f10ca19af0cdac3a_00a4d46bcd" tabindex="-1" value="">
-            </div>
+        <h2>What to expect in Book 1:</h2>
+        <div class="manifest-list-wrapper">
+          <ul class="manifest-list">
+            <li>A dual-timeline jump from modern day to Tudor England.</li>
+            <li>A deep dive into the psychological rot of Henry VIII's court.</li>
+            <li>A magic system where emotional trauma manifests as physical strings.</li>
+            <li>A high-stakes race against time that sets a 21-book saga in motion.</li>
+          </ul>
+        </div>
 
-            <div class="optionalParent">
-              <div class="clear foot" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; width: 100%;">
-                <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="button" value="Join the List" style="padding: 0.75rem 2rem; background-color: #333; color: #fff; border: none; border-radius: 4px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: auto; margin: 0 auto; display: block;">
+        <!-- Integrated Mailchimp Signup Framework Panel Well -->
+        <div class="newsletter-panel">
+          <h3>Be the first to step into the saga</h3>
+          <p>Sign up to get updates, release alerts, and exclusive behind-the-scenes content.</p>
+          
+          <div id="mc_embed_signup">
+            <form action="https://ACCOUNT.us1.list-manage.com/subscribe/post?u=USERID&amp;id=LISTID" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+              <div id="mc_embed_signup_scroll">
+                
+                <div class="mc-field-group form-group-block">
+                  <label for="mce-EMAIL">Email Address<span class="asterisk">*</span></label>
+                  <input type="email" name="EMAIL" class="required email form-input-text" id="mce-EMAIL" required value="">
+                </div>
+
+                <div id="mce-responses" class="clear foot" style="margin-bottom: 1rem;">
+                  <div class="response" id="mce-error-response" style="display: none;"></div>
+                  <div class="response" id="mce-success-response" style="display: none;"></div>
+                </div>
+
+                <!-- Anti-Bot Honeypot Field Protection Rule -->
+                <div aria-hidden="true" style="position: absolute; left: -5000px;">
+                  <input type="text" name="b_b60ca17a6f10ca19af0cdac3a_00a4d46bcd" tabindex="-1" value="">
+                </div>
+
+                <div class="optionalParent">
+                  <div class="clear foot">
+                    <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="btn btn-primary newsletter-submit-action" value="Join the List">
+                  </div>
+                </div>
+
               </div>
-            </div>
-
+            </form>
           </div>
-        </form>
+        </div>
+
+        <p class="fiction-footer-note">
+          New fiction from J. White is in the works. Check back soon, or visit the 
+          <a href="blog.html">blog</a> for updates as it comes together.
+        </p>
       </div>
-    </div>
+    </section>
+  </main>
 
-    <p style="text-align: center; font-style: italic; margin-top: 2.5rem; border-top: 1px solid #eee; padding-top: 1.5rem;">
-      New fiction from J. White is in the works. Check back soon, or visit the 
-      <a href="blog.html">blog</a> for updates as it comes together.
-    </p>
-  </div>
-</section>
+  <!-- Universal Footer Element -->
+  <footer class="site-footer">
+    <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
+  </footer>
 
-</main>
-<footer class="site-footer">
-  <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
-</footer>
-
-<!-- Mailchimp validation (vanilla JS — no jQuery dependency) -->
-<script type="text/javascript">
-  (function() {
-    window.fnames = ['EMAIL', 'FNAME', 'LNAME', 'ADDRESS', 'PHONE'];
-    window.ftypes = ['email', 'text', 'text', 'address', 'phone'];
-  }());
-</script>
-<script src="js/main.js"></script>
+  <!-- Mailchimp Validation Parameter Definitions Setup -->
+  <script type="text/javascript">
+    (function() {
+      'use strict';
+      window.fnames = ['EMAIL', 'FNAME', 'LNAME', 'ADDRESS', 'PHONE'];
+      window.ftypes = ['email', 'text', 'text', 'address', 'phone'];
+    }());
+  </script>
+  
+  <!-- Universal Site Controller Interceptors Execution Layer -->
+  <script src="js/main.js"></script>
 </body>
 </html>

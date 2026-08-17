@@ -1,3 +1,6 @@
+// app.js - Immersive Viewer Architecture
+let roomViewer;
+
 function dismissToast() {
   const toast = document.getElementById('invitation-toast');
   if (toast) {
@@ -15,27 +18,6 @@ function clearNavigationLock() {
   
   dismissToast();
 }
-// Inside roomViewer.on('load', ...) execution logic:
-libraryMasterCatalog.forEach((item, index) => {
-  roomViewer.addHotSpot({
-    "pitch": item.shelfCoordinate ? item.shelfCoordinate.pitch : 0,
-    "yaw": item.cameraYRotation !== undefined ? item.cameraYRotation : 0,
-    "type": "info",
-    "text": `[Dewey ${item.dewey}] ${item.title}`,
-    "cssClass": "library-custom-hotspot",
-    // CRITICAL FIX: Explicitly constructs the required DOM span wrapper element
-    "createTooltipFunc": (hotspotElement) => {
-      hotspotElement.setAttribute('data-registry-id', item.elementId || item.id);
-      hotspotElement.setAttribute('data-registry-index', index);
-      
-      const span = document.createElement('span');
-      span.className = 'pnlm-tooltip-text';
-      span.textContent = `[Dewey ${item.dewey}] ${item.title}`;
-      hotspotElement.appendChild(span);
-      return span;
-    }
-  });
-});
 
 function setupHotspotClickHandling() {
   const container = document.getElementById('panorama-container');
@@ -92,7 +74,6 @@ function populateSelectorDropdown() {
   const select = document.getElementById('catalog-search-select');
   if (!select) return;
   
-  // Clear old options while keeping the header prompt card intact
   select.innerHTML = '<option value="">-- Pull open a drawer --</option>';
   
   libraryMasterCatalog.forEach(item => {
@@ -117,7 +98,6 @@ function triggerInvitationToast(item) {
   toast.style.display = 'block';
   toast.setAttribute('aria-hidden', 'false');
 
-  // Prevent event loop stack duplication clones from building up
   const clonedBtn = acceptBtn.cloneNode(true);
   acceptBtn.parentNode.replaceChild(clonedBtn, acceptBtn);
 
@@ -135,7 +115,6 @@ window.addEventListener('load', () => {
   const targetPanoContainer = document.getElementById('panorama-container');
   if (!targetPanoContainer) return;
 
-  // Initialize your base equirectangular 360 viewer workspace instance
   roomViewer = pannellum.viewer('panorama-container', {
     "type": "equirectangular",
     "panorama": "./images/site/victorian_library_360.png",
@@ -152,15 +131,31 @@ window.addEventListener('load', () => {
     }
   };
 
-  // Bind hotspot loading loops and custom action systems upon asset ready states
   roomViewer.on('load', () => {
-    // [Insert the libraryMasterCatalog.forEach hotspot loop block here]
+    libraryMasterCatalog.forEach((item, index) => {
+      roomViewer.addHotSpot({
+        "pitch": item.shelfCoordinate ? item.shelfCoordinate.pitch : 0,
+        "yaw": item.cameraYRotation !== undefined ? item.cameraYRotation : 0,
+        "type": "info",
+        "text": `[Dewey ${item.dewey}] ${item.title}`,
+        "cssClass": "library-custom-hotspot",
+        "createTooltipFunc": (hotspotElement) => {
+          hotspotElement.setAttribute('data-registry-id', item.elementId || item.id);
+          hotspotElement.setAttribute('data-registry-index', index);
+          
+          const span = document.createElement('span');
+          span.className = 'pnlm-tooltip-text';
+          span.textContent = `[Dewey ${item.dewey}] ${item.title}`;
+          hotspotElement.appendChild(span);
+          return span;
+        }
+      });
+    });
     
     populateSelectorDropdown();
     setupHotspotClickHandling();
   });
 
-  // Minimize Drawer Toggle Actions UI Setup
   const minimizeBtn = document.getElementById('catalog-toggle-btn');
   const catalogDrawer = document.getElementById('cardCatalogDrawer') || document.getElementById('card-catalog-drawer');
   if (minimizeBtn && catalogDrawer) {
@@ -172,4 +167,3 @@ window.addEventListener('load', () => {
     });
   }
 });
-

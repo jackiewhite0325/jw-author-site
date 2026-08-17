@@ -81,15 +81,12 @@
     }
   }
 
-  // Scene highlighting helpers (A-Frame-friendly, with Pannellum fallback)
-  let lastHighlightedEl = null;
-  let _transientOverlay = null;
-
+  // Transient overlay helper (used instead of A-Frame highlights)
+  let _transientOverlayTimer = null;
   function _createTransientOverlay(text) {
     try {
       const container = document.getElementById('library-panorama');
       if (!container) return null;
-      // Reuse if present
       let overlay = container.querySelector('.pano-transient-overlay');
       if (!overlay) {
         overlay = document.createElement('div');
@@ -111,32 +108,15 @@
       }
       overlay.textContent = text || '';
       overlay.style.opacity = '1';
-      clearTimeout(_transientOverlay);
-      _transientOverlay = setTimeout(() => {
-        try { overlay.style.opacity = '0'; } catch (e) {}
-      }, 900);
+      if (_transientOverlayTimer) clearTimeout(_transientOverlayTimer);
+      _transientOverlayTimer = setTimeout(() => { try { overlay.style.opacity = '0'; } catch (e) {} }, 900);
       return overlay;
     } catch (e) { return null; }
   }
 
+  // Highlighting functions (A-Frame removed) — use Pannellum yaw and transient overlay
   function highlightSceneElement(elementId, fallbackYaw) {
-    clearSceneHighlight();
-    if (!elementId && typeof fallbackYaw === 'undefined') return;
-
-    const el = elementId ? document.getElementById(elementId) : null;
-    // If A-Frame element exists, use existing behavior
-    if (el) {
-      try {
-        el.setAttribute('material', 'color: #b8873f; opacity: 0.9; transparent: true');
-        el.setAttribute('animation__highlight', 'property: scale; to: 1.08 1.08 1.08; dir: alternate; dur: 600; loop: true; easing: easeInOutSine');
-        lastHighlightedEl = el;
-        return;
-      } catch (err) {
-        try { if (el.object3D) el.object3D.scale.set(1.08, 1.08, 1.08); lastHighlightedEl = el; return; } catch (e) {}
-      }
-    }
-
-    // Fallback for Pannellum: set yaw (if provided) and show a transient overlay
+    // elementId retained for compatibility but we no longer rely on A-Frame entities
     const yaw = (typeof fallbackYaw === 'number') ? fallbackYaw : null;
     if (yaw !== null && typeof window.panSetYaw === 'function') {
       window.panSetYaw(yaw);
@@ -145,18 +125,6 @@
   }
 
   function clearSceneHighlight() {
-    // Clear A-Frame highlight if present
-    if (lastHighlightedEl) {
-      try {
-        lastHighlightedEl.removeAttribute('animation__highlight');
-        lastHighlightedEl.removeAttribute('material');
-        lastHighlightedEl.setAttribute('scale', '1 1 1');
-      } catch (err) {
-        try { if (lastHighlightedEl.object3D) lastHighlightedEl.object3D.scale.set(1,1,1); } catch (e) {}
-      }
-      lastHighlightedEl = null;
-    }
-    // fade transient overlay
     try {
       const container = document.getElementById('library-panorama');
       if (container) {
@@ -166,21 +134,9 @@
     } catch (e) {}
   }
 
-  // Retry helper that allows passing fallback yaw (optional)
   function highlightSceneElementWithRetry(elementId, attempts = 6, fallbackYaw) {
-    if (!elementId && typeof fallbackYaw === 'undefined') return;
-    let tries = 0;
-    const tryNow = () => {
-      const el = elementId ? document.getElementById(elementId) : null;
-      if (el) { highlightSceneElement(elementId, fallbackYaw); return; }
-      tries++;
-      if (tries < attempts) setTimeout(tryNow, 250);
-      else {
-        // final fallback
-        highlightSceneElement(null, fallbackYaw);
-      }
-    };
-    tryNow();
+    // In the non-A-Frame flow we simply use the fallback yaw immediately
+    highlightSceneElement(elementId, fallbackYaw);
   }
 
   // Utility: announce to aria-live region
@@ -282,11 +238,11 @@
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    // rotate/face bookshelf helper (best-effort)
+    // rotate/face bookshelf helper (now uses Pannellum fallback)
     function highlightBookshelfZone(targetDegrees) {
-      const rig = document.getElementById('cameraRig') || document.querySelector('[camera]');
-      if (!rig) return;
-      try { rig.setAttribute('rotation', `0 ${targetDegrees} 0`); } catch (err) { if (rig.style) rig.style.transform = `rotateY(${targetDegrees}deg)`; }
+      if (typeof targetDegrees === 'number' && typeof window.panSetYaw === 'function') {
+        window.panSetYaw(targetDegrees);
+      }
     }
 
     // create accessible result button
@@ -409,31 +365,11 @@
       });
     }
 
-    // Attach keyboard handlers to hotspot entities so Enter/Space activates them
+    // Attach keyboard handlers to hotspot entities (no A-Frame dependency)
     function attachHotspotKeyboardHandlers() {
-      // Attach handlers to A-Frame elements if present; otherwise ensure catalog/static buttons provide activation
-      libraryMasterCatalog.forEach(book => {
-        // Preferred: bind to DOM element by elementId (A-Frame case)
-        if (book.elementId) {
-          const el = document.getElementById(book.elementId);
-          if (el) {
-            try { el.setAttribute('tabindex', '0'); } catch (e) {}
-            el.addEventListener('keydown', (ev) => {
-              if (ev.key === 'Enter' || ev.key === ' ') {
-                ev.preventDefault();
-                try { el.click(); } catch (err) {
-                  const wrapper = document.createElement('div');
-                  wrapper.innerHTML = `<p><strong>Author:</strong> ${escapeHtml(book.author)}</p><p><em>${escapeHtml(book.summary)}</em></p>`;
-                  openParchment(`${book.title} (Class ${book.dewey})`, wrapper);
-                }
-              }
-            });
-            return;
-          }
-        }
-
-        // Fallback: catalog & static list already provide accessible activations
-      });
+      // Our catalog buttons and static list already provide keyboard activation; ensure they exist.
+      // No A-Frame bindings are added here to remove that dependency entirely.
+      return;
     }
 
     // M-key tooltip helper
@@ -470,21 +406,12 @@
 
     // helper that briefly hints at hotspots
     function brieflyShowHotspots() {
-      // For A-Frame elements, briefly change material; otherwise show transient markers using panorama fallback
-      const hotspotIds = libraryMasterCatalog.map(b => ({ id: b.elementId, yaw: b.cameraYRotation })).filter(Boolean);
-      hotspotIds.forEach(entry => {
-        const id = entry.id;
-        const el = id ? document.getElementById(id) : null;
-        if (el) {
-          try { el.setAttribute('material', 'color: #b8873f; opacity: 0.65; transparent: true'); } catch (e) {}
-          setTimeout(() => { try { el.setAttribute('material', 'opacity: 0.01; transparent: true'); } catch (e) {} }, 1400);
-        } else {
-          // show transient overlay and optionally set a quick yaw hint
-          if (typeof window.panSetYaw === 'function' && typeof entry.yaw === 'number') {
-            window.panSetYaw(entry.yaw);
-          }
-          _createTransientOverlay('Hotspot');
+      const hotspotEntries = libraryMasterCatalog.map(b => ({ yaw: b.cameraYRotation }));
+      hotspotEntries.forEach(entry => {
+        if (typeof window.panSetYaw === 'function' && typeof entry.yaw === 'number') {
+          window.panSetYaw(entry.yaw);
         }
+        _createTransientOverlay('Hotspot');
       });
     }
 

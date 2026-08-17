@@ -17,15 +17,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // 2. Loop and Add Hotspots Programmatically from catalog.js Database Source
   roomViewer.on('load', () => {
-    libraryRegistry.forEach(item => {
+    libraryRegistry.forEach((item, index) => {
       roomViewer.addHotSpot({
         "pitch": item.shelfCoordinate.pitch,
         "yaw": item.shelfCoordinate.yaw,
         "type": "info",
         "text": `[Dewey ${item.deweyClassification}] ${item.title}`,
-        "cssClass": "library-custom-hotspot",
-        "targetUrl": item.targetUrl
-      });
+        "cssClass": "library-custom-hotspot"
+      }, index);
     });
     
     // Render badge constellation for muffin poster
@@ -85,7 +84,7 @@ function populateSelectorDropdown() {
   libraryRegistry.forEach(item => {
     const opt = document.createElement('option');
     opt.value = item.id;
-    opt.textContent = `[${item.deweyClassification}] ${item.title} (${item.authorName})`;
+    opt.textContent = `[${item.deweyClassification}] ${item.title}`;
     selector.appendChild(opt);
   });
 }
@@ -106,7 +105,8 @@ function setupHotspotClickHandling() {
         const index = allHotspots.indexOf(hotspot);
         if (index >= 0 && libraryRegistry[index]) {
           const item = libraryRegistry[index];
-          triggerItemSelection(item.id);
+          // Direct navigation on hotspot click
+          window.location.href = item.targetUrl;
         }
       }
     }

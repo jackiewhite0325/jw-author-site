@@ -1,4 +1,4 @@
-// Improved library-engine.js (focus trap + class-based results + debounced search)
+// Improved library-engine.js (focus trap + scene highlighting + class-based results + debounced search)
 (function () {
   'use strict';
 
@@ -12,6 +12,7 @@
   }
 
   // Centralized Database for All Authors under Sigil and Scribe LLC
+  // Each book may contain cameraYRotation (for scene orientation) and elementId (A-Frame entity id to highlight)
   const libraryMasterCatalog = [
     {
       title: "Muffin Gets the Wiggles",
@@ -20,7 +21,9 @@
       genre: "Children's Books",
       seriesName: "The Muffin the Pitbull Puppy series",
       volume: 1,
-      summary: "Follow the charming first adventures of Muffin the Pitbull puppy."
+      summary: "Follow the charming first adventures of Muffin the Pitbull puppy.",
+      cameraYRotation: -45,
+      elementId: 'muffinPoster'
     },
     {
       title: "The Bingo Card of Chronic Illness",
@@ -29,7 +32,9 @@
       genre: "Health & Wellness",
       seriesName: "None",
       volume: 0,
-      summary: "An honest read offering grace and vulnerability while managing ongoing chronic conditions."
+      summary: "An honest read offering grace and vulnerability while managing ongoing chronic conditions.",
+      cameraYRotation: 0,
+      elementId: 'aboutDeskPapers'
     },
     {
       title: "Don't Quote Me: Smart Mouths",
@@ -38,7 +43,9 @@
       genre: "More Books",
       seriesName: "Quote Journeys",
       volume: 1,
-      summary: "A beautifully curated collection of wit, smart expressions, and interactive drawing paths."
+      summary: "A beautifully curated collection of wit, smart expressions, and interactive drawing paths.",
+      cameraYRotation: 45,
+      elementId: 'blogTypewriter'
     }
   ];
 
@@ -73,6 +80,36 @@
       document.removeEventListener('keydown', _trapHandler);
       _trapHandler = null;
     }
+  }
+
+  // Scene highlighting helpers
+  let lastHighlightedEl = null;
+  function highlightSceneElement(elementId) {
+    // clear any previous highlight
+    clearSceneHighlight();
+
+    if (!elementId) return;
+    const el = document.getElementById(elementId);
+    if (!el) return;
+
+    // add a subtle pulsing scale animation using aframe's animation component
+    try {
+      el.setAttribute('animation__highlight', 'property: scale; to: 1.08 1.08 1.08; dir: alternate; dur: 600; loop: true; easing: easeInOutSine');
+      lastHighlightedEl = el;
+    } catch (err) {
+      // gracefully fail if the scene doesn't support animation attributes
+      try { el.object3D.scale.set(1.08, 1.08, 1.08); lastHighlightedEl = el; } catch (e) { /* ignore */ }
+    }
+  }
+  function clearSceneHighlight() {
+    if (!lastHighlightedEl) return;
+    try {
+      lastHighlightedEl.removeAttribute('animation__highlight');
+      lastHighlightedEl.setAttribute('scale', '1 1 1');
+    } catch (err) {
+      try { lastHighlightedEl.object3D.scale.set(1,1,1); } catch (e) { /* ignore */ }
+    }
+    lastHighlightedEl = null;
   }
 
   // Cached DOM nodes
@@ -120,13 +157,9 @@
       trapFocus(modal);
 
       // listen for Escape to close
-      document.addEventListener('keydown', _escHandler);
-      function _escHandler(e) {
-        if (e.key === 'Escape') closeParchment();
-      }
-
-      // store the handler so it can be removed later
-      modal._escHandler = _escHandler;
+      const escHandler = function (e) { if (e.key === 'Escape') closeParchment(); };
+      document.addEventListener('keydown', escHandler);
+      modal._escHandler = escHandler;
     }
 
     function closeParchment() {
@@ -136,6 +169,8 @@
       releaseFocus();
       if (modal._escHandler) document.removeEventListener('keydown', modal._escHandler);
       if (lastFocusedEl && typeof lastFocusedEl.focus === 'function') lastFocusedEl.focus();
+      // clear any scene highlight when closing
+      clearSceneHighlight();
     }
 
     // wire the close button
@@ -154,14 +189,7 @@
 
     // helper: safe HTML escape for snippets (used sparingly)
     function escapeHtml(str) {
-      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-    }
-
-    // A-Frame rig rotation helper (best-effort)
-    function highlightBookshelfZone(targetDegrees) {
-      const rig = document.getElementById('cameraRig') || document.querySelector('[camera]');
-      if (!rig) return;
-      try { rig.setAttribute('rotation', `0 ${targetDegrees} 0`); } catch (err) { if (rig.style) rig.style.transform = `rotateY(${targetDegrees}deg)`; }
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
     // create accessible result button
@@ -184,7 +212,11 @@
       btn.appendChild(metaLine);
 
       btn.addEventListener('click', () => {
-        highlightBookshelfZone(book.cameraYRotation || 0);
+        // rotate scene to face book area (best-effort)
+        try { highlightBookshelfZone(book.cameraYRotation || 0); } catch (e) { /* ignore */ }
+
+        // visually highlight the related A-Frame element
+        highlightSceneElement(book.elementId);
 
         const wrapper = document.createElement('div');
         const authorLine = document.createElement('p');
@@ -252,5 +284,13 @@
     // expose (only if other inline handlers rely on them)
     window.openParchment = openParchment;
     window.closeParchment = closeParchment;
+
+    // helper to rotate the room to target the physical bookshelf area (kept as best-effort)
+    function highlightBookshelfZone(targetDegrees) {
+      const rig = document.getElementById('cameraRig') || document.querySelector('[camera]');
+      if (!rig) return;
+      try { rig.setAttribute('rotation', `0 ${targetDegrees} 0`); } catch (err) { if (rig.style) rig.style.transform = `rotateY(${targetDegrees}deg)`; }
+    }
+
   });
 })();

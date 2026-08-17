@@ -81,44 +81,104 @@
     }
   }
 
-  // Scene highlighting helpers
+  // Scene highlighting helpers (A-Frame-friendly, with Pannellum fallback)
   let lastHighlightedEl = null;
-  function highlightSceneElement(elementId) {
+  let _transientOverlay = null;
+
+  function _createTransientOverlay(text) {
+    try {
+      const container = document.getElementById('library-panorama');
+      if (!container) return null;
+      // Reuse if present
+      let overlay = container.querySelector('.pano-transient-overlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'pano-transient-overlay';
+        overlay.style.position = 'absolute';
+        overlay.style.left = '50%';
+        overlay.style.top = '50%';
+        overlay.style.transform = 'translate(-50%,-50%)';
+        overlay.style.padding = '12px 16px';
+        overlay.style.borderRadius = '8px';
+        overlay.style.background = 'rgba(242,245,243,0.95)'; // module-bg tone
+        overlay.style.color = '#2B2B2B';
+        overlay.style.boxShadow = '0 8px 24px rgba(0,0,0,0.06)';
+        overlay.style.zIndex = '10020';
+        overlay.style.transition = 'opacity 360ms ease';
+        overlay.style.pointerEvents = 'none';
+        container.style.position = container.style.position || 'relative';
+        container.appendChild(overlay);
+      }
+      overlay.textContent = text || '';
+      overlay.style.opacity = '1';
+      clearTimeout(_transientOverlay);
+      _transientOverlay = setTimeout(() => {
+        try { overlay.style.opacity = '0'; } catch (e) {}
+      }, 900);
+      return overlay;
+    } catch (e) { return null; }
+  }
+
+  function highlightSceneElement(elementId, fallbackYaw) {
     clearSceneHighlight();
+    if (!elementId && typeof fallbackYaw === 'undefined') return;
 
-    if (!elementId) return;
-    const el = document.getElementById(elementId);
-    if (!el) return;
-
-    try {
-      el.setAttribute('material', 'color: #b8873f; opacity: 0.9; transparent: true');
-      el.setAttribute('animation__highlight', 'property: scale; to: 1.08 1.08 1.08; dir: alternate; dur: 600; loop: true; easing: easeInOutSine');
-      lastHighlightedEl = el;
-    } catch (err) {
-      try { if (el.object3D) el.object3D.scale.set(1.08, 1.08, 1.08); lastHighlightedEl = el; } catch (e) { /* ignore */ }
+    const el = elementId ? document.getElementById(elementId) : null;
+    // If A-Frame element exists, use existing behavior
+    if (el) {
+      try {
+        el.setAttribute('material', 'color: #b8873f; opacity: 0.9; transparent: true');
+        el.setAttribute('animation__highlight', 'property: scale; to: 1.08 1.08 1.08; dir: alternate; dur: 600; loop: true; easing: easeInOutSine');
+        lastHighlightedEl = el;
+        return;
+      } catch (err) {
+        try { if (el.object3D) el.object3D.scale.set(1.08, 1.08, 1.08); lastHighlightedEl = el; return; } catch (e) {}
+      }
     }
+
+    // Fallback for Pannellum: set yaw (if provided) and show a transient overlay
+    const yaw = (typeof fallbackYaw === 'number') ? fallbackYaw : null;
+    if (yaw !== null && typeof window.panSetYaw === 'function') {
+      window.panSetYaw(yaw);
+    }
+    _createTransientOverlay('Hotspot highlighted');
   }
+
   function clearSceneHighlight() {
-    if (!lastHighlightedEl) return;
-    try {
-      lastHighlightedEl.removeAttribute('animation__highlight');
-      lastHighlightedEl.removeAttribute('material');
-      lastHighlightedEl.setAttribute('scale', '1 1 1');
-    } catch (err) {
-      try { if (lastHighlightedEl.object3D) lastHighlightedEl.object3D.scale.set(1,1,1); } catch (e) { /* ignore */ }
+    // Clear A-Frame highlight if present
+    if (lastHighlightedEl) {
+      try {
+        lastHighlightedEl.removeAttribute('animation__highlight');
+        lastHighlightedEl.removeAttribute('material');
+        lastHighlightedEl.setAttribute('scale', '1 1 1');
+      } catch (err) {
+        try { if (lastHighlightedEl.object3D) lastHighlightedEl.object3D.scale.set(1,1,1); } catch (e) {}
+      }
+      lastHighlightedEl = null;
     }
-    lastHighlightedEl = null;
+    // fade transient overlay
+    try {
+      const container = document.getElementById('library-panorama');
+      if (container) {
+        const overlay = container.querySelector('.pano-transient-overlay');
+        if (overlay) overlay.style.opacity = '0';
+      }
+    } catch (e) {}
   }
 
-  // Retry helper if entity not ready
-  function highlightSceneElementWithRetry(elementId, attempts = 6) {
-    if (!elementId) return;
+  // Retry helper that allows passing fallback yaw (optional)
+  function highlightSceneElementWithRetry(elementId, attempts = 6, fallbackYaw) {
+    if (!elementId && typeof fallbackYaw === 'undefined') return;
     let tries = 0;
     const tryNow = () => {
-      const el = document.getElementById(elementId);
-      if (el) { highlightSceneElement(elementId); return; }
+      const el = elementId ? document.getElementById(elementId) : null;
+      if (el) { highlightSceneElement(elementId, fallbackYaw); return; }
       tries++;
       if (tries < attempts) setTimeout(tryNow, 250);
+      else {
+        // final fallback
+        highlightSceneElement(null, fallbackYaw);
+      }
     };
     tryNow();
   }
@@ -253,7 +313,7 @@
         btn.classList.add('selected');
 
         try { highlightBookshelfZone(book.cameraYRotation || 0); } catch (e) { /* ignore */ }
-        highlightSceneElementWithRetry(book.elementId);
+        highlightSceneElementWithRetry(book.elementId, 6, book.cameraYRotation);
 
         const wrapper = document.createElement('div');
         const authorLine = document.createElement('p');
@@ -283,7 +343,7 @@
       resultsContainer.innerHTML = '';
       const no = document.createElement('div');
       no.className = 'catalog-result';
-      no.textContent = `No results for "${query}".`;
+      no.textContent = `No results for "${query}."`;
       resultsContainer.appendChild(no);
       announce(`No results for ${query}`);
     }
@@ -338,7 +398,7 @@
         btn.textContent = `${book.title} — ${book.author}`;
         btn.addEventListener('click', () => {
           try { highlightBookshelfZone(book.cameraYRotation || 0); } catch (e) {}
-          highlightSceneElementWithRetry(book.elementId);
+          highlightSceneElementWithRetry(book.elementId, 6, book.cameraYRotation);
           const wrapper = document.createElement('div');
           wrapper.innerHTML = `<p><strong>Author:</strong> ${escapeHtml(book.author)}</p><p><strong>Genre Hierarchy:</strong> ${escapeHtml(book.genre)}</p><p><em>${escapeHtml(book.summary)}</em></p>`;
           openParchment(`${book.title} (Class ${book.dewey})`, wrapper);
@@ -351,24 +411,28 @@
 
     // Attach keyboard handlers to hotspot entities so Enter/Space activates them
     function attachHotspotKeyboardHandlers() {
+      // Attach handlers to A-Frame elements if present; otherwise ensure catalog/static buttons provide activation
       libraryMasterCatalog.forEach(book => {
-        if (!book.elementId) return;
-        const el = document.getElementById(book.elementId);
-        if (!el) return;
-        // ensure keyboard focusable
-        try { el.setAttribute('tabindex', '0'); } catch (e) { /* ignore */ }
-        el.addEventListener('keydown', (ev) => {
-          if (ev.key === 'Enter' || ev.key === ' ') {
-            ev.preventDefault();
-            // trigger click handler (some a-frame elements support click)
-            try { el.click(); } catch (err) {
-              // fallback to openParchment using book data
-              const wrapper = document.createElement('div');
-              wrapper.innerHTML = `<p><strong>Author:</strong> ${escapeHtml(book.author)}</p><p><em>${escapeHtml(book.summary)}</em></p>`;
-              openParchment(`${book.title} (Class ${book.dewey})`, wrapper);
-            }
+        // Preferred: bind to DOM element by elementId (A-Frame case)
+        if (book.elementId) {
+          const el = document.getElementById(book.elementId);
+          if (el) {
+            try { el.setAttribute('tabindex', '0'); } catch (e) {}
+            el.addEventListener('keydown', (ev) => {
+              if (ev.key === 'Enter' || ev.key === ' ') {
+                ev.preventDefault();
+                try { el.click(); } catch (err) {
+                  const wrapper = document.createElement('div');
+                  wrapper.innerHTML = `<p><strong>Author:</strong> ${escapeHtml(book.author)}</p><p><em>${escapeHtml(book.summary)}</em></p>`;
+                  openParchment(`${book.title} (Class ${book.dewey})`, wrapper);
+                }
+              }
+            });
+            return;
           }
-        });
+        }
+
+        // Fallback: catalog & static list already provide accessible activations
       });
     }
 
@@ -406,12 +470,21 @@
 
     // helper that briefly hints at hotspots
     function brieflyShowHotspots() {
-      const hotspotIds = libraryMasterCatalog.map(b => b.elementId).filter(Boolean);
-      hotspotIds.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        try { el.setAttribute('material', 'color: #b8873f; opacity: 0.65; transparent: true'); } catch (e) {}
-        setTimeout(() => { try { el.setAttribute('material', 'opacity: 0.01; transparent: true'); } catch (e) {} }, 1400);
+      // For A-Frame elements, briefly change material; otherwise show transient markers using panorama fallback
+      const hotspotIds = libraryMasterCatalog.map(b => ({ id: b.elementId, yaw: b.cameraYRotation })).filter(Boolean);
+      hotspotIds.forEach(entry => {
+        const id = entry.id;
+        const el = id ? document.getElementById(id) : null;
+        if (el) {
+          try { el.setAttribute('material', 'color: #b8873f; opacity: 0.65; transparent: true'); } catch (e) {}
+          setTimeout(() => { try { el.setAttribute('material', 'opacity: 0.01; transparent: true'); } catch (e) {} }, 1400);
+        } else {
+          // show transient overlay and optionally set a quick yaw hint
+          if (typeof window.panSetYaw === 'function' && typeof entry.yaw === 'number') {
+            window.panSetYaw(entry.yaw);
+          }
+          _createTransientOverlay('Hotspot');
+        }
       });
     }
 

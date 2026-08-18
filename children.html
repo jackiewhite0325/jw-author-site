@@ -26,120 +26,32 @@
     /* Children's Books Specific Component Layout Rules */
     .banner-container img {
       width: 100%;
+      max-width: 100%;
       height: auto;
       display: block;
       object-fit: cover;
     }
-
     .series-intro {
       text-align: center;
-      padding: 3.5rem 1.5rem 2rem;
+      padding: 2rem 1rem;
     }
-
-    .series-intro h1 {
-      font-size: clamp(2rem, 6vw, 3.25rem);
-      margin: 0;
-    }
-
-    .series-intro p {
-      font-size: 1.15rem;
-      max-width: 38em;
-      margin: 0.75rem auto 0;
-      opacity: 0.85;
-      line-height: 1.5;
-    }
-
-        .book-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2.5rem;
-      padding: 2rem 1.5rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .book-card {
-      background: var(--paper, #FDFBF7);
-      border: 1px solid var(--sage-divider, #A3B19B);
-      border-radius: 6px;
-      overflow: hidden;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-      display: flex;
-      flex-direction: column;
-      transition: var(--transition-smooth, transform 0.3s ease);
-    }
-
-    .book-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 32px rgba(43, 43, 43, 0.08);
-    }
-
-    .book-card img {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 4/5;
-      object-fit: cover;
-      display: block;
-      border-bottom: 1px solid var(--sage-divider, #A3B19B);
-    }
-
-    .book-card.placeholder-card {
-      border-style: dashed;
-      background: transparent;
-      justify-content: center;
-      align-items: center;
-      min-height: 400px;
-      text-align: center;
-    }
-
-    .book-info {
-      padding: 1.5rem;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .book-info h3 {
-      font-size: 1.25rem;
-      margin: 0 0 0.5rem 0;
-      line-height: 1.4;
-    }
-
-    .book-info p {
-      margin: 0 0 1.25rem 0;
-      font-size: 0.95rem;
-      opacity: 0.85;
-      line-height: 1.5;
-    }
-
-    .book-info .price {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.9rem;
-      color: var(--amber-deep, #B8874F);
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-    }
-
     .book-actions {
       margin-top: auto;
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
     }
-
     .book-actions .btn {
       flex: 1;
       min-width: 100px;
       text-align: center;
     }
-
     .series-manifesto {
       text-align: center;
       max-width: 750px;
       margin: 4rem auto min(5rem, 10vh);
       padding: 0 1.5rem;
     }
-
     .series-manifesto .eyebrow {
       font-family: 'Courier Prime', monospace;
       letter-spacing: 0.14em;
@@ -147,7 +59,6 @@
       font-size: 0.85rem;
       color: var(--walnut, #6B4A34);
     }
-
     .series-manifesto p {
       max-width: 38em;
       margin: 1rem auto 2rem;
@@ -155,94 +66,47 @@
       line-height: 1.7;
       opacity: 0.9;
     }
+    
+    @media (max-width: 768px) {
+      .book-actions {
+        flex-direction: column;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Accessible Navigation Skip Target Link -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- Global Application Site Header Context -->
-  <header class="site-header">
-    <div class="container">
-      <a href="index.html" class="logo-link">
-        <img src="images/site/logo-banner.png" alt="J. White, Sigil and Scribe">
-      </a>
-      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  <header class="site-header" style="background: var(--walnut-deep); color: var(--paper); padding: 16px 24px;">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto;">
+      <a href="index.html" class="logo-link" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem;">Sigil & Scribe</a>
       <nav class="site-nav">
-        <ul>
+        <ul style="list-style: none; display: flex; gap: 16px; margin: 0;">
           <li><a href="index.html">Home</a></li>
-          <li><a href="children.html" class="active">Children's Books</a></li>
-          <li><a href="health-wellness.html">Health &amp; Wellness</a></li>
-          <li><a href="more-books.html">More Books</a></li>
           <li><a href="fiction.html">Fiction</a></li>
-          <li><a href="muffin-memorial.html">Muffin's Memorial</a></li>
-          <li><a href="about.html">About</a></li>
+          <li><a href="children.html" style="color: var(--amber); font-weight: 600;">Children</a></li>
           <li><a href="blog.html">Blog</a></li>
         </ul>
       </nav>
     </div>
   </header>
 
-    <!-- Central Payload Document Workspace -->
   <main id="main-content">
-
     <div class="banner-container">
-      <img src="images/children/muffin-series-banner.jpg" loading="lazy" alt="Muffin the Pitbull Puppy series illustration header banner">
+      <img src="images/children/muffin-series-banner.jpg" alt="Muffin the Pitbull Puppy book series illustration banner">
     </div>
 
     <section class="series-intro">
-      <h1>Muffin the Pitbull Puppy</h1>
-      <p>A 26-book series helping kids understand and cope with chronic illness, inspired by a real dog with a very big heart.</p>
-    </section>
-      
-    <section class="container">
-      <div class="book-grid">
-        <!-- Book Card 1 -->
-        <div class="book-card">
-          <img src="images/children/book1-cover-v2.png" loading="lazy" alt="Front cover illustration of Muffin Gets the Wiggles">
-          <div class="book-info">
-            <h3>Book 1: Muffin Gets the Wiggles</h3>
-            <p>Follow the charming first adventures of Muffin the Pitbull puppy as she discovers how to navigate big feelings and shaking wiggles.</p>
-            <p class="price">Kindle $3.99 &middot; Paperback $9.99</p>
-            <div class="book-actions">
-              <a href="https://amazon.com" class="btn btn-primary" target="_blank" rel="noopener">Kindle</a>
-              <a href="https://amazon.com" class="btn btn-secondary" target="_blank" rel="noopener">Paperback</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Book Card 2 (Coming Soon Status) -->
-        <div class="book-card placeholder-card">
-          <div class="book-info">
-            <h3>Book 2: Muffin Gets Tired a Lot</h3>
-            <p>The next chapter exploring pacing, energy boundaries, and validation for low-energy days.</p>
-            <p class="price" style="color:var(--sage-deep, #7E8F76);">Coming Soon</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Core Series Corporate Responsibility & Redirect manifesto block -->
-      <div class="series-manifesto">
-        <p class="eyebrow">A Series for Brave Hearts</p>
-        <p>
-          Muffin the Pitbull Puppy is a 26-book series written to help kids understand and cope
-          with chronic illness, inspired by a real dog who had seizures and taught her family
-          what courage looks like. Five percent of net series royalties are donated quarterly
-          to support the medical mission of St. Jude Children's Research Hospital in her name.
-        </p>
-        <a href="muffin-memorial.html" class="btn btn-secondary">Meet the Real Muffin</a>
-      </div>
+      <h1>Children's Books</h1>
+      <p>Heartfelt stories exploring life adjustments, chronic illness, and resilience through playful eyes.</p>
     </section>
 
+    <div class="series-manifesto">
+      <p class="eyebrow">The Mission Behind the Stories</p>
+      <p>These books were crafted to provide comfort, vocabulary, and understanding for families navigating medical realities together.</p>
+    </div>
   </main>
 
-  <!-- Universal Footer Element -->
-  <footer class="site-footer">
-    <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
-  </footer>
-
-  <!-- Universal Core Application Navigation Script Logic -->
-  <script src="js/main.js"></script>
 </body>
 </html>

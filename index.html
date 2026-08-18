@@ -3,275 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sigil and Scribe, LLC — The Library</title>
+  <title>Sigil and Scribe, LLC | Immersive Library Study</title>
   
   <!-- Typography Fonts Sync -->
   <link rel="preconnect" href="https://googleapis.com">
   <link rel="preconnect" href="https://gstatic.com" crossorigin>
-  <link href="https://googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@300;400;500;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
   
-  <!-- REQUIRED DEPENDENCY: Pannellum 360 Immersive Engine Styles -->
-  <link rel="stylesheet" href="https://jsdelivr.net">
-
-  <style>
-    /* ==========================================================================
-       1. SYSTEM VARIABLES & DESIGN TOKENS 
-       ========================================================================== */
-    :root {
-      --paper: #FDFBF7;
-      --mist: #F2F5F3;
-      --ink: #2B2B2B;
-      --amber: #D4A373;
-      --amber-deep: #B8874F;
-      --sage: #A3B19B;
-      --sage-deep: #7E8F76;
-      --walnut: #6B4A34;
-      --walnut-dark: #4A3324;
-      --walnut-deep: #38251A;
-      --card: #F7EFDD;
-      
-      --transition-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-      --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; width: 100%; }
-
-    body {
-      background: radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.08), transparent 55%), var(--paper);
-      color: var(--ink);
-      font-family: 'Inter', sans-serif;
-      overflow-x: hidden;
-      min-height: 100vh;
-    }
-
-    ::selection { background: var(--amber); color: var(--paper); }
-    a { color: inherit; text-decoration: none; }
-
-    /* Accessibility Utilities */
-    .sr-only {
-      position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
-      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; clip-path: inset(50%);
-    }
-    .skip-link {
-      position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden;
-    }
-    .skip-link:focus {
-      left: 8px; top: 8px; width: auto; height: auto; background-color: var(--paper);
-      color: var(--ink); padding: 8px 12px; border-radius: 4px; z-index: 10010;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); outline: none;
-    }
-    .skip-link:focus-visible { top: 0; left: 0; position: absolute; background: var(--amber); color: var(--paper); padding: 10px; z-index: 1000; transition: top 0.2s; font-family: 'Inter', sans-serif; font-weight: 600; text-decoration: none; outline: 3px solid var(--ink); }
-    :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
-
-    /* Layout Toggle Utilities */
-    body.static-layout-enabled .interactive-element { display: none !important; }
-    body.interactive-layout-enabled .static-element { display: none !important; }
-
-    /* ==========================================================================
-       2. TYPOGRAPHIC ENTRANCE & BASE COMPONENTS
-       ========================================================================== */
-    .entrance { max-width: 1100px; margin: 0 auto; padding: 32px 24px 8px; text-align: center; }
-    .eyebrow {
-      font-family: 'Courier Prime', monospace; letter-spacing: 0.18em;
-      text-transform: uppercase; font-size: 12px; color: var(--walnut); opacity: 0.75;
-    }
-    .entrance h1 {
-      font-family: 'Playfair Display', serif; font-weight: 700;
-      font-size: clamp(28px, 5vw, 46px); margin: 8px 0 6px;
-    }
-    .entrance p {
-      font-family: 'Playfair Display', serif; font-style: italic;
-      font-size: 16px; color: #5b5b5b; max-width: 640px; margin: 0 auto;
-    }
-
-    .mobile-static {
-      display: block; position: relative; overflow: hidden; border-radius: 8px;
-      margin: 20px 16px 6px; max-width: 1100px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-    }
-    .mobile-static img { width: 100%; height: auto; display: block; object-fit: cover; }
-    .mobile-static-overlay {
-      position: absolute; left: 12px; right: 12px; bottom: 12px;
-      background: rgba(255, 255, 255, 0.95); padding: 16px; border-radius: 8px;
-    }
-    .mobile-static h2 { margin: 0 0 6px; font-family: 'Playfair Display', serif; font-size: 1.25rem; }
-    .mobile-static p { margin: 0 0 12px; color: #5b5b5b; font-size: 0.9rem; line-height: 1.4; }
-    .mobile-static-actions { display: flex; gap: 8px; }
-    
-    .btn {
-      font-family: 'Inter', sans-serif; padding: 10px 16px; border-radius: 4px;
-      cursor: pointer; font-size: 0.85rem; font-weight: 500; border: 1px solid var(--sage);
-      transition: var(--transition-smooth);
-    }
-    .btn-primary { background-color: var(--amber); border-color: var(--amber); color: var(--paper); }
-    .btn-primary:hover { background-color: var(--amber-deep); box-shadow: 0 4px 12px rgba(212,163,115,0.3); }
-    .btn-secondary { background-color: var(--mist); color: var(--ink); }
-    .btn-secondary:hover { background-color: var(--paper); }
-
-    /* ==========================================================================
-       3. STATIC LAYOUT DESIGN COMPONENTS
-       ========================================================================== */
-    .lectern-wrap { display: flex; justify-content: center; margin: 24px auto 8px; padding: 0 16px; }
-
-    .lectern {
-      position: relative; width: min(560px, 92vw); padding: 18px 22px 16px;
-      background: linear-gradient(180deg, #FBF6EC, #F3EAD6);
-      border: 1px solid rgba(107, 74, 52, 0.18); border-radius: 6px;
-      box-shadow: 0 12px 24px -12px rgba(74, 51, 36, 0.28);
-    }
-    .lectern-label {
-      font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--amber-deep); margin-bottom: 6px;
-    }
-    .lectern-prompt { font-family: 'Playfair Display', serif; font-size: 18px; line-height: 1.5; }
-    .lectern-note { margin-top: 8px; font-size: 12px; color: #8a8a8a; }
-
-    .wall { max-width: 1180px; margin: 26px auto 0; padding: 0 24px; }
-
-        .poster-frame {
-      display: flex; align-items: center; gap: 16px; padding: 14px 16px; cursor: pointer;
-      background: linear-gradient(180deg, #F4EEDF, #EAE0C9); border: 8px solid var(--walnut-dark);
-      border-radius: 4px; box-shadow: 0 18px 30px -18px rgba(74, 51, 36, 0.45);
-      transition: var(--transition-smooth); touch-action: manipulation;
-    }
-    .poster-frame:hover, .poster-frame:focus-visible {
-      transform: translateY(-2px); box-shadow: 0 22px 36px -20px rgba(74, 51, 36, 0.5); outline: none;
-    }
-    .poster-photo {
-      width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0; display: flex;
-      align-items: center; justify-content: center; color: var(--paper);
-      font-family: 'Playfair Display', serif; font-size: 22px; overflow: hidden;
-      background: linear-gradient(160deg, var(--amber), var(--sage-deep));
-    }
-    .poster-text h3 { font-family: 'Playfair Display', serif; margin: 0 0 4px; font-size: 18px; }
-    .poster-text p { margin: 0; font-size: 13px; color: #6b6b6b; line-height: 1.5; }
-    .poster-tag {
-      font-family: 'Courier Prime', monospace; font-size: 10px; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--sage-deep); display: inline-block; margin-top: 4px;
-    }
-
-    .room { max-width: 1180px; margin: 34px auto 0; padding: 0 24px 20px; display: grid; grid-template-columns: 1fr; gap: 28px; align-items: start; }
-
-    /* Static Catalog Drawer Panels */
-    .catalog {
-      background: linear-gradient(180deg, var(--walnut) 0%, var(--walnut-dark) 100%);
-      border-radius: 6px; padding: 12px; box-shadow: 0 18px 32px -20px rgba(56, 37, 26, 0.45);
-    }
-    .catalog-title { font-family: 'Playfair Display', serif; color: var(--card); font-size: 15px; text-align: center; margin: 2px 0 6px; }
-    .catalog-sub { font-family: 'Courier Prime', monospace; color: rgba(243, 231, 208, 0.7); font-size: 10px; text-align: center; margin-bottom: 10px; }
-    .catalog-search {
-      width: 100%; padding: 9px 11px; border-radius: 4px; border: 1px solid rgba(0, 0, 0, 0.12);
-      font-family: 'Courier Prime', monospace; font-size: 13px; background: var(--card); color: var(--ink); margin-bottom: 8px;
-    }
-    .catalog-search:focus { outline: 2px solid var(--amber); outline-offset: 1px; }
-    
-    .drawers { display: flex; flex-direction: column; gap: 8px; }
-    .drawer-row { display: flex; gap: 8px; }
-    
-    .drawer-handle {
-      flex: 1; height: 40px; background: radial-gradient(circle at 50% 20%, #7d593f, var(--walnut-dark));
-      border: 1px solid var(--walnut-deep); border-radius: 4px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;
-      display: flex; align-items: center; justify-content: center; position: relative; transition: var(--transition-smooth);
-    }
-    .drawer-handle::after {
-      content: ''; position: absolute; width: 24px; height: 6px; background: #cbbba0;
-      border-radius: 3px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.1);
-    }
-    .drawer-handle:hover, .drawer-handle:focus-visible {
-      background: radial-gradient(circle at 50% 20%, #8b6449, var(--walnut)); border-color: var(--amber); outline: none;
-    }
-    .drawer-label {
-      font-family: 'Courier Prime', monospace; font-size: 11px; color: rgba(243, 231, 208, 0.4);
-      position: absolute; bottom: 2px; width: 100%; text-align: center; pointer-events: none; letter-spacing: 0.05em;
-    }
-
-    /* ==========================================================================
-       4. INTERACTIVE IMMERSIVE VIEWPORT LAYOUTS
-       ========================================================================== */
-    #library-viewport-wrapper { position: relative; width: 100%; height: 75vh; background: var(--ink); overflow: hidden; }
-    #panorama-container { width: 100%; height: 100%; touch-action: none; -webkit-tap-highlight-color: transparent; }
-    
-    .card-catalog-drawer {
-      position: absolute; bottom: 20px; left: 20px; background: var(--card); color: var(--ink);
-      border: 1px solid var(--walnut); border-radius: 6px; padding: 16px; z-index: 50; width: 320px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15); transition: transform 0.4s var(--transition-ease), opacity 0.3s ease;
-    }
-    .card-catalog-drawer.minimized { transform: translateY(calc(100% - 54px)); opacity: 0.95; }
-    .nav-guide-arrow { font-family: 'Courier Prime', monospace; font-weight: bold; user-select: none; transition: opacity 0.2s ease; }
-
-    /* Interactive Table of Contents Overlay Layouts */
-    .toc-overlay-panel {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
-      background: var(--paper); border: 2px solid var(--walnut); padding: 24px; border-radius: 8px;
-      z-index: 60; box-shadow: 0 12px 30px rgba(0,0,0,0.25); width: calc(100% - 40px); max-width: 450px;
-      opacity: 0; visibility: hidden; transition: transform 0.4s var(--transition-ease), opacity 0.3s ease, visibility 0.3s;
-    }
-    .toc-overlay-panel.visible { transform: translate(-50%, -50%) scale(1); opacity: 1; visibility: visible; }
-    #toc-list li { margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px dashed var(--amber); list-style-type: none; }
-    #toc-list li:last-child { border-bottom: none; }
-    
-    .toc-close-btn {
-      position: absolute; top: 12px; right: 12px; background: none; border: 1px solid var(--sage);
-      border-radius: 4px; cursor: pointer; padding: 2px 8px; font-size: 0.85rem; font-family: 'Inter', sans-serif;
-    }
-
-    /* Fallback Direct Grid */
-    .fallback-directory { display: none; max-width: 800px; margin: 20px auto; padding: 20px; background: var(--paper); border: 1px dashed var(--walnut); border-radius: 6px; }
-    .fallback-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; list-style: none; padding: 0; margin-top: 15px; }
-    .fallback-grid li a { display: block; padding: 14px; background: #fff; border: 1px solid var(--mist); border-radius: 4px; font-weight: 600; color: var(--amber-deep); text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-
-    /* ==========================================================================
-       5. MEDIA BREAKPOINT ADAPTATIONS
-       ========================================================================== */
-    @media (min-width: 769px) { .room { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 768px) {
-      .entrance { padding: 20px 16px 4px; }
-      #library-viewport-wrapper { height: 60vh !important; }
-      .card-catalog-drawer { width: calc(100% - 40px) !important; bottom: 10px !important; left: 20px !important; }
-      .catalog-select, #catalog-toggle-btn { min-height: 44px; }
-    }
-  </style>
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="interactive-layout-enabled">
-
-  <a href="#panorama-container" class="skip-link">Skip to library experience viewer</a>
+<body>
 
   <header class="entrance">
     <p class="eyebrow">Sigil and Scribe, LLC</p>
     <h1>The Immersive Library</h1>
-    <p>Step inside our virtual study to explore our library.</p>
+    <p>Step inside our virtual study to explore our master collection.</p>
   </header>
 
-  <div id="static-fallback-grid" class="fallback-directory static-element">
-    <h2 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; text-align: center; margin: 0;">📚 Browse Library Shelves Directly</h2>
-    <p style="text-align: center; font-size: 0.9rem; color: var(--sage-deep); margin: 4px 0 0 0;">(The 360 viewer is paused. Use these direct pathways to navigate the collection.)</p>
-    <ul id="static-list" class="fallback-grid"></ul>
-  </div>
-
-  <main id="library-viewport-wrapper" class="interactive-element">
-    <div id="panorama-container" role="region" aria-label="360 degree library room view"></div>
-    
-    <div id="toc-display-overlay" class="toc-overlay-panel" aria-modal="true" role="dialog">
-      <button class="toc-close-btn" onclick="closeActiveBook()" aria-label="Close text overview panel">Close ×</button>
-      <h2 id="toc-title" style="font-family: 'Playfair Display', serif; margin: 0 0 12px 0; padding-right: 40px;"></h2>
-      <ul id="toc-list" style="padding-left: 20px; font-family: 'Inter', sans-serif; line-height: 1.8;"></ul>
-    </div>
-
-    <div id="card-catalog-drawer" class="card-catalog-drawer minimized" aria-live="polite">
-      <div class="catalog-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h3 style="margin: 0; font-family: 'Playfair Display', serif; font-size: 1.2rem;">Card Catalog</h3>
-        <button id="catalog-toggle-btn" class="catalog-minimize-btn" title="Minimize catalog" aria-label="Minimize catalog window" style="background: none; border: 1px solid var(--sage); color: var(--ink); border-radius: 4px; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;">−</button>
+  <main class="study-wrapper">
+    <!-- Left Hand Side: The Antique Wooden Cabinet Shelves -->
+    <section class="shelf-cabinet" aria-label="Library Book Shelves">
+      <div class="cabinet-header">
+        <h2>Library Catalog</h2>
+        <p class="cabinet-sub">Select a Spine to Pull from Shelf</p>
       </div>
-      <div class="catalog-select-wrapper">
-        <label for="catalog-search-select" class="sr-only">Search books inside card catalog drawers</label>
-        <select id="catalog-search-select" class="catalog-select" style="width: 100%; padding: 8px; border: 1px solid var(--sage); background: var(--paper); color: var(--ink); border-radius: 4px; font-family: 'Inter', sans-serif;">
-          <!-- Options managed dynamically by code engines -->
-        </select>
+      
+      <div class="books-shelf-grid" id="shelves-container">
+        <!-- Spines will be populated dynamically from catalog.js -->
       </div>
-    </div>
+    </section>
 
-    <div id="guide-arrow-left" class="nav-guide-arrow" aria-hidden="true" style="display: none; position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--paper); font-size: 2.5rem; cursor: pointer; user-select: none; z-index: 40; pointer-events: none; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">←</div>
+    <!-- Right Hand Side: The Immersive Reading Lectern Desk -->
+    <section class="reading-desk" aria-label="Interactive Desk Ledger View">
+      <div id="empty-desk-prompt" class="desk-prompt-view">
+        <div class="feather-icon">🖋️</div>
+        <h3>The Desk is Empty</h3>
+        <p>Pull open a ledger from the left shelf registry to inspect the table of contents.</p>
+      </div>
 
-    
+      <!-- Tactile Ledger Viewport -->
+      <div id="interactive-ledger" class="book-ledger-card hidden">
+        <div class="ledger-spine-accent" id="ledger-accent-bar"></div>
+        <div class="ledger-content">
+          <div class="ledger-meta">
+            <span class="dewey-tag" id="ledger-dewey"></span>
+            <button class="close-desk-btn" onclick="closeActiveBook()" aria-label="Return book to shelf">Return to Shelf ×</button>
+          </div>
+          
+          <h2 id="ledger-title" class="ledger-main-title"></h2>
+          
+          <div class="toc-wrapper">
+            <h4>Table of Contents Map</h4>
+            <ul id="ledger-toc-list" class="chapter-list-layout"></ul>
+          </div>
+          
+          <div class="ledger-footer-stamp">
+            <span>Sigil & Scribe LLC Archive</span>
+            <span class="stamp-seal">🔒 Verified Layout</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Notification Status Alert Banner System -->
+  <div id="library-status-toast" class="status-toast" role="alert" aria-live="polite"></div>
+
+  <!-- RUNTIME APPLICATION PIPELINE -->
+  <script src="catalog.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

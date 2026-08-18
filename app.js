@@ -30,46 +30,54 @@ window.triggerStaticFallbackList = function() {
       list.appendChild(li);
     });
   }
-};
+};// Fire device detection triggers when DOM resources compile
+document.addEventListener('DOMContentLoaded', () => {
+  initializeDeviceDefaults();
+  
+  // Cache structural reference link to the primary Pannellum object engine instance
+  setTimeout(() => {
+    if (window.roomViewer) {
+      appRoomViewerRef = window.roomViewer;
+    }
+  }, 1000);
+});
+
+
+
 /* ==========================================================================
    2. DOM Watchdog Lifecycle & UI Sync Loop
    ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
   initializeDeviceDefaults();
   
-  // Safely intercept and augment drawer controls if components exist
+  // Safely intercept and augment layout drawer controls if components exist
   setupDrawerControls();
+  
+  // Cache reference link to the primary Pannellum object engine instance
+  setTimeout(() => {
+    if (window.roomViewer) {
+      appRoomViewerRef = window.roomViewer;
+    }
+  }, 1000);
 });
 
 function setupDrawerControls() {
-  const selectMenu = document.getElementById('catalog-search-select');
-  const catalogData = window.libraryMasterCatalog;
-  
-  if (selectMenu && catalogData) {
-    // Only compile the options list if the select menu is empty
-    if (selectMenu.options.length <= 1) {
-      catalogData.forEach(item => {
-        const opt = document.createElement('option');
-        opt.value = item.targetUrl;
-        opt.textContent = `[${item.dewey}] ${item.elementId.replace(/_/g, ' ')}`;
-        selectMenu.appendChild(opt);
-      });
-    }
-
-    // Safely bind actions cleanly
-    selectMenu.addEventListener('change', (e) => {
-      if (e.target.value) window.location.href = e.target.value;
-    });
-  }
-
   const toggleBtn = document.getElementById('catalog-toggle-btn');
   const drawerPanel = document.getElementById('card-catalog-drawer');
+  
   if (toggleBtn && drawerPanel) {
     toggleBtn.addEventListener('click', () => {
+      // Toggle the structural minimization class styles smoothly
       const isMinimized = drawerPanel.classList.toggle('minimized');
+      
+      // Update tactile button indicators and labels for screen readers
       toggleBtn.textContent = isMinimized ? '+' : '−';
       toggleBtn.setAttribute('aria-label', isMinimized ? 'Expand window' : 'Minimize window');
+      toggleBtn.setAttribute('aria-expanded', isMinimized ? 'false' : 'true');
+      drawerPanel.setAttribute('aria-hidden', isMinimized ? 'true' : 'false');
     });
   }
 }
+
+
 

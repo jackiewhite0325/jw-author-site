@@ -6,15 +6,6 @@
   <title>Sigil and Scribe LLC | Immersive Library</title>
   <meta name="description" content="Sigil and Scribe LLC — an immersive 360 library showcasing books by J. White.">
   
-  <!-- Open Graph Social Metadata -->
-  <meta property="og:title" content="Sigil and Scribe LLC | Immersive Library">
-  <meta property="og:description" content="Browse books by J. White in an immersive 360° library experience.">
-  <meta property="og:image" content="images/site/social-share.jpg">
-  
-  <!-- Favicon Configurations -->
-  <link rel="icon" href="images/site/favicon.ico">
-  <link rel="apple-touch-icon" href="images/site/favicon-180.png">
-  
   <!-- Typography Sync -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,16 +22,14 @@
     .skip-link { position: absolute; top: -100px; left: 0; background: var(--amber); color: var(--paper); padding: 10px; z-index: 1000; transition: top 0.2s; font-family: 'Inter', sans-serif; font-weight: 600; text-decoration: none; }
     .skip-link:focus-visible { top: 0; outline: 3px solid var(--ink); }
     
-    /* Responsive Media Breakpoint Overrides */
+    /* Static Backup Directory Styling */
+    .fallback-directory { display: none; max-width: 800px; margin: 20px auto; padding: 20px; background: var(--paper); border: 1px dashed var(--walnut); border-radius: 6px; }
+    .fallback-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; list-style: none; padding: 0; margin-top: 15px; }
+    .fallback-grid li a { display: block; padding: 14px; background: #fff; border: 1px solid var(--mist); border-radius: 4px; font-weight: 600; color: var(--amber-deep); text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+
     @media (max-width: 768px) {
-      #library-viewport-wrapper {
-        height: 70vh !important;
-      }
-      .card-catalog-drawer {
-        width: calc(100% - 40px) !important;
-        bottom: 10px !important;
-        left: 20px !important;
-      }
+      #library-viewport-wrapper { height: 60vh !important; }
+      .card-catalog-drawer { width: calc(100% - 40px) !important; bottom: 10px !important; left: 20px !important; }
     }
   </style>
 </head>
@@ -51,8 +40,15 @@
   <header class="entrance">
     <p class="eyebrow">Sigil and Scribe, LLC</p>
     <h1>The Immersive Library</h1>
-    <p>Step inside our virtual study to explore the catalog of J. White.</p>
+    <p>Step inside our virtual study to explore our library.</p>
   </header>
+
+  <!-- Fail-Safe Static Fallback Area -->
+  <div id="static-fallback-grid" class="fallback-directory">
+    <h2 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; text-align: center; margin: 0;">📚 Browse Library Shelves Directly</h2>
+    <p style="text-align: center; font-size: 0.9rem; color: var(--sage-deep); margin: 4px 0 0 0;">(The 360 viewer is paused. Use these direct pathways to navigate the collection.)</p>
+    <ul id="static-list" class="fallback-grid"></ul>
+  </div>
 
   <!-- Interactive 360 Element Wrapper -->
   <main id="library-viewport-wrapper" style="position: relative; width: 100%; height: 80vh; background: var(--ink); overflow: hidden;">
@@ -76,18 +72,12 @@
     <div id="guide-arrow-left" class="nav-guide-arrow" aria-hidden="true" style="display: none; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--paper); font-size: 2rem; cursor: pointer; user-select: none; z-index: 40; pointer-events: none;">←</div>
     <div id="guide-arrow-right" class="nav-guide-arrow" aria-hidden="true" style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--paper); font-size: 2rem; cursor: pointer; user-select: none; z-index: 40; pointer-events: none;">→</div>
 
-    <!-- RPG Quest Tracker HUD Overlay Notification -->
     <div id="invitation-toast" class="invitation-toast" role="alert" aria-live="assertive" aria-hidden="true" style="display: none; position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: #fff; padding: 12px 24px; border-radius: 30px; z-index: 100; font-family: 'Inter', sans-serif; font-size: 0.9rem; text-align: center;"></div>
   </main>
 
-  <!-- REQUIRED DEPENDENCY: Pannellum Core 360 Projection Engine Script Bundle -->
+  <!-- REQUIRED PACKAGES SEQUENCE -->
   <script src="https://jsdelivr.net"></script>
-
-  <!-- Core Javascript Logic Script Files -->
   <script src="catalog.js"></script>
-  <script src="https://jsdelivr.net"></script>
-<script src="catalog.js"></script>
-<script src="app.js"></script>
-
+  <script src="app.js"></script>
 </body>
 </html>

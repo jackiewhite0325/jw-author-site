@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Library Directory | Sigil and Scribe LLC</title>
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <style>
     .directory-container { max-width: 1000px; margin: 0 auto; padding: 20px 24px 80px; }
@@ -11,53 +14,67 @@
     .directory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
     .directory-card { background: #fff; border: 1px solid var(--walnut); border-radius: 4px; padding: 24px; display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
     .dewey-tag { font-family: 'Courier Prime', monospace; font-size: 0.8rem; color: var(--amber-deep); font-weight: 700; margin-bottom: 8px; letter-spacing: 0.05em; }
-    .explore-btn { display: block; text-align: center; background: var(--walnut-dark); color: var(--paper); padding: 12px; border-radius: 4px; font-size: 0.9rem; font-weight: 600; margin-top: auto; transition: var(--transition-smooth); }
+    .explore-btn { display: block; text-align: center; background: var(--walnut-dark); color: var(--paper); padding: 12px; border-radius: 4px; font-size: 0.9rem; font-weight: 600; margin-top: auto; transition: var(--transition-smooth); text-decoration: none; }
     .explore-btn:hover { background: var(--amber-deep); }
+    .card-price-label { font-family: 'Courier Prime', monospace; font-size: 0.85rem; font-weight: 700; color: var(--walnut); margin-bottom: 16px; }
   </style>
 </head>
 <body>
+
+  <!-- Universal Master Header (Perfect Alignment Across Every Single Page) -->
   <header class="site-header" style="background: var(--walnut-deep); color: var(--paper); padding: 16px 24px;">
     <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; flex-wrap: wrap; gap: 12px;">
-      <a href="index.html" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem;">Sigil & Scribe</a>
-      <nav><ul style="list-style: none; display: flex; gap: 18px; margin: 0; padding: 0; flex-wrap: wrap;">
-        <li><a href="index.html">360 Study</a></li>
-        <li><a href="home.html" style="color: var(--amber); font-weight: 600;">Directory</a></li>
-        <li><a href="fiction.html">Fiction</a></li>
-        <li><a href="children.html">Children</a></li>
-        <li><a href="health-wellness.html">Wellness</a></li>
-        <li><a href="more-books.html">More Books</a></li>
-        <li><a href="blog.html">Blog</a></li>
-        <li><a href="muffin-memorial.html">Memorial</a></li>
-        <li><a href="about.html">About</a></li>
+      <a href="index.html" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem; color: #fff; text-decoration: none;">Sigil & Scribe</a>
+      <nav><ul style="list-style: none; display: flex; gap: 18px; margin: 0; padding: 0; flex-wrap: wrap; font-family: 'Inter', sans-serif;">
+        <li><a href="index.html" style="color: #fff; text-decoration: none;">360 Study</a></li>
+        <li><a href="home.html" style="color: var(--amber); font-weight: 600; text-decoration: none;">Directory</a></li>
+        <li><a href="fiction.html" style="color: #fff; text-decoration: none;">Fiction</a></li>
+        <li><a href="children.html" style="color: #fff; text-decoration: none;">Children</a></li>
+        <li><a href="health-wellness.html" style="color: #fff; text-decoration: none;">Wellness</a></li>
+        <li><a href="more-books.html" style="color: #fff; text-decoration: none;">More Books</a></li>
+        <li><a href="blog.html" style="color: #fff; text-decoration: none;">Blog</a></li>
+        <li><a href="muffin-memorial.html" style="color: #fff; text-decoration: none;">Memorial</a></li>
+        <li><a href="about.html" style="color: #fff; text-decoration: none;">About</a></li>
       </ul></nav>
     </div>
   </header>
+
   <main id="main-content" class="directory-container">
     <section class="entrance" style="padding-top: 20px;">
       <p class="eyebrow">Card Catalog Index</p>
       <h1>The Library Archive</h1>
       <p>Direct accessibility portal for light-weight browsing options.</p>
     </section>
+
     <div class="directory-notice">
-      <strong>Optimization Active:</strong> This layout provides text-based indexing for devices preferring clean script layouts over immersive ledger calculations.
+      <strong>Optimization Profile Active:</strong> This directory offers full, text-based catalog entries and direct shelf ordering access across all device platforms.
     </div>
+
     <div class="directory-grid">
+      <!-- Section: Fiction -->
       <div class="directory-card">
         <span class="dewey-tag">Dewey 808.02</span>
         <h3 style="font-family:'Playfair Display', serif; font-size:1.3rem; margin-bottom:8px;">Fiction Catalog</h3>
-        <p style="color: var(--sage-deep); font-size:0.95rem; margin-bottom:20px; line-height:1.5;">Delve into standalone novels, meta-narratives, and speculative multi-book universes written by J. White.</p>
+        <p style="color: var(--sage-deep); font-size:0.95rem; margin-bottom:12px; line-height:1.5; flex-grow:1;">Delve into standalone novels, meta-narratives, and speculative multi-book universes written by J. White.</p>
+        <div class="card-price-label">Sample Read Online</div>
         <a href="fiction.html" class="explore-btn">Open Drawer</a>
       </div>
+
+      <!-- Section: Children -->
       <div class="directory-card">
         <span class="dewey-tag">Dewey 808.83</span>
         <h3 style="font-family:'Playfair Display', serif; font-size:1.3rem; margin-bottom:8px;">Children's Corner</h3>
-        <p style="color: var(--sage-deep); font-size:0.95rem; margin-bottom:20px; line-height:1.5;">Heartfelt narratives dealing with complex medical adjustments and family support parameters.</p>
+        <p style="color: var(--sage-deep); font-size:0.95rem; margin-bottom:12px; line-height:1.5; flex-grow:1;">Heartfelt narratives featuring Muffin the Pitbull Puppy, written to help kids comprehend medical realignments.</p>
+        <div class="card-price-label">Hardcover $12.99</div>
         <a href="children.html" class="explore-btn">Open Drawer</a>
       </div>
+
+      <!-- Section: Health & Wellness -->
       <div class="directory-card">
         <span class="dewey-tag">Dewey 158.12</span>
         <h3 style="font-family:'Playfair Display', serif; font-size:1.3rem; margin-bottom:8px;">Health & Wellness</h3>
-        <p style="color: var(--sage-deep); font-size:0.95rem; margin-bottom:20px; line-height:1.5;">Vulnerable accounts full of validation, humor, and grace for navigating chronic illness.</p>
+        <p style="color: var(--sage-deep); font-size:0.95rem; margin-bottom:12px; line-height:1.5; flex-grow:1;">Vulnerable essays including "The Bingo Card of Chronic Illness", offering validation, humor, and endless grace.</p>
+        <div class="card-price-label">Ebook $4.99 · Paperback $14.99</div>
         <a href="health-wellness.html" class="explore-btn">Open Drawer</a>
       </div>
     </div>

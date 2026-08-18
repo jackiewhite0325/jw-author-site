@@ -1,11 +1,15 @@
-/* ==========================================================================
-   Consolidated Application Interface Engine (app.js)
-   ========================================================================== */
+/*
+==================================================
+========================
+1. App Scope Declarations & Device Management
+==================================================
+======================== */
+// Standardized reference container ensures namespace safety across view shifts
 let appRoomViewerRef = null;
 
 function initializeDeviceDefaults() {
   window.addEventListener('resize', () => {
-    // Dynamically query the shared application runtime view instance
+    // Dynamically query the shared application runtime view instance safely
     const activeViewer = window.roomViewer || appRoomViewerRef;
     if (activeViewer && typeof activeViewer.resize === 'function') {
       activeViewer.resize();
@@ -19,6 +23,12 @@ function initializeDeviceDefaults() {
   }
 }
 
+/*
+==================================================
+========================
+2. Fallback Runtime List Generator
+==================================================
+======================== */
 // Fallback runtime listener safely checks if static mode configuration layout is requested
 window.triggerStaticFallbackList = function() {
   const list = document.getElementById('static-list');
@@ -30,10 +40,30 @@ window.triggerStaticFallbackList = function() {
       list.appendChild(li);
     });
   }
-};// Fire device detection triggers when DOM resources compile
+};
+
+/*
+==================================================
+========================
+3. DOM Watchdog Lifecycle & UI Sync Loop
+==================================================
+======================== */
+// Merged duplicated blocks into a unified, clean execution layer to eliminate race conditions
 document.addEventListener('DOMContentLoaded', () => {
   initializeDeviceDefaults();
   
+  // Safely check and initialize drawer controls if catalog.js setup handles it
+  if (typeof setupDrawerControls === 'function') {
+    setupDrawerControls();
+  }
+
+  // Gracefully assign room viewer instance once third-party bundles finish mapping
+  setTimeout(() => {
+    if (window.roomViewer) {
+      appRoomViewerRef = window.roomViewer;
+    }
+  }, 1000);
+});
   // Cache structural reference link to the primary Pannellum object engine instance
   setTimeout(() => {
     if (window.roomViewer) {

@@ -1,6 +1,6 @@
 /*
 ============================================================================
-1. Immersive Study State Controls & Fail-Safe Watchdogs
+1. State Management & 3-Second Redirect Watchdog
 ============================================================================ */
 let libraryViewerLoadedSuccessfully = false;
 
@@ -8,15 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('panorama-container');
   if (!container) return;
 
-  // FAIL-SAFE WATCHDOG: If the WebGL engine freezes for more than 2.5 seconds, activate fallback lists
-  const renderingWatchdogTimer = setTimeout(() => {
+  // WATCHDOG TIMER: If panorama canvas drops or hangs for 3 seconds, escape to home.html
+  const redirectWatchdogTimer = setTimeout(() => {
     if (!libraryViewerLoadedSuccessfully) {
-      console.warn("Pannellum stalled or WebGL context dropped. Activating clean fallback directory.");
-      activateMobileFallbackLayout();
+      console.warn("Viewer load threshold exceeded. Escaping to static environment.");
+      window.location.href = 'home.html'; // Triggers clean alternative layout path
     }
-  }, 2500);
+  }, 3000);
 
   try {
+    /*
+    ============================================================================
+    2. Immersive Study Object Instantiation
+    ============================================================================ */
     window.roomViewer = pannellum.viewer('panorama-container', {
       "type": "equirectangular",
       "panorama": "images/site/victorian_library_360.jpg",
@@ -33,15 +37,15 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     });
 
-    // Mark loading sequence complete when the image finishes layout calculations
+    // Clear watchdog timer once resource rendering maps successfully
     window.roomViewer.on('load', () => {
       libraryViewerLoadedSuccessfully = true;
-      clearTimeout(renderingWatchdogTimer);
+      clearTimeout(redirectWatchdogTimer);
     });
 
     /*
     ============================================================================
-    2. Live Compass Horizon Sweep Tracking Events
+    3. Horizon Sweep Tracking Events
     ============================================================================ */
     window.roomViewer.on('animatefinished', () => {
       const currentYaw = window.roomViewer.getYaw();
@@ -60,37 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
   } catch (error) {
-    console.error("WebGL context instantiation crashed:", error);
-    clearTimeout(renderingWatchdogTimer);
-    activateMobileFallbackLayout();
+    console.error("Critical WebGL layout context drop:", error);
+    clearTimeout(redirectWatchdogTimer);
+    window.location.href = 'home.html';
   }
 });
-
-/*
-============================================================================
-3. Fallback Layout Generator Routines
-============================================================================ */
-function activateMobileFallbackLayout() {
-  const fallbackBox = document.getElementById('static-fallback-grid');
-  const listElement = document.getElementById('static-list');
-  const mainViewport = document.getElementById('library-viewport-wrapper');
-
-  if (fallbackBox && listElement && window.libraryMasterCatalog) {
-    fallbackBox.style.display = 'block';
-    listElement.innerHTML = ''; // Prevent text duplication
-
-    window.libraryMasterCatalog.forEach(item => {
-      const li = document.createElement('li');
-      li.innerHTML = `<a href="${item.targetUrl}">[Dewey ${item.dewey}] ${item.elementId.replace(/_/g, ' ')} →</a>`;
-      listElement.appendChild(li);
-    });
-
-    // Minimize or hide the locked viewer container frame gracefully to clear touch room
-    if (mainViewport) {
-      mainViewport.style.height = '120px';
-    }
-  }
-}
 
 window.addEventListener('resize', () => {
   if (window.roomViewer && typeof window.roomViewer.resize === 'function') {

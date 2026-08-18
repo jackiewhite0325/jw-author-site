@@ -1,5 +1,5 @@
 /* ============================================================================ 
-1. Centralized Data Catalog Schema
+1. Centralized Data Catalog Schema (Fixed with True Books & Prices)
 ============================================================================ */
 const libraryMasterCatalog = [
   {
@@ -7,6 +7,7 @@ const libraryMasterCatalog = [
     title: "I Finally Wrote It",
     spineColor: "#8b0000",
     dewey: "808.02",
+    price: "Read Sample Online",
     toc: ["Chapter 1: The Blank Page", "Chapter 2: Finding a Voice", "Chapter 3: The Final Draft"]
   },
   {
@@ -14,21 +15,24 @@ const libraryMasterCatalog = [
     title: "Partner Project Ledger",
     spineColor: "#1e3d59",
     dewey: "813.6",
+    price: "Status: In Production",
     toc: ["Section I: Collaborative Design", "Section II: Integration Steps", "Section III: Shared Ecosystems"]
   },
   {
     id: "kids_corner_anchor",
-    title: "The Kids Corner Tales",
+    title: "Muffin the Pitbull Puppy",
     spineColor: "#ff7b25",
     dewey: "808.83",
+    price: "Hardcover $12.99",
     toc: ["Story 1: The Brave Little Pixel", "Story 2: Gravity's Playground", "Story 3: Muffin's Grand Adventure"]
   },
   {
-    id: "meditation_space_anchor",
-    title: "A Mindful Breath",
+    id: "bingo_card_chronic_illness",
+    title: "The Bingo Card of Chronic Illness",
     spineColor: "#4b86b4",
     dewey: "158.12",
-    toc: ["Intro: Tuning Out the Noise", "01: Stillness", "02: The Daily Pivot"]
+    price: "Ebook $4.99 · Paperback $14.99",
+    toc: ["Intro: Have You Tried This?", "01: Surviving the Advice Parade", "02: Validation, Humor, and Grace"]
   }
 ];
 

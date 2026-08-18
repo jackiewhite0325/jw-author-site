@@ -1,49 +1,7 @@
 /**
- * shelves.js
+ * shelves.js (Refactored 3D Perspective Animation Engine)
  * ------------------------------------------------------------------
- * Sigil and Scribe, LLC — Bookshelf / spine component.
- *
- * Fully self-mounting: builds its own DOM into one empty container.
- * Reads the same window.SIGIL_CATALOG data as catalog.js.
- *
- * REQUIRES (load in this order, before this file):
- *   1. catalog-data.js   → defines window.SIGIL_CATALOG
- *   2. shelves.css
- *   3. catalog.js         → OPTIONAL but recommended. If present,
- *      clicking a spine opens the shared book-detail modal via
- *      SigilCatalog.openById(). If catalog.js is NOT loaded, spine
- *      clicks fire a `sigil:openBook` custom event on `document`
- *      instead, so you can wire your own detail view.
- *   4. Google Fonts: Playfair Display, Inter, Courier Prime
- *
- * USAGE:
- *   <div id="sigil-shelves"></div>
- *   <script src="catalog-data.js"></script>
- *   <link rel="stylesheet" href="shelves.css">
- *   <script src="catalog.js"></script>   (optional, see above)
- *   <script src="shelves.js"></script>
- *   <script>
- *     SigilShelves.init('sigil-shelves');
- *   </script>
- *
- * SYNCING WITH THE CATALOG:
- *   Pass onBeforeOpen to SigilCatalog.init() so a catalog click
- *   highlights the matching spine before the shared modal opens:
- *
- *     SigilCatalog.init('sigil-catalog', {
- *       onBeforeOpen: function (book) { SigilShelves.highlight(book.id); }
- *     });
- *
- * NOTE ON FICTION:
- *   The Fiction section renders its own "coming soon" empty state
- *   whenever no books exist with section === "fiction". Do not
- *   fabricate placeholder book entries in catalog-data.js to fill it.
- *
- * NOTE ON THE TOOLBOX WING:
- *   Rendered with a dashed "rope" divider and a note that a library
- *   card is required, per canon. This component does not gate
- *   clicks itself — same as catalog.js, it fires `sigil:requireLogin`
- *   on `document` if catalog.js's shared modal handles the click.
+ * Sigil and Scribe, LLC — Visual 3D Bookcase Component.
  * ------------------------------------------------------------------
  */
 
@@ -52,14 +10,15 @@
 
   var DATA = window.SIGIL_CATALOG || { books: [] };
 
+  // Explicitly matches your repository's real HTML files shown in the layout screenshot
   var SECTIONS = [
-    { key: "children", label: "Children's Books", callRange: "100s", cls: "sc-children" },
-    { key: "wellness", label: "Health & Wellness", callRange: "200s", cls: "sc-wellness" },
-    { key: "more", label: "More Books", callRange: "300s", cls: "sc-more" },
-    { key: "fiction", label: "Fiction", callRange: "400s", cls: null, emptyNote: "New stories are on the way, from more than one author." }
+    { key: "children", label: "Children's Books", callRange: "100s", cls: "sc-children", url: "html/children.html" },
+    { key: "wellness", label: "Health & Wellness", callRange: "200s", cls: "sc-wellness", url: "html/health-wellness.html" },
+    { key: "more", label: "More Books", callRange: "300s", cls: "sc-more", url: "html/more-books.html" },
+    { key: "fiction", label: "Fiction", callRange: "400s", cls: null, emptyNote: "New stories are on the way, from more than one author.", url: "html/fiction.html" }
   ];
 
-  var spineRefs = {}; // book id -> spine DOM element, for highlight()
+  var spineRefs = {}; 
 
   function el(tag, className, html) {
     var e = document.createElement(tag);
@@ -85,32 +44,58 @@
     return "";
   }
 
-  function handleSpineClick(book) {
-    if (window.SigilCatalog && typeof window.SigilCatalog.openById === "function") {
-      window.SigilCatalog.openById(book.id);
-    } else {
-      document.dispatchEvent(new CustomEvent("sigil:openBook", { detail: book }));
-    }
+  /**
+   * Triggers the interactive multi-stage 3D sliding out sequence
+   */
+  function handleSpineClick(book, wrapperEl) {
+    // Stage 1: Slide forward out of the physical shelf rack geometry
+    wrapperEl.classList.add("sliding-out");
+
+    setTimeout(function () {
+      if (window.SigilCatalog && typeof window.SigilCatalog.open3DPreview === "function") {
+        // Find matching section navigation destination URL from map
+        var sectionMeta = SECTIONS.find(function(s) { return s.key === book.section; });
+        var targetedNavigationUrl = sectionMeta ? sectionMeta.url : (book.toolUrl || "index.html");
+
+        // Pass book object, spatial element reference, and destination path to the shared preview window
+        window.SigilCatalog.open3DPreview(book, wrapperEl, targetedNavigationUrl);
+      } else {
+        // Fallback custom fallback environment event mapping
+        document.dispatchEvent(new CustomEvent("sigil:openBook", { detail: book }));
+        wrapperEl.classList.remove("sliding-out");
+      }
+    }, 300); // Gives CSS slide transformation 300ms vector clearance
   }
 
   function makeSpine(book, i, sectionKey) {
     var kindCls = sectionKey === "toolbox"
       ? (book.kind === "module" ? "sc-module" : "sc-tool")
       : ("sc-" + sectionKey);
+    
+    // Create an explicit structural 3D animation container around the spine button element
+    var wrapper = el("div", "sc-book-wrapper");
     var btn = el("button", "sc-spine " + kindCls + variantClass(i, sectionKey));
     btn.type = "button";
+    
     var authorHtml = book.author !== "Toolbox" ? '<span class="sc-sauthor">' + book.author + "</span>" : "";
+    
+    // Fallback safely to compiled dynamic Dewey parameters if your dataset logic executes first
+    var callDisplay = book.deweyCall || book.call || "100.0";
+
     btn.innerHTML =
       '<span class="sc-stitle">' + book.title + (book.comingSoon ? " ✦" : "") + "</span>" +
       authorHtml +
-      '<span class="sc-call">' + book.call + "</span>";
-    btn.addEventListener("click", function () { handleSpineClick(book); });
-    spineRefs[book.id] = btn;
-    return btn;
+      '<span class="sc-call">' + callDisplay + '</span>';
+    
+    btn.addEventListener("click", function () { handleSpineClick(book, wrapper); });
+    
+    wrapper.appendChild(btn);
+    spineRefs[book.id] = wrapper; // Reference wrapper container to enable dynamic scale-highlights
+    return wrapper;
   }
 
   function renderShelf(sectionMeta, books) {
-    var section = el("section");
+    var section = el("section", "sc-shelf-container");
     var label = el("div", "sc-section-label",
       "<h2>" + sectionMeta.label + "</h2><span>" + sectionMeta.callRange + "</span>");
     section.appendChild(label);
@@ -164,10 +149,6 @@
   }
 
   window.SigilShelves = {
-    /**
-     * Mount the shelves into a container element.
-     * @param {string} containerId - id of an empty element already in the DOM
-     */
     init: function (containerId) {
       var container = document.getElementById(containerId);
       if (!container) {
@@ -177,24 +158,22 @@
       render(container);
     },
 
-    /** Re-render with fresh state (e.g. after data changes at runtime). */
     refresh: function (containerId) {
       var container = document.getElementById(containerId);
       if (container) render(container);
     },
 
-    /**
-     * Scroll to and visually highlight the spine matching this book id.
-     * Intended to be called from catalog.js's onBeforeOpen hook.
-     */
     highlight: function (id) {
       Object.keys(spineRefs).forEach(function (key) {
         spineRefs[key].classList.remove("sc-highlight");
       });
-      var target = spineRefs[id];
-      if (target) {
-        target.classList.add("sc-highlight");
-        target.scrollIntoView({ behavior: "smooth", block: "center" });
+      var targetWrapper = spineRefs[id];
+      if (targetWrapper) {
+        var targetSpine = targetWrapper.querySelector(".sc-spine");
+        if (targetSpine) {
+          targetSpine.classList.add("sc-highlight");
+          targetWrapper.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
       }
     }
   };

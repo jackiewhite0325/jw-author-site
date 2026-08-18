@@ -1,82 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sigil and Scribe, LLC · Official Author Site</title>
-  <style>
-    /* Clean, universal base styles to be adjusted later */
-    :root {
-      --bg: #FDFBF7;
-      --charcoal: #2B2B2B;
-      --sage: #A3B19B;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sigil and Scribe LLC — Interactive Library</title>
+    
+    <!-- Primary Typography Anchors -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Functional Visual Style Links -->
+    <link rel="stylesheet" href="css/catalog.css">
+    <link rel="stylesheet" href="css/shelves.css">
+    
+    <style>
+        /* Room Blueprint constraints for your layout layout */
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            background-color: #FDFBF7; /* Smooth room paper color matches theme tokens */
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .library-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+        }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        .catalog-wing {
+            flex: 0 0 320px;
+            position: sticky;
+            top: 40px;
+        }
 
-    body {
-      background-color: var(--bg);
-      color: var(--charcoal);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 40px;
-      line-height: 1.6;
-    }
+        .shelves-wing {
+            flex: 1;
+        }
 
-    main {
-      max-width: 550px;
-      width: 100%;
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--sage);
-      border: 1px solid var(--sage);
-      padding: 4px 10px;
-      border-radius: 3px;
-      margin-bottom: 20px;
-    }
-
-    h1 {
-      font-size: 2.25rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 16px;
-    }
-
-    p {
-      font-size: 1.1rem;
-      opacity: 0.85;
-      margin-bottom: 24px;
-    }
-
-    .meta-note {
-      font-size: 0.9rem;
-      color: var(--sage);
-      border-top: 1px dashed rgba(43, 43, 43, 0.1);
-      padding-top: 16px;
-    }
-  </style>
+        @media (max-width: 992px) {
+            .library-container {
+                flex-direction: column;
+                gap: 40px;
+            }
+            .catalog-wing {
+                position: relative;
+                top: 0;
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <main>
-    <div class="badge">Official author page</div>
-    <h1>Sigil and Scribe, LLC</h1>
-    <p>We are currently updating our public index page. Labels, color palettes, book placements, and featured resource links are being completely re-configured to properly showcase our publications and author materials.</p>
-    
-    <p class="meta-note">Under configuration — full layout updates will be applied here later.</p>
-  </main>
+    <!-- Main Workspace Container -->
+    <div class="library-container">
+        
+        <!-- Card Catalog System Dashboard Dock -->
+        <aside class="catalog-wing">
+            <div id="sigil-catalog"></div>
+        </aside>
+        
+        <!-- 3D Geometric Bookshelf Framework Rack -->
+        <main class="shelves-wing">
+            <div id="sigil-shelves"></div>
+        </main>
+        
+    </div>
 
+    <!-- Core Runtime Execution Scripts (Order-Locked) -->
+    <script src="js/catalog-data.js"></script>
+    <script src="js/catalog.js"></script>
+    <script src="js/shelves.js"></script>
+
+    <!-- Runtime Engine Connection Instantiation -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 1. Mount and sort books on the 3D rows
+        if (window.SigilShelves) {
+          window.SigilShelves.init("sigil-shelves");
+        }
+
+        // 2. Initialize search metrics with a sync hook to the shelf wrapper objects
+        if (window.SigilCatalog) {
+          window.SigilCatalog.init("sigil-catalog", {
+            onBeforeOpen: function (book) {
+              if (window.SigilShelves) {
+                window.SigilShelves.highlight(book.id);
+              }
+            }
+          });
+        }
+      });
+    </script>
 </body>
 </html>

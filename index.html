@@ -16,8 +16,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
-  
-  <!-- Fixed CSS Asset Pipeline CDN Paths -->
+
+    <!-- Fixed CSS Asset Pipeline CDN Paths -->
   <link rel="stylesheet" href="https://jsdelivr.net">
   <link rel="stylesheet" href="css/style.css">
   <style>
@@ -28,8 +28,7 @@
 </head>
 
   
-
-  <body>
+<body>
   <a href="#panorama-container" class="skip-link">Skip to library experience viewer</a>
 
   <main id="library-viewport-wrapper" style="position: relative; width: 100vw; height: 100vh; background: var(--ink); overflow: hidden;">
@@ -50,10 +49,12 @@
       </div>
     </div>
 
-    <div id="guide-arrow-left" class="nav-guide-arrow" aria-hidden="true" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--paper); font-size: 2rem; cursor: pointer; user-select: none; z-index: 40; pointer-events: none;">←</div>
-    <div id="guide-arrow-right" class="nav-guide-arrow" aria-hidden="true" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--paper); font-size: 2rem; cursor: pointer; user-select: none; z-index: 40; pointer-events: none;">→</div>
+    <!-- RPG Radar Compass Indicators -->
+    <div id="guide-arrow-left" class="nav-guide-arrow" aria-hidden="true" style="display: none; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--paper); font-size: 2rem; cursor: pointer; user-select: none; z-index: 40; pointer-events: none;">←</div>
+    <div id="guide-arrow-right" class="nav-guide-arrow" aria-hidden="true" style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--paper); font-size: 2rem; cursor: pointer; user-select: none; z-index: 40; pointer-events: none;">→</div>
 
-        <div id="invitation-toast" class="invitation-toast" role="alert" aria-live="assertive" aria-hidden="true" style="display: none; position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: var(--card); border: 2px solid var(--amber); padding: 16px; border-radius: 6px; z-index: 60; box-shadow: 0 4px 20px rgba(0,0,0,0.25); text-align: center; font-family: 'Inter', sans-serif;">
+        <!-- RPG Quest Tracker HUD Overlay Layout -->
+    <div id="invitation-toast" class="invitation-toast" role="alert" aria-live="assertive" aria-hidden="true" style="display: none; position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: var(--card); border: 2px solid var(--amber); padding: 16px; border-radius: 6px; z-index: 60; box-shadow: 0 4px 20px rgba(0,0,0,0.25); text-align: center; font-family: 'Inter', sans-serif;">
       <p id="invitation-text" style="margin: 0 0 12px 0; color: var(--ink);">You targeted a volume shelf marker.</p>
       <div class="toast-actions" style="display: flex; gap: 8px; justify-content: center;">
         <button id="toast-accept-btn" class="btn btn-primary" style="background: var(--amber); color: var(--paper); border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 600;">Open Book</button>
@@ -71,3 +72,5 @@
 </body>
 </html>
 
+
+  

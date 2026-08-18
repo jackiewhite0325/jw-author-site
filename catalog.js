@@ -59,7 +59,6 @@ window.setStaticMode = function(enabled) {
 
 
 /* ==========================================================================
-/* ==========================================================================
    2. DOM Viewport Engineering & Diagnostic Timers
    ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
@@ -105,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   initializeUIComponents();
 });
+
 
 
 /* ==========================================================================
@@ -161,8 +161,56 @@ function initializeViewer(containerId) {
     }))
   });
 
+  // RPG Navigation Compass Engine: Calculates objective locations in real-time
+  roomViewer.on('viewchange', () => {
+    const leftArrow = document.getElementById('guide-arrow-left');
+    const rightArrow = document.getElementById('guide-arrow-right');
+    
+    // Safety check: if no active quest is set or arrow components are missing, exit
+    if (!window.activeQuestTarget || !leftArrow || !rightArrow) {
+      if (leftArrow) leftArrow.style.display = 'none';
+      if (rightArrow) rightArrow.style.display = 'none';
+      return;
+    }
+
+    const currentYaw = roomViewer.getYaw();
+    const targetYaw = window.activeQuestTarget.shelfCoordinate.yaw;
+
+    // Track shortest angular distance on a 360 circle geometry loop
+    let angleDifference = targetYaw - currentYaw;
+    while (angleDifference < -180) angleDifference += 360;
+    while (angleDifference > 180) angleDifference -= 360;
+
+    // Proximity Trigger: If target object is within 15 degrees right in front of them
+    if (Math.abs(angleDifference) < 15) {
+      leftArrow.style.display = 'none';
+      rightArrow.style.display = 'none';
+      
+      const text = document.getElementById('invitation-text');
+      if (text) {
+        text.innerHTML = `
+          <strong style="color:#4caf50; letter-spacing:1px; font-size:0.8rem; text-transform:uppercase; display:block; margin-bottom:4px;">🎯 Objective Spotted!</strong>
+          <span>Look closely! Tap the physical shelf marker directly to open the volume.</span>
+        `;
+      }
+    } else if (angleDifference > 0) {
+      // Quest objective is located to the right side of the frame
+      leftArrow.style.display = 'none';
+      rightArrow.style.display = 'block';
+      rightArrow.style.color = 'var(--amber)'; 
+    } else {
+      // Quest objective is located to the left side of the frame
+      leftArrow.style.block = 'block';
+      leftArrow.style.display = 'block';
+      leftArrow.style.color = 'var(--amber)';
+      rightArrow.style.display = 'none';
+    }
+  });
+
   roomViewer.on('load', clearLoadingIndicators);
 }
+
+
 
 /* ==========================================================================
    4. Component Synchronization & Event Interface Loop
@@ -180,7 +228,7 @@ function initializeUIComponents() {
   const selectMenu = document.getElementById('catalog-search-select');
   if (selectMenu) {
     // Prevent duplicate entries if initialization fires twice
-    selectMenu.innerHTML = '<option value="">-- Choose a Shelf Section --</option>';
+    selectMenu.innerHTML = '<option value="">-- Pull open a drawer --</option>';
     libraryMasterCatalog.forEach(item => {
       const opt = document.createElement('option');
       opt.value = item.targetUrl;
@@ -188,9 +236,44 @@ function initializeUIComponents() {
       selectMenu.appendChild(opt);
     });
 
+    // Upgraded change listener treats selections as Active Quest Logs
     selectMenu.addEventListener('change', (e) => {
-      if (e.target.value) {
-        window.location.href = e.target.value;
+      const selectedUrl = e.target.value;
+      if (!selectedUrl) return;
+
+      const item = libraryMasterCatalog.find(i => i.targetUrl === selectedUrl);
+      if (item) {
+        window.activeQuestTarget = item; // Store active tracker target globally
+
+        const toast = document.getElementById('invitation-toast');
+        const text = document.getElementById('invitation-text');
+        
+        if (toast && text) {
+          text.innerHTML = `
+            <strong style="color:var(--amber); letter-spacing:1px; font-size:0.85rem; text-transform:uppercase; display:block; margin-bottom:4px;">✨ Quest Accepted!</strong>
+            <span>Locate the volume: <span style="font-family:'Courier Prime', monospace; font-weight:bold; color:var(--amber);">[Dewey ${item.dewey}] ${item.elementId.replace(/_/g, ' ')}</span></span>
+          `;
+          toast.style.display = 'block';
+          toast.setAttribute('aria-hidden', 'false');
+          
+          // Primary action buttons handle quest choice pathways
+          const acceptBtn = document.getElementById('toast-accept-btn');
+          if (acceptBtn) {
+            acceptBtn.textContent = "Teleport to Spot";
+            acceptBtn.onclick = () => {
+              if (roomViewer) roomViewer.lookAt(item.shelfCoordinate.pitch, item.shelfCoordinate.yaw, 60, 1000);
+            };
+          }
+          
+          const dismissBtn = document.getElementById('toast-dismiss-btn');
+          if (dismissBtn) {
+            dismissBtn.textContent = "Track on Foot";
+            dismissBtn.onclick = () => {
+              toast.style.display = 'none';
+              toast.setAttribute('aria-hidden', 'true');
+            };
+          }
+        }
       }
     });
   }

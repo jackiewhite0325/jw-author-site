@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const shelvesContainer = document.getElementById('shelves-container');
   if (!shelvesContainer) return;
 
-  // Build the bookshelf spines dynamically
+  // Build the bookshelf spines dynamically from our corrected catalog
   libraryMasterCatalog.forEach(book => {
     const btn = document.createElement('button');
     btn.className = 'spine-plate-btn';
@@ -13,11 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.style.borderLeft = `6px solid ${book.spineColor}`;
     btn.setAttribute('aria-label', `Pull book titled ${book.title}`);
     
-    // Title Label Element
     const titleText = document.createElement('span');
     titleText.textContent = book.title;
     
-    // Dewey Accent Tag
     const deweyText = document.createElement('span');
     deweyText.className = 'spine-dewey-label';
     deweyText.textContent = book.dewey;
@@ -25,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.appendChild(titleText);
     btn.appendChild(deweyText);
     
-    // Route click interaction engine safely
     btn.addEventListener('click', () => {
       selectBook(book.id);
     });
@@ -39,17 +36,14 @@ document.addEventListener('DOMContentLoaded', () => {
 ============================================================================ */
 function selectBook(bookId) {
   if (isAnimationSequenceRunning) return;
-
   const bookData = libraryMasterCatalog.find(b => b.id === bookId);
   if (!bookData) return;
 
-  // If selecting the active book, close it down
   if (activeBookInstance && activeBookInstance.id === bookId) {
     closeActiveBook();
     return;
   }
 
-  // Toggle active button markers on shelf visual components
   document.querySelectorAll('.spine-plate-btn').forEach(btn => {
     btn.classList.remove('active');
   });
@@ -72,7 +66,6 @@ function executeBookOpenSequence(bookData) {
 
   triggerToastNotification(`Pulling "${bookData.title}" off the library shelf...`);
 
-  // Simulate smooth paper flip delay execution sequence
   setTimeout(() => {
     const promptView = document.getElementById('empty-desk-prompt');
     const ledgerCard = document.getElementById('interactive-ledger');
@@ -84,12 +77,11 @@ function executeBookOpenSequence(bookData) {
     if (promptView && ledgerCard && titleNode && deweyNode && listNode && accentNode) {
       promptView.classList.add('hidden');
       
-      // Update DOM markup values
-      titleNode.textContent = bookData.title;
+      // Update DOM markup values with true data and real prices
+      titleNode.innerHTML = `${bookData.title} <div style="font-size:1rem; color:var(--walnut); margin-top:4px;">${bookData.price}</div>`;
       deweyNode.textContent = `DEWEY CATALOG REGISTRY: ${bookData.dewey}`;
       accentNode.style.backgroundColor = bookData.spineColor;
       
-      // Map out dynamic table of contents lists cleanly
       listNode.innerHTML = '';
       bookData.toc.forEach(chapter => {
         const li = document.createElement('li');
@@ -99,15 +91,12 @@ function executeBookOpenSequence(bookData) {
       
       ledgerCard.classList.remove('hidden');
     }
-    
     isAnimationSequenceRunning = false;
   }, 400);
 }
 
 function closeActiveBook(callback = null) {
   isAnimationSequenceRunning = true;
-  
-  // Wipe visual active highlights on the bookshelves
   document.querySelectorAll('.spine-plate-btn').forEach(btn => {
     btn.classList.remove('active');
   });
@@ -129,17 +118,10 @@ function closeActiveBook(callback = null) {
   }, 200);
 }
 
-/* ============================================================================
-4. Global UI Component Helpers
-============================================================================ */
 function triggerToastNotification(message) {
   const toast = document.getElementById('library-status-toast');
   if (!toast) return;
-
   toast.textContent = message;
   toast.classList.add('active');
-
-  setTimeout(() => {
-    toast.classList.remove('active');
-  }, 2200);
+  setTimeout(() => { toast.classList.remove('active'); }, 2200);
 }

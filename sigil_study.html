@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sigil and Scribe | The Immersive Library</title>
+<meta name="description" content="Step inside the Sigil and Scribe study. Find a book in the card catalog, open it, and step into its page.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://googleapis.com" rel="stylesheet">
+<link rel="stylesheet" href="https://jsdelivr.net">
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<style>
+/* ============ design tokens (locked palette, no red) ============ */
+:root {
+--paper: #FDFBF7;
+--mist: #F2F5F3;
+--ink: #2B2B2B;
+--amber: #D4A373;
+--amber-deep: #B8874F;
+--sage: #A3B19B;
+--sage-deep: #7E8F76;
+--walnut: #6B4A34;
+--walnut-dark: #4A3324;
+--walnut-deep: #38251A;
+--card: #F7EFDD;
+--ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+background: radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.08), transparent 55%), var(--paper);
+color: var(--ink);
+font-family: 'Inter', system-ui, sans-serif;
+overflow-x: hidden;
+min-height: 100vh;
+}
+::selection { background: var(--amber); color: var(--paper); }
+a { color: inherit; text-decoration: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.skip-link { position: absolute; left: -9999px; top: 8px; z-index: 10000; background: var(--paper); color: var(--ink); padding: 8px 12px; border-radius: 4px; }
+.skip-link:focus { left: 8px; }
+:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+/* ============ header ============ */
+.site-header {
+position: sticky; top: 0; z-index: 500;
+background: var(--walnut-deep); color: var(--paper);
+box-shadow: 0 4px 14px rgba(31,22,17,0.35);
+}
+.site-header .inner {
+max-width: 1180px; margin: 0 auto; padding: 12px 20px;
+display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+}
+.brand { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 1.15rem; letter-spacing: 0.01em; }
+.brand span { color: var(--amber); }
+.site-nav { display: flex; gap: 4px; flex-wrap: wrap; }
+.site-nav a {
+font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 0.08em;
+text-transform: uppercase; color: rgba(243,231,208,0.85);
+padding: 6px 9px; border-radius: 3px; transition: background 0.2s ease, color 0.2s ease;
+cursor: pointer;
+}
+.site-nav a:hover, .site-nav a:focus-visible { background: rgba(212,163,115,0.18); color: var(--paper); outline: none; }
+
+/* ============ landing view ============ */
+#landing-view { display: block; }
+
+/* ============ entrance ============ */
+.entrance { max-width: 1100px; margin: 0 auto; padding: 44px 24px 8px; text-align: center; }
+.eyebrow { font-family: 'Courier Prime', monospace; letter-spacing: 0.18em; text-transform: uppercase; font-size: 12px; color: var(--walnut); opacity: 0.75; }

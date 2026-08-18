@@ -130,6 +130,18 @@ a {
   transition: opacity 0.2s ease;
 }
 
+/* Custom Table of Contents Display (Linked with library logic) */
+#toc-list li {
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed var(--mist);
+  list-style-type: none;
+}
+
+#toc-list li:last-child {
+  border-bottom: none;
+}
+
 /*
 ============================================================================
 4. Mobile-First Media Breakpoint Adaptations

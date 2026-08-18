@@ -390,3 +390,69 @@ select:focus {
   accent-color: var(--color-highlight-accent);
 }
 
+/* ==========================================================================
+   Author Navigation Component Spec
+   ========================================================================== */
+.shelf-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  margin-bottom: var(--padding-cushion);
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  border-bottom: 1px dashed rgba(163, 177, 155, 0.3); /* Uses sage green variant cleanly */
+}
+
+.nav-brand-link a {
+  font-family: var(--font-literary);
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--color-charcoal-body);
+}
+
+.nav-links-list {
+  display: flex;
+  gap: calc(var(--padding-cushion) * 0.75);
+  list-style: none;
+}
+
+.nav-links-list a {
+  color: var(--color-muted-context);
+  transition: var(--transition-smooth);
+  padding: 4px 0;
+  position: relative;
+}
+
+.nav-links-list a:hover {
+  color: var(--color-charcoal-body);
+}
+
+/* Clear Active Focus State Layout Pattern Indicator */
+.nav-links-list a.active-channel {
+  color: var(--color-charcoal-body);
+  font-weight: 500;
+}
+
+.nav-links-list a.active-channel::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-highlight-accent); /* Soft amber gold identifier strip */
+  border-radius: 1px;
+}
+
+@media (max-width: 640px) {
+  .shelf-navigation {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .nav-links-list {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}

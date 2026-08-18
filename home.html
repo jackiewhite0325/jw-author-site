@@ -4,176 +4,63 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Library Directory | Sigil and Scribe LLC</title>
-  <meta name="description" content="Direct library directory for the works and collections of J. White.">
-  
-  <!-- Favicon Asset Setup -->
-  <link rel="icon" href="images/site/favicon.ico">
-  <link rel="apple-touch-icon" href="images/site/favicon-180.png">
-  
-  <!-- Global Typography Font Sync -->
-  <link rel="preconnect" href="https://googleapis.com">
-  <link rel="preconnect" href="https://gstatic.com" crossorigin>
-  <link href="https://googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
-  
-  <!-- Core Design Application Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
-  
   <style>
-    .directory-container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem 5rem;
-    }
-    .directory-notice {
-      background: var(--mist);
-      border-left: 4px solid var(--amber);
-      padding: 1rem 1.25rem;
-      border-radius: 0 4px 4px 0;
-      margin-bottom: 2.5rem;
-      font-size: 0.95rem;
-    }
-    .directory-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 20px;
-    }
-    .directory-card {
-      background: #fff;
-      border: 1px solid var(--walnut);
-      border-radius: 4px;
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .directory-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.05);
-    }
-    .directory-card .dewey-tag {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.8rem;
-      color: var(--amber-deep);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.5rem;
-    }
-    .directory-card h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.35rem;
-      margin: 0 0 0.5rem 0;
-    }
-    .directory-card p {
-      font-size: 0.95rem;
-      line-height: 1.5;
-      color: var(--sage-deep);
-      margin-bottom: 1.5rem;
-      flex-grow: 1;
-    }
-    .directory-card .explore-btn {
-      display: block;
-      text-align: center;
-      background: var(--walnut-deep);
-      color: var(--paper);
-      padding: 10px;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-    .directory-card .explore-btn:hover {
-      background: var(--amber-deep);
-    }
-
-    @media (max-width: 600px) {
-      .directory-container {
-        padding-top: 1rem;
-      }
-      .directory-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
-    }
+    .directory-container { max-width: 1000px; margin: 0 auto; padding: 20px 24px 80px; }
+    .directory-notice { background: var(--mist); border-left: 4px solid var(--amber); padding: 16px 20px; border-radius: 0 4px 4px 0; margin-bottom: 40px; font-size: 0.95rem; line-height: 1.5; color: var(--ink); }
+    .directory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .directory-card { background: #fff; border: 1px solid var(--walnut); border-radius: 4px; padding: 24px; display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+    .dewey-tag { font-family: 'Courier Prime', monospace; font-size: 0.8rem; color: var(--amber-deep); font-weight: 700; margin-bottom: 8px; letter-spacing: 0.05em; }
+    .explore-btn { display: block; text-align: center; background: var(--walnut-dark); color: var(--paper); padding: 12px; border-radius: 4px; font-size: 0.9rem; font-weight: 600; margin-top: auto; transition: var(--transition-smooth); }
+    .explore-btn:hover { background: var(--amber-deep); }
   </style>
 </head>
 <body>
-
-  <a href="#main-content" class="skip-link">Skip to library indexing</a>
-
   <header class="site-header" style="background: var(--walnut-deep); color: var(--paper); padding: 16px 24px;">
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto;">
-      <a href="index.html" class="logo-link" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem;">Sigil & Scribe</a>
-      <nav class="site-nav">
-        <ul style="list-style: none; display: flex; gap: 16px; margin: 0;">
-          <li><a href="index.html">360 View</a></li>
-          <li><a href="home.html" style="color: var(--amber); font-weight: 600;">Directory</a></li>
-          <li><a href="blog.html">Blog</a></li>
-        </ul>
-      </nav>
+    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; flex-wrap: wrap; gap: 12px;">
+      <a href="index.html" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem;">Sigil & Scribe</a>
+      <nav><ul style="list-style: none; display: flex; gap: 18px; margin: 0; padding: 0; flex-wrap: wrap;">
+        <li><a href="index.html">360 Study</a></li>
+        <li><a href="home.html" style="color: var(--amber); font-weight: 600;">Directory</a></li>
+        <li><a href="fiction.html">Fiction</a></li>
+        <li><a href="children.html">Children</a></li>
+        <li><a href="health-wellness.html">Wellness</a></li>
+        <li><a href="more-books.html">More Books</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="muffin-memorial.html">Memorial</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul></nav>
     </div>
   </header>
-
   <main id="main-content" class="directory-container">
-    <section class="entrance" style="padding-top: 1rem;">
+    <section class="entrance" style="padding-top: 20px;">
       <p class="eyebrow">Card Catalog Index</p>
       <h1>The Library Archive</h1>
-      <p>Direct accessibility portal for mobile platforms and text-based browsing.</p>
+      <p>Direct accessibility portal for light-weight browsing options.</p>
     </section>
-
     <div class="directory-notice">
-      <strong>Standard Optimization Profile Active:</strong> You have been automatically guided to this layout because your device or connection prefers lightweight script execution over heavy 360-degree rendering calculations.
+      <strong>Optimization Active:</strong> This layout provides text-based indexing for devices preferring clean script layouts over immersive ledger calculations.
     </div>
-
     <div class="directory-grid">
-      <!-- Section: Fiction -->
       <div class="directory-card">
         <span class="dewey-tag">Dewey 808.02</span>
-        <h3>Fiction Catalog</h3>
-        <p>Delve into standalone novels, meta-narratives, and speculative multi-book universes written by J. White.</p>
+        <h3 style="font-family:'Playfair Display', serif; font-size:1.3rem; margin-bottom:8px;">Fiction Catalog</h3>
+        <p style="color: var(--sage-deep); font-size:0.95rem; margin-bottom:20px; line-height:1.5;">Delve into standalone novels, meta-narratives, and speculative multi-book universes written by J. White.</p>
         <a href="fiction.html" class="explore-btn">Open Drawer</a>
       </div>
-
-      <!-- Section: Children -->
       <div class="directory-card">
         <span class="dewey-tag">Dewey 808.83</span>
-        <h3>Children's Corner</h3>
-        <p>Heartfelt narratives dealing with complex medical realignments and building family support parameters.</p>
+        <h3 style="font-family:'Playfair Display', serif; font-size:1.3rem; margin-bottom:8px;">Children's Corner</h3>
+        <p style="color: var(--sage-deep); font-size:0.95rem; margin-bottom:20px; line-height:1.5;">Heartfelt narratives dealing with complex medical adjustments and family support parameters.</p>
         <a href="children.html" class="explore-btn">Open Drawer</a>
       </div>
-
-      <!-- Section: Health & Wellness -->
       <div class="directory-card">
         <span class="dewey-tag">Dewey 158.12</span>
-        <h3>Health & Wellness</h3>
-        <p>Vulnerable accounts full of validation, humor, and grace for navigating chronic illness over continuous cycles.</p>
+        <h3 style="font-family:'Playfair Display', serif; font-size:1.3rem; margin-bottom:8px;">Health & Wellness</h3>
+        <p style="color: var(--sage-deep); font-size:0.95rem; margin-bottom:20px; line-height:1.5;">Vulnerable accounts full of validation, humor, and grace for navigating chronic illness.</p>
         <a href="health-wellness.html" class="explore-btn">Open Drawer</a>
-      </div>
-
-      <!-- Section: Blog -->
-      <div class="directory-card">
-        <span class="dewey-tag">Dewey 070.41</span>
-        <h3>The Librarian's Desk</h3>
-        <p>Read behind-the-scenes accounts, essay draft structures, and direct dispatches regarding architectural development.</p>
-        <a href="blog.html" class="explore-btn">Open Drawer</a>
-      </div>
-
-      <!-- Section: About -->
-      <div class="directory-card">
-        <span class="dewey-tag">Dewey 027.1</span>
-        <h3>Author Biography</h3>
-        <p>Discover the history, objectives, and independent publication background layout guiding J. White.</p>
-        <a href="about.html" class="explore-btn">Open Drawer</a>
-      </div>
-
-      <!-- Section: Muffin Memorial -->
-      <div class="directory-card">
-        <span class="dewey-tag">Dewey 636.7</span>
-        <h3>Muffin's Memorial</h3>
-        <p>A gallery tribute dedicated to the real pitbull puppy behind the popular children's illustration series.</p>
-        <a href="muffin-memorial.html" class="explore-btn">Open Drawer</a>
       </div>
     </div>
   </main>
-
 </body>
 </html>

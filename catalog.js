@@ -1,6 +1,9 @@
-/* ==========================================================================
-   1. Data Collection & Global State Engine
-   ========================================================================== */
+/*
+==================================================
+========================
+1. Data Collection & Global State Engine
+==================================================
+======================== */
 const libraryMasterCatalog = [
   { elementId: "i_finally_wrote_it", targetUrl: "fiction.html", shelfCoordinate: { pitch: -3.5, yaw: -52.0 }, dewey: "808.02" },
   { elementId: "partner_book_placeholder", targetUrl: "more-books.html", shelfCoordinate: { pitch: -8.2, yaw: -24.0 }, dewey: "813.6" },
@@ -16,24 +19,74 @@ let diagnosticTimer = null;
 let roomViewer = null;
 let isStaticModeActive = false;
 
-window.setStaticMode = function(enabled) {
-  if (!enabled) return;
-  isStaticModeActive = true;
-  
-  if (diagnosticTimer) {
-    clearTimeout(diagnosticTimer);
-    diagnosticTimer = null;
-  }
-  
-  if (roomViewer) {
-    try {
-      roomViewer.destroy();
-    } catch (e) {
-      console.warn("Pannellum destruction skipped or unavailable:", e);
+/*
+==================================================
+========================
+2. Device Initialization & Compass Logic
+==================================================
+======================== */
+function initializeDeviceDefaults() {
+  window.addEventListener('resize', () => {
+    const activeViewer = window.roomViewer;
+    if (activeViewer && typeof activeViewer.resize === 'function') {
+      activeViewer.resize();
     }
-    roomViewer = null;
-  }
+  });
 
+  const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const container = document.getElementById('panorama-container');
+  if (container) {
+    container.setAttribute('data-device-mode', isTouch ? 'touch' : 'desktop');
+  }
+}
+
+// Fixed syntax typo: transformed style.block into style.display
+function updateCompassGuides(yaw) {
+  const leftArrow = document.getElementById('guide-arrow-left');
+  const rightArrow = document.getElementById('guide-arrow-right');
+  
+  if (!leftArrow || !rightArrow) return;
+
+  if (yaw > 20) {
+    leftArrow.style.display = 'block'; // Fixed property modifier
+    rightArrow.style.display = 'none';
+  } else if (yaw < -20) {
+    leftArrow.style.display = 'none';
+    rightArrow.style.display = 'block'; // Fixed property modifier
+  } else {
+    leftArrow.style.display = 'none';
+    rightArrow.style.display = 'none';
+  }
+}
+
+/*
+==================================================
+========================
+3. UI Sync Hooks & Safe Document Listeners
+==================================================
+======================== */
+function setupDrawerControls() {
+  const toggleBtn = document.getElementById('catalog-toggle-btn');
+  const drawerPanel = document.getElementById('card-catalog-drawer');
+  
+  if (toggleBtn && drawerPanel) {
+    toggleBtn.addEventListener('click', () => {
+      const isMinimized = drawerPanel.classList.contains('minimized');
+      if (isMinimized) {
+        drawerPanel.classList.remove('minimized');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+      } else {
+        drawerPanel.classList.add('minimized');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initializeDeviceDefaults();
+  setupDrawerControls();
+});
   const container = document.getElementById('panorama-container');
   if (container) {
     container.innerHTML = `

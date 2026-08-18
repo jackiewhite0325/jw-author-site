@@ -195,3 +195,98 @@ a {
 @media (min-width: 768px) {
   .room { grid-template-columns: 2fr 1fr; }
 }
+/* ==========================================================================
+   4. Floating HUD System & Interactive Radar Overlays
+   ========================================================================== */
+.invitation-toast {
+  box-shadow: 0 10px 30px -10px rgba(31, 22, 17, 0.4);
+  animation: slideHudDown 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  max-width: min(480px, 90vw);
+}
+
+.nav-guide-arrow {
+  background: rgba(31, 22, 17, 0.6);
+  border: 1px solid var(--amber);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  box-shadow: 0 0 15px rgba(217, 119, 6, 0.2);
+  animation: radarPulse 1.4s infinite ease-in-out;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-guide-arrow:hover {
+  transform: translateY(-50%) scale(1.1);
+  background: rgba(217, 119, 6, 0.8);
+  color: var(--paper);
+}
+
+@keyframes slideHudDown {
+  from { transform: translateX(-50%) translateY(-30px); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+@keyframes radarPulse {
+  0% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.4); opacity: 0.8; }
+  50% { box-shadow: 0 0 0 12px rgba(217, 119, 6, 0); opacity: 1; }
+  100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); opacity: 0.8; }
+}
+/* ==========================================================================
+   5. Sliding Card Catalog Panel & Transition Curves
+   ========================================================================== */
+.card-catalog-drawer {
+  transition: transform 0.4s var(--transition-ease), opacity 0.3s ease;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Push panel out of view bounds when minimized class state register triggers */
+.card-catalog-drawer.minimized {
+  transform: translateY(calc(100% - 54px));
+  opacity: 0.9;
+}
+
+.catalog-minimize-btn {
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.catalog-minimize-btn:hover, .catalog-minimize-btn:focus-visible {
+  background: var(--mist) !important;
+  border-color: var(--walnut) !important;
+  outline: none;
+}
+
+.catalog-select {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.catalog-select:focus {
+  border-color: var(--amber) !important;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+  outline: none;
+}
+
+/* ==========================================================================
+   6. Custom WebGL Hotspot Map Geometry
+   ========================================================================== */
+.custom-hotspot {
+  width: 26px !important;
+  height: 26px !important;
+  background: var(--amber);
+  border: 3px solid var(--paper);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35), 0 0 0 4px rgba(217, 119, 6, 0.2);
+  cursor: pointer;
+  transition: transform 0.2s var(--transition-ease), background 0.2s ease;
+}
+
+.custom-hotspot:hover, .custom-hotspot:focus-visible {
+  transform: scale(1.25);
+  background: var(--amber-deep);
+  outline: none;
+}
+

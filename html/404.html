@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found | Sigil and Scribe LLC</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .error-404-hero {
+      text-align: center; 
+      padding: 80px 24px;
+      min-height: 50vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .error-404-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      color: var(--walnut-deep);
+      margin: 0;
+    }
+    .error-404-hero p {
+      max-width: 32em; 
+      margin: 16px auto 32px;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--sage-deep);
+    }
+    .return-home-btn {
+      display: inline-block;
+      background: var(--amber);
+      color: var(--paper);
+      padding: 12px 24px;
+      border-radius: 4px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition-smooth);
+      box-shadow: 0 4px 12px rgba(212,163,115,0.2);
+    }
+    .return-home-btn:hover {
+      background: var(--amber-deep);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header" style="background: var(--walnut-deep); color: var(--paper); padding: 16px 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; flex-wrap: wrap; gap: 12px;">
+      <a href="index.html" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem;">Sigil & Scribe</a>
+      <nav><ul style="list-style: none; display: flex; gap: 18px; margin: 0; padding: 0; flex-wrap: wrap;">
+        <li><a href="index.html">360 Study</a></li>
+        <li><a href="home.html">Directory</a></li>
+        <li><a href="fiction.html">Fiction</a></li>
+        <li><a href="children.html">Children</a></li>
+        <li><a href="health-wellness.html">Wellness</a></li>
+        <li><a href="more-books.html">More Books</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="muffin-memorial.html">Memorial</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul></nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="error-404-hero">
+      <div style="font-size: 4rem; margin-bottom: 8px;">⏳</div>
+      <h1>Page Not Found</h1>
+      <p>We couldn't find the room or ledger you were looking for. It may have moved or the library link might be incorrect.</p>
+      <a href="index.html" class="return-home-btn" aria-label="Return back to the main homepage">Return to 360 Study</a>
+    </section>
+  </main>
+
+</body>
+</html>

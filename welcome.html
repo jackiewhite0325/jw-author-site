@@ -1,60 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome | J. White</title>
-<meta name="description" content="Welcome to the Sigil and Scribe community.">
-<meta property="og:title" content="Welcome | J. White">
-<meta property="og:image" content="images/site/social-share.jpg">
-<link rel="icon" href="images/site/favicon.ico">
-<link rel="apple-touch-icon" href="images/site/favicon-180.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome | Sigil and Scribe LLC</title>
+  <meta name="description" content="Welcome to the immersive world and catalog repository of author J. White.">
+  
+  <!-- Open Graph Social Protocol Configurations -->
+  <meta property="og:title" content="Welcome | Sigil and Scribe LLC">
+  <meta property="og:image" content="images/site/social-share.jpg">
+  
+  <!-- Favicon Asset Configurations -->
+  <link rel="icon" href="images/site/favicon.ico">
+  <link rel="apple-touch-icon" href="images/site/favicon-180.png">
+  
+  <!-- Global Typography Font Arrays Sync -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://googleapis.com" rel="stylesheet">
+  
+  <!-- Core Design Application Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <style>
+    /* Welcome Custom Page Layout Components */
+    .welcome-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem min(6rem, 10vh);
+      text-align: center;
+    }
+    .welcome-card {
+      background: var(--card, rgba(252, 250, 242, 0.95));
+      border: 1px solid var(--walnut, #4b382a);
+      border-radius: 6px;
+      padding: 3rem 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+    .welcome-card h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      margin: 0 0 1rem;
+    }
+    .welcome-card p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+      color: var(--ink);
+    }
+    .action-links {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .action-links .btn {
+      min-width: 160px;
+      text-align: center;
+    }
+    
+    @media (max-width: 600px) {
+      .welcome-container {
+        padding-top: 2.5rem;
+      }
+      .welcome-card {
+        padding: 2rem 1.25rem;
+      }
+      .action-links {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .action-links .btn {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-<a href="#main-content" class="skip-link">Skip to main content</a>
 
-<header class="site-header">
-  <div class="container">
-    <a href="index.html" class="logo-link">
-      <img src="images/site/logo-banner.png" alt="J. White, Sigil and Scribe">
-    </a>
-    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
-    <nav class="site-nav">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="children.html">Children's Books</a></li>
-        <li><a href="health-wellness.html">Health &amp; Wellness</a></li>
-        <li><a href="more-books.html">More Books</a></li>
-        <li><a href="fiction.html">Fiction</a></li>
-        <li><a href="muffin-memorial.html">Muffin's Memorial</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="blog.html">Blog</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
-<main id="main-content">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<section class="container" style="text-align:center; padding:4rem 1.5rem;">
-  <img src="images/site/logo.png" alt="Sigil and Scribe" style="max-width:140px; margin:0 auto 1.5rem;">
-  <h1>You're In</h1>
-  <p style="max-width:32em; margin:1rem auto 0;">
-    Welcome to the Sigil and Scribe community. You'll be the first to hear about new
-    books, free downloadables, and updates on Muffin's world, straight to your inbox.
-  </p>
-  <a href="blog.html" class="btn" style="margin-top:2rem;">Visit the Blog</a>
-  <a href="index.html" class="btn btn-outline" style="margin-top:2rem;">Back to Home</a>
-</section>
+  <header class="site-header" style="background: var(--walnut-deep); color: var(--paper); padding: 16px 24px;">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto;">
+      <a href="index.html" class="logo-link" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem;">Sigil & Scribe</a>
+      <nav class="site-nav">
+        <ul style="list-style: none; display: flex; gap: 16px; margin: 0;">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="children.html">Children</a></li>
+          <li><a href="health-wellness.html">Wellness</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-</main>
-<footer class="site-footer">
-  <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
-</footer>
+  <main id="main-content" class="welcome-container">
+    <article class="welcome-card">
+      <p class="eyebrow" style="color: var(--amber-deep); margin-bottom: 0.5rem;">Constellation Map Project</p>
+      <h1>Welcome Traveler</h1>
+      <p>You have successfully unlocked a gateway into the literary world of J. White. Step through our central hub or return to the main study to locate hidden references and upcoming chapter drops.</p>
+      
+      <div class="action-links">
+        <a href="index.html" class="btn btn-primary" style="display: inline-block; background: var(--amber); color: var(--paper); padding: 12px 24px; border-radius: 4px; font-weight: 600;">Enter the Library</a>
+        <a href="blog.html" class="btn btn-secondary" style="display: inline-block; background: var(--mist); color: var(--ink); padding: 12px 24px; border-radius: 4px; border: 1px solid var(--sage);">Read Dispatches</a>
+      </div>
+    </article>
+  </main>
 
-<script src="js/main.js"></script>
 </body>
 </html>

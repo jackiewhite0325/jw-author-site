@@ -4,116 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About J. White | Sigil and Scribe LLC</title>
-  <meta name="description" content="Learn about author J. White, the creative mind behind Sigil and Scribe LLC.">
-  
-  <!-- Open Graph Social Protocol Configurations -->
-  <meta property="og:title" content="About J. White | Sigil and Scribe LLC">
-  <meta property="og:image" content="images/site/social-share.jpg">
-  
-  <!-- Favicon Asset Configurations -->
-  <link rel="icon" href="images/site/favicon.ico">
-  <link rel="apple-touch-icon" href="images/site/favicon-180.png">
-  
-  <!-- Global Typography Font Arrays Sync -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://googleapis.com" rel="stylesheet">
-  
-  <!-- Core Design Application Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
-  
   <style>
-    /* About Page Custom Component Styles */
-    .author-portrait-wrap {
-      text-align: center;
-      padding: 4rem 1.5rem 1rem;
-    }
-    .author-portrait-wrap img {
-      max-width: 220px;
-      width: 100%;
-      height: auto;
-      border-radius: 50%;
-      margin: 0 auto;
-      border: 4px solid var(--amber, #D4A373);
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
-      display: block;
-      object-fit: cover;
-    }
-    .author-portrait-wrap h1 {
-      margin-top: 1.75rem;
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.85rem, 5vw, 2.75rem);
-    }
-    .author-biography {
-      max-width: 700px;
-      margin: 0 auto;
-      text-align: center;
-      padding: 0 1.5rem 4rem;
-    }
-    .author-biography p {
-      margin: 0 0 1.5rem 0;
-      font-size: 1.05rem;
-      line-height: 1.7;
-      opacity: 0.9;
-    }
-    .biography-highlight-box {
-      background-color: var(--mist, #F2F5F3);
-      border-left: 4px solid var(--amber, #D4A373);
-      padding: 1.25rem 1.75rem;
-      border-radius: 0 6px 6px 0;
-      text-align: left;
-      margin: 2rem 0;
-    }
-    .biography-highlight-box p {
-      margin: 0;
-      font-style: italic;
-    }
-    
-    @media (max-width: 768px) {
-      .author-portrait-wrap {
-        padding-top: 2.5rem;
-      }
-      .author-biography {
-        padding-bottom: 2.5rem;
-      }
-    }
+    .author-portrait-wrap { text-align: center; padding: 60px 24px 16px; }
+    .author-portrait-wrap img { max-width: 200px; width: 100%; height: auto; border-radius: 50%; border: 4px solid var(--amber); box-shadow: 0 10px 24px rgba(0,0,0,0.06); object-fit: cover; }
+    .author-biography { max-width: 700px; margin: 0 auto; text-align: center; padding: 0 24px 80px; }
+    .biography-highlight-box { background-color: var(--mist); border-left: 4px solid var(--amber); padding: 20px; border-radius: 0 6px 6px 0; text-align: left; margin: 32px 0; font-style: italic; }
   </style>
 </head>
 <body>
-
-  <a href="#main-content" class="skip-link">Skip to main content</a>
-
   <header class="site-header" style="background: var(--walnut-deep); color: var(--paper); padding: 16px 24px;">
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto;">
-      <a href="index.html" class="logo-link" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem;">Sigil & Scribe</a>
-      <nav class="site-nav">
-        <ul style="list-style: none; display: flex; gap: 16px; margin: 0;">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="children.html">Children</a></li>
-          <li><a href="health-wellness.html">Wellness</a></li>
-          <li><a href="about.html" style="color: var(--amber); font-weight: 600;">About</a></li>
-          <li><a href="blog.html">Blog</a></li>
-        </ul>
-      </nav>
+    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; flex-wrap: wrap; gap: 12px;">
+      <a href="index.html" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem;">Sigil & Scribe</a>
+      <nav><ul style="list-style: none; display: flex; gap: 18px; margin: 0; padding: 0; flex-wrap: wrap;">
+        <li><a href="index.html">360 Study</a></li>
+        <li><a href="home.html">Directory</a></li>
+        <li><a href="fiction.html">Fiction</a></li>
+        <li><a href="children.html">Children</a></li>
+        <li><a href="health-wellness.html">Wellness</a></li>
+        <li><a href="more-books.html">More Books</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="muffin-memorial.html">Memorial</a></li>
+        <li><a href="about.html" style="color: var(--amber); font-weight: 600;">About</a></li>
+      </ul></nav>
     </div>
   </header>
-
   <main id="main-content">
     <div class="author-portrait-wrap">
-      <img src="images/site/author-portrait.jpg" alt="J. White author portrait photo">
-      <h1>J. White</h1>
+      <img src="images/site/author-portrait.jpg" alt="J. White author photo">
+      <h1 style="font-family: 'Playfair Display', serif; margin-top: 20px;">J. White</h1>
     </div>
-
     <article class="author-biography">
-      <p>J. White is an independent author exploring human resilience, speculatively rich worlds, and gentle spaces for vulnerable stories.</p>
-      
+      <p style="font-size: 1.05rem; line-height: 1.7; margin-bottom: 16px;">J. White is an independent author exploring human resilience, speculatively rich worlds, and gentle spaces for vulnerable stories.</p>
       <div class="biography-highlight-box">
-        <p>“Writing isn't just about crafting lines; it's about crafting a quiet room for the reader to settle into.”</p>
+        <p style="margin:0;">“Writing isn't just about crafting lines; it's about crafting a quiet room for the reader to settle into.”</p>
       </div>
-      
-      <p>Through Sigil and Scribe LLC, J. White balances immersive virtual design with traditional literary collections, paving fresh pathways for accessible reading environments.</p>
+      <p style="font-size: 1.05rem; line-height: 1.7;">Through Sigil and Scribe LLC, J. White balances immersive virtual design with traditional literary collections, paving fresh pathways for accessible reading environments.</p>
     </article>
   </main>
-
 </body>
 </html>

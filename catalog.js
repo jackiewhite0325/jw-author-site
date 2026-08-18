@@ -1,138 +1,150 @@
-/*
-============================================================================
+/* ============================================================================ 
+
 1. Data Collection & Global State Engine
 ============================================================================ */
 const libraryMasterCatalog = [
-  { elementId: "i_finally_wrote_it", targetUrl: "fiction.html", shelfCoordinate: { pitch: -3.5, yaw: -52.0 }, dewey: "808.02" },
-  { elementId: "partner_book_placeholder", targetUrl: "more-books.html", shelfCoordinate: { pitch: -8.2, yaw: -24.0 }, dewey: "813.6" },
-  { elementId: "kids_corner_anchor", targetUrl: "children.html", shelfCoordinate: { pitch: -16.5, yaw: -125.0 }, dewey: "808.83" },
-  { elementId: "meditation_space_anchor", targetUrl: "health-wellness.html", shelfCoordinate: { pitch: -6.0, yaw: 58.5 }, dewey: "158.12" },
-  { elementId: "librarians_desk_papers", targetUrl: "about.html", shelfCoordinate: { pitch: -17.0, yaw: 14.5 }, dewey: "027.1" },
-  { elementId: "librarians_desk_typewriter", targetUrl: "blog.html", shelfCoordinate: { pitch: -14.5, yaw: -1.5 }, dewey: "070.41" },
-  { elementId: "muffins_memorial_portrait", targetUrl: "muffin-memorial.html", shelfCoordinate: { pitch: 13.0, yaw: -138.5 }, dewey: "636.7" },
-  { elementId: "muffins_constellation_poster", targetUrl: "welcome.html", shelfCoordinate: { pitch: 11.5, yaw: 118.0 }, dewey: "523.8" }
+{
+id: "i_finally_wrote_it",
+title: "I Finally Wrote It",
+spineColor: "#8b0000",
+dewey: "808.02",
+toc: ["Chapter 1: The Blank Page", "Chapter 2: Finding a Voice", "Chapter 3: The Final Draft"]
+},
+{
+id: "partner_book_placeholder",
+title: "Partner Project Ledger",
+spineColor: "#1e3d59",
+dewey: "813.6",
+toc: ["Section I: Collaborative Design", "Section II: Integration Steps", "Section III: Shared Ecosystems"]
+},
+{
+id: "kids_corner_anchor",
+title: "The Kids Corner Tales",
+spineColor: "#ff7b25",
+dewey: "808.83",
+toc: ["Story 1: The Brave Little Pixel", "Story 2: Gravity's Playground"]
+},
+{
+id: "meditation_space_anchor",
+title: "A Mindful Breath",
+spineColor: "#4b86b4",
+dewey: "158.12",
+toc: ["Intro: Tuning Out the Noise", "01: Stillness", "02: The Daily Pivot"]
+}
 ];
 
-let diagnosticTimer = null;
-let roomViewer = null;
-let isStaticModeActive = false;
-let appRoomViewerRef = null;
+// Global runtime flags replacing the old 360 viewer references
+let activeBookInstance = null;
+let isAnimationSequenceRunning = false; 
+
+/* ============================================================================
+2. Animation Router & Interaction Core
+============================================================================ */
+function selectBook(bookId) {
+if (isAnimationSequenceRunning) return; 
+
+const bookData = libraryMasterCatalog.find(b => b.id === bookId);
+if (!bookData) return; 
+
+// If clicking the already open book, close it
+if (activeBookInstance && activeBookInstance.id === bookId) {
+closeActiveBook();
+return;
+} 
+
+// If another book is open, close it first before opening the new one
+if (activeBookInstance) {
+closeActiveBook(() => executeBookOpenSequence(bookData));
+} else {
+executeBookOpenSequence(bookData);
+}
+} 
+
+function executeBookOpenSequence(bookData) {
+isAnimationSequenceRunning = true;
+activeBookInstance = bookData; 
+
+// Update UI text instantly for accessibility hooks
+updateToastDisplay(Pulling "${bookData.title}" off the shelf...); 
 
 /*
-============================================================================
-2. Device Initialization & Compass Logic
-============================================================================ */
-function initializeDeviceDefaults() {
-  window.addEventListener('resize', () => {
-    const activeViewer = window.roomViewer || appRoomViewerRef;
-    if (activeViewer && typeof activeViewer.resize === 'function') {
-      activeViewer.resize();
-    }
-  });
+INTEGRATION NOTE:
+Trigger your animation library hooks here (e.g., GSAP or Three.js timelines).
+Step 1: Move the book model forward (-Z axis translation)
+Step 2: Rotate the book face-flat toward the screen camera
+Step 3: Trigger the cover flip animation open (Y-axis hinge rotation)
+*/ 
 
-  const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  const container = document.getElementById('panorama-container');
-  if (container) {
-    container.setAttribute('data-device-mode', isTouch ? 'touch' : 'desktop');
-  }
-}
+// Simulate animation duration before rendering text contents
+setTimeout(() => {
+renderTableOfContents(bookData);
+isAnimationSequenceRunning = false;
+}, 1200); // Match this timeout value to your actual visual animation duration
+} 
 
-function updateCompassGuides(yaw) {
-  const leftArrow = document.getElementById('guide-arrow-left');
-  const rightArrow = document.getElementById('guide-arrow-right');
-  
-  if (!leftArrow || !rightArrow) return;
+function closeActiveBook(callback = null) {
+if (!activeBookInstance) return;
+isAnimationSequenceRunning = true; 
 
-  if (yaw > 20) {
-    leftArrow.style.display = 'block';
-    rightArrow.style.display = 'none';
-  } else if (yaw < -20) {
-    leftArrow.style.display = 'none';
-    rightArrow.style.display = 'block';
-  } else {
-    leftArrow.style.display = 'none';
-    rightArrow.style.display = 'none';
-  }
-}
+hideTableOfContentsPanel();
+updateToastDisplay(Returning book to Dewey ${activeBookInstance.dewey}...); 
 
 /*
-============================================================================
-3. Card Catalog Populator & Selection Listeners
+INTEGRATION NOTE:
+Reverse your animation timelines here to snap the book back on the shelf.
+*/ 
+
+setTimeout(() => {
+activeBookInstance = null;
+isAnimationSequenceRunning = false;
+updateToastDisplay("");
+if (callback) callback();
+}, 1000);
+} 
+
+/* ============================================================================
+3. Dynamic DOM Renderer & Content Populator
 ============================================================================ */
-function initializeUIComponents() {
-  const selectMenu = document.getElementById('catalog-search-select');
-  if (!selectMenu) return;
+function renderTableOfContents(bookData) {
+const overlayPanel = document.getElementById('toc-display-overlay');
+const titleNode = document.getElementById('toc-title');
+const listNode = document.getElementById('toc-list'); 
 
-  // Clear duplication windows safely
-  selectMenu.innerHTML = '<option value="">-- Pull open a drawer --</option>';
-  
-  // Build drawer book targets programmatically into the UI dropdown node
-  libraryMasterCatalog.forEach(item => {
-    const opt = document.createElement('option');
-    opt.value = item.targetUrl;
-    opt.textContent = `Dewey ${item.dewey} : ${item.elementId.replace(/_/g, ' ')}`;
-    selectMenu.appendChild(opt);
-  });
+if (!overlayPanel || !titleNode || !listNode) return; 
 
-  // Attach event routing listener actions
-  selectMenu.addEventListener('change', (e) => {
-    const selectedUrl = e.target.value;
-    if (!selectedUrl) return;
+titleNode.textContent = bookData.title;
+listNode.innerHTML = ''; // Clear previous elements safely 
 
-    const item = libraryMasterCatalog.find(i => i.targetUrl === selectedUrl);
-    if (item) {
-      window.activeQuestTarget = item;
-      const toast = document.getElementById('invitation-toast');
-      if (toast) {
-        toast.textContent = `Selected: [Dewey ${item.dewey}] Opening folder...`;
-        toast.style.display = 'block';
-      }
-      
-      // Auto-navigate or look at target safely if panorama view engine is accessible
-      const viewer = window.roomViewer || appRoomViewerRef;
-      if (viewer && typeof viewer.lookAt === 'function') {
-        viewer.lookAt(item.shelfCoordinate.pitch, item.shelfCoordinate.yaw, 50, 2000, () => {
-          window.location.href = selectedUrl;
-        });
-      } else {
-        // Direct instant fallback navigation strategy for low-tier hardware nodes
-        window.location.href = selectedUrl;
-      }
-    }
-  });
+bookData.toc.forEach(chapter => {
+const li = document.createElement('li');
+li.textContent = chapter;
+listNode.appendChild(li);
+}); 
+
+overlayPanel.classList.add('visible');
+} 
+
+function hideTableOfContentsPanel() {
+const overlayPanel = document.getElementById('toc-display-overlay');
+if (overlayPanel) {
+overlayPanel.classList.remove('visible');
 }
+} 
 
-function setupDrawerControls() {
-  const toggleBtn = document.getElementById('catalog-toggle-btn');
-  const drawerPanel = document.getElementById('card-catalog-drawer');
-  
-  if (toggleBtn && drawerPanel) {
-    toggleBtn.addEventListener('click', () => {
-      const isMinimized = drawerPanel.classList.contains('minimized');
-      if (isMinimized) {
-        drawerPanel.classList.remove('minimized');
-        toggleBtn.setAttribute('aria-expanded', 'true');
-      } else {
-        drawerPanel.classList.add('minimized');
-        toggleBtn.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
+function updateToastDisplay(message) {
+const toast = document.getElementById('library-status-toast');
+if (!toast) return; 
+
+if (message) {
+toast.textContent = message;
+toast.style.display = 'block';
+} else {
+toast.style.display = 'none';
 }
+} 
 
-/*
-============================================================================
-4. Master Runtime Execution Pipeline
-============================================================================ */
-document.addEventListener('DOMContentLoaded', () => {
-  initializeDeviceDefaults();
-  setupDrawerControls();
-  initializeUIComponents(); // FIXED: Restored core UI data initialization mapping hook!
+function initializeCatalogDropdown() {
+const selectMenu = document.getElementById('catalog-search-select');
+if (!selectMenu) return; 
 
-  // Safe reference query setup for third-party scripts
-  setTimeout(() => {
-    if (window.roomViewer) {
-      appRoomViewerRef = window.roomViewer;
-    }
-  }, 1000);
-});
+selectMenu.innerHTML = '-- Browse Shelf Registry --

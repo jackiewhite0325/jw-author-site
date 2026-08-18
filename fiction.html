@@ -2,100 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- Added critical viewport rule to activate responsive mobile scaling -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fiction Catalog | Sigil and Scribe LLC</title>
-  <meta name="description" content="Explore fiction offerings and novels written by J. White.">
-  
-  <!-- Master Stylesheet Import -->
+  <title>Fiction Catalog | J. White</title>
   <link rel="stylesheet" href="css/style.css">
-  
   <style>
-    /* Unique layout additions for the fiction directory */
-    .fiction-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 24px;
-      padding: 24px 16px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .book-card {
-      background: var(--paper);
-      border: 1px solid var(--walnut);
-      border-radius: 4px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    .book-cover-frame {
-      background: var(--mist);
-      height: 240px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid var(--walnut);
-    }
-    
-    /* Responsive Structural Layout Interventions */
-    @media (max-width: 768px) {
-      .site-header .container {
-        flex-direction: column;
-        gap: 12px;
-      }
-      .site-nav ul {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-        padding: 0;
-      }
-    }
+    .fiction-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; padding: 40px 16px; max-width: 1200px; margin: 0 auto; }
+    .book-card { background: var(--paper); border: 1px solid var(--walnut); border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+    .book-cover-frame { background: var(--mist); height: 240px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--walnut); }
+    .book-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+    .sub-tagline { font-style: italic; color: var(--amber-deep); font-size: 0.9rem; margin-bottom: 12px; }
   </style>
 </head>
 <body>
-
-  <a href="#main-content" class="skip-link">Skip to main content</a>
-
   <header class="site-header" style="background: var(--walnut-deep); color: var(--paper); padding: 16px 24px;">
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto;">
-      <a href="index.html" class="logo-link" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem;">Sigil & Scribe</a>
-      <nav class="site-nav">
-        <ul style="list-style: none; display: flex; gap: 16px; margin: 0;">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="fiction.html" style="color: var(--amber); font-weight: 600;">Fiction</a></li>
-          <li><a href="children.html">Children</a></li>
-          <li><a href="blog.html">Blog</a></li>
-        </ul>
-      </nav>
+    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; flex-wrap: wrap; gap: 12px;">
+      <a href="index.html" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem;">Sigil & Scribe</a>
+      <nav><ul style="list-style: none; display: flex; gap: 18px; margin: 0; padding: 0; flex-wrap: wrap;">
+        <li><a href="index.html">360 Study</a></li>
+        <li><a href="home.html">Directory</a></li>
+        <li><a href="fiction.html" style="color: var(--amber); font-weight: 600;">Fiction</a></li>
+        <li><a href="children.html">Children</a></li>
+        <li><a href="health-wellness.html">Wellness</a></li>
+        <li><a href="more-books.html">More Books</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="muffin-memorial.html">Memorial</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul></nav>
     </div>
   </header>
-
   <main id="main-content">
     <section class="entrance">
       <p class="eyebrow">The Written Word</p>
       <h1>Fiction Catalog</h1>
       <p>Delve into mysteries, historical dramas, and speculative universes authored by J. White.</p>
     </section>
-
     <div class="fiction-grid">
-      <!-- Book Feature Item 1 -->
       <article class="book-card">
-        <div class="book-cover-frame">
-          <span style="font-family: 'Courier Prime', monospace; color: var(--sage-deep);">[ Book Cover Cover Art ]</span>
-        </div>
-        <div class="book-info" style="padding: 16px; flex-grow: 1; display: flex; flex-direction: column;">
-          <h3 style="font-family: 'Playfair Display', serif; font-size: 1.25rem; margin-bottom: 4px;">I Finally Wrote It</h3>
-          <p class="sub-tagline" style="font-style: italic; font-size: 0.9rem; color: var(--sage-deep); margin-bottom: 12px;">A journey through the meta-narrative of drafting novels.</p>
+        <div class="book-cover-frame"><span style="font-family: 'Courier Prime', monospace; color: var(--sage-deep);">[ Book Cover Art ]</span></div>
+        <div class="book-info">
+          <h3 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 4px;">I Finally Wrote It</h3>
+          <p class="sub-tagline">A journey through the meta-narrative of drafting novels.</p>
           <p style="font-size: 0.95rem; margin-bottom: 16px; flex-grow: 1;">A compelling look inside modern fiction development frameworks, told through a captivating internal dialogue.</p>
-          <div class="book-actions" style="margin-top: auto;">
-            <a href="more-books.html" class="btn btn-primary" style="display: block; text-align: center; background: var(--amber); color: var(--paper); padding: 10px; border-radius: 4px; font-weight: 600;">Read Sample</a>
-          </div>
+          <a href="more-books.html" style="display: block; text-align: center; background: var(--amber); color: var(--paper); padding: 10px; border-radius: 4px; font-weight: 600;">Read Sample</a>
         </div>
       </article>
     </div>
   </main>
-
 </body>
 </html>

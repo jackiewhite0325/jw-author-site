@@ -1,1 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Writer's Toolbox · Sigil and Scribe</title>
+  <!-- Typography Fonts -->
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    /* 1. Theme Configuration & Spatial Tokens */
+    :root {
+      --color-primary-bg: #FDFBF7;         /* Warm paper */
+      --color-secondary-container: #F2F5F3; /* Soft morning mist */
+      --color-charcoal-body: #2B2B2B;       /* High-legibility charcoal */
+      --color-highlight-accent: #D4A373;    /* Soft amber gold */
+      --color-muted-context: #A3B19B;       /* Sage green */
+      
+      --font-literary: 'Playfair Display', Georgia, serif;
+      --font-ui: 'Inter', system-ui, sans-serif;
+      --padding-cushion: 32px;
+      --transition-bezier: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
 
+    /* 2. Global Resets & Base Canvas Layout */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--color-primary-bg);
+      color: var(--color-charcoal-body);
+      font-family: var(--font-ui);
+      font-size: 16px;
+      line-height: 1.6;
+      padding: var(--padding-cushion);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, .literary-focus {
+      font-family: var(--font-literary);
+      font-weight: 600;
+      text-transform: none; /* Enforces strict sentence-case compliance */
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* 3. Site Header & Constellation Architecture */
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: calc(var(--padding-cushion) * 2);
+      padding-bottom: var(--padding-cushion);
+      border-bottom: 1px solid var(--color-secondary-container);
+    }
+
+    .brand-block h1 {
+      font-size: 2.25rem;
+      margin-bottom: 4px;
+    }
+
+    .brand-block p {
+      font-family: var(--font-literary);
+      font-style: italic;
+      color: var(--color-muted-context);
+      font-size: 1.1rem;
+    }
+
+    /* Muffin Constellation Container (Fixed star positions layout grid anchor) */
+    .constellation-wrapper {
+      position: relative;
+      width: 240px;
+      height: 120px;
+      background-color: transparent;
+    }
+
+    /* Companion Toast Notification Engine */
+    .star-toast {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      background: var(--color-primary-bg);
+      border: 1px solid var(--color-highlight-accent);
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      border-radius: 4px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: var(--transition-bezier);
+      pointer-events: none;
+    }
+
+    .star-toast.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 4. Layout Core Shell Components */
+    .hub-shelf {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hub-shelf">
+    <!-- Header Block featuring the structural layout anchor for Muffin Constellation -->
+    <header class="site-header">
+      <div class="brand-block">
+        <h1>The writer's toolbox</h1>
+        <p>“Everything invites, nothing insists.”</p>
+      </div>
+
+      <div class="constellation-wrapper" id="muffinConstellation" aria-label="Muffin's constellation header track">
+        <div class="star-toast" id="starToast">You earned a star!</div>
+        <!-- SVG injection tracking engine space dynamically calculated -->
+        <svg id="constellationSvg" width="100%" height="100%" style="overflow: visible;"></svg>
+      </div>
+    </header>
+
+        <!-- 5. Today's Spark: Public Daily Journal Prompt -->
+    <section class="spark-banner" aria-labelledby="sparkTitle">
+      <div class="spark-label">Today's spark</div>
+      <h2 id="sparkTitle" class="spark-prompt">Where does your main character go when they need to think completely alone?</h2>
+    </section>
+
+    <!-- 6. Tool Shelf Grid Architecture -->
+    <main class="tools-grid-container">
+      <section class="grid-column">
+        <div class="column-header">
+          <h2>Writing & drafting tools</h2>
+          <p>Active, hands-on aids for the drafting process</p>
+        </div>
+        <div class="cards-stack" id="toolsShelf">
+          <!-- Active canvas tools dynamically injected here -->
+        </div>
+      </section>
+
+      <section class="grid-column">
+        <div class="column-header">
+          <h2>Publishing & marketing modules</h2>
+          <p>Lightweight diagnostic references for launch bottlenecks</p>
+        </div>
+        <div class="cards-stack" id="modulesShelf">
+          <!-- Lightweight troubleshooting modules injected here -->
+        </div>
+      </section>
+    </main>
+
+  <style>
+    /* 5. Today's Spark Stylings */
+    .spark-banner {
+      background-color: var(--color-secondary-container);
+      padding: calc(var(--padding-cushion) * 1.25);
+      border-radius: 4px;
+      margin-bottom: calc(var(--padding-cushion) * 1.5);
+      border-left: 2px solid var(--color-muted-context);
+    }
+
+    .spark-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-muted-context);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .spark-prompt {
+      font-size: 1.35rem;
+      color: var(--color-charcoal-body);
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    /* 6. Grid Architecture Specs */
+    .tools-grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: calc(var(--padding-cushion) * 1.5);
+      align-items: start;
+    }
+
+    @media (max-width: 768px) {
+      .tools-grid-container {
+        grid-template-columns: 1fr;
+        gap: var(--padding-cushion);
+      }
+    }
+
+    .column-header {
+      margin-bottom: var(--padding-cushion);
+    }
+
+    .column-header h2 {
+      font-size: 1.6rem;
+      margin-bottom: 4px;
+    }
+
+    .column-header p {
+      font-size: 0.95rem;
+      color: var(--color-muted-context);
+    }
+
+    .cards-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--padding-cushion);
+    }
+
+    /* 7. Shared Tool/Module Card Component Specifications */
+    .tool-card {
+      background-color: var(--color-primary-bg);
+      border: 1px solid var(--color-secondary-container);
+      padding: var(--padding-cushion);
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+      transition: var(--transition-bezier);
+    }
+
+    /* Slow 0.3s transition into a soft amber bloom shadow */
+    .tool-card:hover {
+      border-color: var(--color-highlight-accent);
+      box-shadow: 0 4px 20px rgba(212,163,115,0.15);
+    }
+
+    .tool-card-title {
+      font-size: 1.25rem;
+      margin-bottom: 6px;
+      color: var(--color-charcoal-body);
+    }
+
+    .tool-card-bottleneck {
+      display: inline-block;
+      font-size: 0.75rem;
+      color: var(--color-highlight-accent);
+      background-color: rgba(212,163,115,0.08);
+      padding: 2px 8px;
+      border-radius: 2px;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .tool-card-desc {
+      font-size: 0.95rem;
+      color: var(--color-charcoal-body);
+      opacity: 0.85;
+    }
+  </style>
+
+        <!-- 8. Interactive App Canvas Workspaces -->
+    <section class="workspace-wrapper" id="workspaceWrapper" aria-hidden="true" style="display: none;">
+      <!-- Main Application Card Modal Layer -->
+      <div class="workspace-card">
+        <button class="close-workspace-btn" id="closeWorkspaceBtn" aria-label="Return to writing shelf">← Back to writing shelf</button>
+        
+        <!-- Target Dynamic Mounting Containers -->
+        <div id="troubleshootWorkspace" style="display: none;">
+          <h2 id="troubleshootTitle">Troubleshoot Guide</h2>
+          <div class="dropdown-container">
+            <label for="troubleshootSelect">What bottleneck are you running into right now?</label>
+            <select id="troubleshootSelect">
+              <option value="" disabled selected>Choose an issue to troubleshoot...</option>
+            </select>
+          </div>
+          
+          <div id="cardWorkflow" class="card-workflow-container" style="display: none;">
+            <div class="diagnostic-card">
+              <p id="diagnosticText"></p>
+            </div>
+            <div class="workflow-actions">
+              <button class="action-btn text-worked" id="btnWorked">This worked</button>
+              <button class="action-btn text-next" id="btnNext">This didn't work</button>
+            </div>
+          </div>
+
+          <div id="troubleshootFallback" class="fallback-card" style="display: none;">
+            <h3>Don't lose hope</h3>
+            <p>This specific fix didn't land right now, but it doesn't mean nothing will. Writing takes time, and exploring options is real progress.</p>
+            <div class="video-container">
+              <a id="fallbackVideoLink" href="#" target="_blank" class="video-link-btn">Watch short guidance video</a>
+            </div>
+          </div>
+        </div>
+
+        <div id="marketingWorkspace" style="display: none;">
+          <div class="marketing-header">
+            <h2>Marketing Menu</h2>
+            <button class="randomizer-btn" id="btnRandomAction">Pick one action for me</button>
+          </div>
+          <div id="marketingBuffet" class="menu-buffet-grid">
+            <!-- Categories and checklists mount here -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  <style>
+    /* 8. Workspace Modal Design Specs */
+    .workspace-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--color-primary-bg);
+      z-index: 1000;
+      padding: var(--padding-cushion);
+      overflow-y: auto;
+    }
+
+    .workspace-card {
+      max-width: 800px;
+      margin: 40px auto;
+    }
+
+    .close-workspace-btn {
+      background: none;
+      border: none;
+      font-family: var(--font-ui);
+      font-size: 0.95rem;
+      color: var(--color-muted-context);
+      cursor: pointer;
+      margin-bottom: var(--padding-cushion);
+      transition: var(--transition-bezier);
+    }
+
+    .close-workspace-btn:hover {
+      color: var(--color-charcoal-body);
+    }
+
+    .dropdown-container label {
+      display: block;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px;
+      font-family: var(--font-ui);
+      font-size: 1rem;
+      border: 1px solid var(--color-secondary-container);
+      background-color: var(--color-secondary-container);
+      color: var(--color-charcoal-body);
+      border-radius: 4px;
+      outline: none;
+      transition: var(--transition-bezier);
+    }
+
+    select:focus {
+      border-color: var(--color-highlight-accent);
+    }
+
+    .card-workflow-container, .fallback-card {
+      margin-top: var(--padding-cushion);
+      background-color: var(--color-secondary-container);
+      padding: var(--padding-cushion);
+      border-radius: 4px;
+    }
+
+    .diagnostic-card p {
+      font-size: 1.15rem;
+      line-height: 1.6;
+      margin-bottom: var(--padding-cushion);
+    }
+
+    .workflow-actions {
+      display: flex;
+      gap: 16px;
+    }
+
+    .action-btn {
+      padding: 12px 24px;
+      font-family: var(--font-ui);
+      font-size: 0.95rem;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: var(--transition-bezier);
+    }
+
+    .text-worked {
+      background-color: var(--color-highlight-accent);
+      color: white;
+    }
+
+    .text-next {
+      background-color: transparent;
+      border-color: var(--color-muted-context);
+      color: var(--color-charcoal-body);
+    }
+
+    .video-link-btn {
+      display: inline-block;
+      margin-top: 16px;
+      background-color: var(--color-charcoal-body);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 4px;
+    }
+
+    .marketing-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--padding-cushion);
+    }
+
+    .randomizer-btn {
+      background-color: transparent;
+      border: 1px solid var(--color-highlight-accent);
+      color: var(--color-charcoal-body);
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: var(--font-ui);
+      transition: var(--transition-bezier);
+    }
+
+    .randomizer-btn:hover {
+      background-color: rgba(212,163,115,0.1);
+    }
+
+    .menu-buffet-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: calc(var(--padding-cushion) * 1.25);
+    }
+
+    @media (max-width: 640px) {
+      .menu-buffet-grid { grid-template-columns: 1fr; }
+    }
+
+    .buffet-group h3 {
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--color-secondary-container);
+      padding-bottom: 6px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .checkbox-item input {
+      margin-top: 4px;
+      accent-color: var(--color-highlight-accent);
+    }
+  </style>
+
+        <!-- 9. Application Logic & Component Wiring Block -->
+    <script type="module">
+      import { THEME_SPEC, TOOL_ROSTER, TROUBLESHOOT_GUIDE, MARKETING_MENU, BADGE_INVENTORY } from './catalog.js';
+
+      // Global Architectural Engine State Tracker
+      const STATE = {
+        earnedBadges: new Set(),
+        currentTroubleshootIndex: 0,
+        activeTroubleshootCategory: null
+      };
+
+      // Muffin Constellation Coordinate Matrix mapping 15 unique slots
+      const STAR_COORDINATES = [
+        { id: 'welcome-star', cx: 30, cy: 40 },
+        { id: 'still-here', cx: 65, cy: 25 },
+        { id: 'wanderer', cx: 90, cy: 55 },
+        { id: 'the-patron', cx: 120, cy: 20 },
+        { id: 'wordsmith', cx: 155, cy: 45 },
+        { id: 'second-eyes', cx: 195, cy: 30 },
+        { id: 'turned-the-page', cx: 215, cy: 65 },
+        { id: 'the-finish-line', cx: 180, cy: 90 },
+        { id: 'true-north', cx: 140, cy: 85 },
+        { id: 'cheerful-heart', cx: 105, cy: 100 },
+        { id: 'brave-page', cx: 65, cy: 85 },
+        { id: 'storytellers-voice', cx: 40, cy: 70 },
+        { id: 'steady-hands', cx: 105, cy: 55 },
+        { id: 'one-small-thing', cx: 145, cy: 55 },
+        { id: 'today-spark-star', cx: 130, cy: 115 } // Bonus tracking link node
+      ];
+
+      document.addEventListener('DOMContentLoaded', () => {
+        initializeHubShelf();
+        setupGlobalEventListeners();
+        renderConstellation();
+      });
+
+      // Render out the Tool Shelf cards cleanly
+      function initializeHubShelf() {
+        const toolsShelf = document.getElementById('toolsShelf');
+        const modulesShelf = document.getElementById('modulesShelf');
+
+        TOOL_ROSTER.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'tool-card';
+          card.setAttribute('role', 'button');
+          card.setAttribute('tabindex', '0');
+          card.innerHTML = `
+            <div class="tool-card-title">${item.name}</div>
+            <div class="tool-card-bottleneck">${item.bottleneck}</div>
+            <div class="tool-card-desc">${item.desc}</div>
+          `;
+          
+          card.addEventListener('click', () => launchWorkspace(item.id));
+          
+          if (item.type === 'tool') {
+            toolsShelf.appendChild(card);
+          } else {
+            modulesShelf.appendChild(card);
+          }
+        });
+
+        // Initialize the Troubleshoot select options
+        const selectNode = document.getElementById('troubleshootSelect');
+        TROUBLESHOOT_GUIDE.categories.forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat.id;
+          opt.textContent = cat.title;
+          selectNode.appendChild(opt);
+        });
+
+        // Initialize Marketing Buffet DOM structure
+        initializeMarketingBuffet();
+      }
+
+      function setupGlobalEventListeners() {
+        const wrapper = document.getElementById('workspaceWrapper');
+        const closeBtn = document.getElementById('closeWorkspaceBtn');
+        
+        closeBtn.addEventListener('click', () => {
+          wrapper.style.display = 'none';
+          wrapper.setAttribute('aria-hidden', 'true');
+        });
+
+        // Troubleshoot diagnostic workflows logic mapping
+        const selectNode = document.getElementById('troubleshootSelect');
+        selectNode.addEventListener('change', (e) => {
+          const category = TROUBLESHOOT_GUIDE.categories.find(c => c.id === e.target.value);
+          if (category) {
+            STATE.activeTroubleshootCategory = category;
+            STATE.currentTroubleshootIndex = 0;
+            showDiagnosticCard();
+          }
+        });
+
+        document.getElementById('btnWorked').addEventListener('click', () => {
+          triggerStarReward('steady-hands');
+          closeWorkspaceBtn.click();
+        });
+
+        document.getElementById('btnNext').addEventListener('click', () => {
+          STATE.currentTroubleshootIndex++;
+          if (STATE.currentTroubleshootIndex < STATE.activeTroubleshootCategory.cards.length) {
+            showDiagnosticCard();
+          } else {
+            showTroubleshootFallback();
+          }
+        });
+
+        // Optional random action selector mechanism
+        document.getElementById('btnRandomAction').addEventListener('click', highlightRandomAction);
+      }
+
+      function launchWorkspace(id) {
+        const wrapper = document.getElementById('workspaceWrapper');
+        const tsWorkspace = document.getElementById('troubleshootWorkspace');
+        const mktWorkspace = document.getElementById('marketingWorkspace');
+
+        wrapper.style.display = 'block';
+        wrapper.setAttribute('aria-hidden', 'false');
+
+        if (id === 'troubleshoot-guide') {
+          tsWorkspace.style.display = 'block';
+          mktWorkspace.style.display = 'none';
+          document.getElementById('troubleshootSelect').value = '';
+          document.getElementById('cardWorkflow').style.display = 'none';
+          document.getElementById('troubleshootFallback').style.display = 'none';
+        } else if (id === 'marketing-menu') {
+          tsWorkspace.style.display = 'none';
+          mktWorkspace.style.display = 'block';
+        } else {
+          // Standard placeholder routing fallback framework for sandbox demo safety
+          alert(`${id} workspace launched gently. Click back to return.`);
+          triggerStarReward('wanderer');
+        }
+      }
+
+      function showDiagnosticCard() {
+        document.getElementById('cardWorkflow').style.display = 'block';
+        document.getElementById('troubleshootFallback').style.display = 'none';
+        document.getElementById('diagnosticText').textContent = STATE.activeTroubleshootCategory.cards[STATE.currentTroubleshootIndex];
+      }
+
+      function showTroubleshootFallback() {
+        document.getElementById('cardWorkflow').style.display = 'none';
+        const fallback = document.getElementById('troubleshootFallback');
+        fallback.style.display = 'block';
+        document.getElementById('fallbackVideoLink').href = `https://sigilandscribe.com{STATE.activeTroubleshootCategory.videoFallback}`;
+        
+        // Even reaching the end quietly awards the effort badge
+        triggerStarReward('steady-hands');
+      }
+
+      function initializeMarketingBuffet() {
+        const buffet = document.getElementById('marketingBuffet');
+        MARKETING_MENU.forEach(cat => {
+          const group = document.createElement('div');
+          group.className = 'buffet-group';
+          group.innerHTML = `<h3>${cat.category}</h3>`;
+          
+          cat.items.forEach((item, index) => {
+            const label = document.createElement('label');
+            label.className = 'checkbox-item';
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.addEventListener('change', () => triggerStarReward('one-small-thing'));
+            
+            label.appendChild(checkbox);
+            label.appendChild(document.createTextNode(item));
+            group.appendChild(label);
+          });
+          
+          buffet.appendChild(group);
+        });
+      }
+
+      function highlightRandomAction() {
+        const checkboxes = document.querySelectorAll('#marketingBuffet input[type="checkbox"]');
+        if (checkboxes.length > 0) {
+          const randomIdx = Math.floor(Math.random() * checkboxes.length);
+          const target = checkboxes[randomIdx];
+          target.parentElement.style.outline = `2px dashed ${THEME_SPEC.colors.highlightAccent}`;
+          target.parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(() => {
+            target.parentElement.style.outline = 'none';
+          }, 3000);
+        }
+      }
+
+      // Constellation Vector Engine Logic mapping elements to pre-calculated silhouette lines
+      function renderConstellation() {
+        const svg = document.getElementById('constellationSvg');
+        svg.innerHTML = ''; // Fresh render buffer
+
+        // Draw connections if criteria met (breadth of code unlocks)
+        if (STATE.earnedBadges.size >= 4) {
+          drawConstellationSilhouetteLines(svg);
+        }
+
+        STAR_COORDINATES.forEach(star => {
+          const circle = document.createElementNS('http://w3.org', 'circle');
+          circle.setAttribute('cx', star.cx);
+          circle.setAttribute('cy', star.cy);
+          circle.setAttribute('r', STATE.earnedBadges.has(star.id) ? '4' : '0'); // Pure whitespace hidden rendering logic implementation
+          circle.setAttribute('fill', THEME_SPEC.colors.charcoalBody);
+          circle.style.transition = 'r 0.5s ease';
+          svg.appendChild(circle);
+        });
+      }
+
+      function drawConstellationSilhouetteLines(svg) {
+        // Line layout coordinates arrays defining Muffin silhouette mapping traces
+        const lines = [
+          { x1: 30, y1: 40, x2: 65, y2: 25 },
+          { x1: 65, y1: 25, x2: 120, y2: 20 },
+          { x1: 120, y1: 20, x2: 195, y2: 30 },
+          { x1: 195, y1: 30, x2: 215, y2: 65 },
+          { x1: 215, y1: 65, x2: 180, y2: 90 },
+          { x1: 180, y1: 90, x2: 140, y2: 85 },
+          { x1: 140, y1: 85, x2: 105, y2: 100 },
+          { x1: 105, y1: 100, x2: 65, y2: 85 },
+          { x1: 65, y1: 85, x2: 30, y2: 40 }
+        ];
+
+                lines.forEach(l => {
+          const line = document.createElementNS('http://w3.org', 'line');
+          line.setAttribute('x1', l.x1);
+          line.setAttribute('y1', l.y1);
+          line.setAttribute('x2', l.x2);
+          line.setAttribute('y2', l.y2);
+          line.setAttribute('stroke', THEME_SPEC.colors.mutedContexts);
+          line.setAttribute('stroke-width', '1');
+          line.setAttribute('stroke-dasharray', '2,2');
+          svg.appendChild(line);
+        });
+      }
+
+      function triggerStarReward(badgeId) {
+        if (!STATE.earnedBadges.has(badgeId)) {
+          STATE.earnedBadges.add(badgeId);
+          renderConstellation();
+          showToastNotification();
+        }
+      }

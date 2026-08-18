@@ -1,6 +1,7 @@
-/* ==========================================================================
-   1. Canonical Design Tokens & Layout Resets
-   ========================================================================== */
+/*
+============================================================================
+1. Canonical Design Tokens & Layout Resets
+============================================================================ */
 :root {
   --paper: #fcfaf2;
   --mist: #e5e9e8;
@@ -13,7 +14,6 @@
   --walnut-dark: #35271e;
   --walnut-deep: #1f1611;
   --card: rgba(252, 250, 242, 0.95);
-
   --transition-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
@@ -30,6 +30,7 @@ body {
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
 }
 
 ::selection {
@@ -40,11 +41,13 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+  transition: var(--transition-smooth);
 }
 
-/* ==========================================================================
-   2. Entrance Headers, Lecterns, and Memorial Poster Framing
-   ========================================================================== */
+/*
+============================================================================
+2. Typographic Entrance & Base Components
+============================================================================ */
 .entrance {
   max-width: 1100px;
   margin: 0 auto;
@@ -68,54 +71,25 @@ a {
   margin: 8px 0 6px;
 }
 
-.lectern-wrap {
-  display: flex;
-  justify-content: center;
-  margin: 24px auto 8px;
-  padding: 0 16px;
+.entrance p {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--sage-deep);
+  max-width: 640px;
+  margin: 0 auto;
 }
 
-.lectern {
+/*
+============================================================================
+3. Immersive Room Containers & Card Catalog System
+============================================================================ */
+#library-viewport-wrapper {
   position: relative;
-  width: min(560px, 92vw);
-  background: linear-gradient(180deg, var(--paper), var(--mist));
-  border: 1px solid var(--walnut);
-  border-radius: 6px;
-  padding: 18px 22px 16px;
-  box-shadow: 0 12px 24px -12px rgba(75, 56, 42, 0.3);
-}
-
-.poster-frame {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: var(--card);
-  border: 8px solid var(--walnut-dark);
-  border-radius: 4px;
-  padding: 14px 16px;
-  cursor: pointer;
-  box-shadow: 0 18px 30px -18px rgba(75, 56, 42, 0.45);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-  touch-action: manipulation;
-}
-
-.poster-frame:hover, .poster-frame:focus-visible {
-  transform: translateY(-2px);
-  box-shadow: 0 22px 36px -20px rgba(75, 56, 42, 0.5);
-  outline: none;
-}
-
-/* ==========================================================================
-   3. Room System Grids, Sliding Drawer Systems, and Desktop Media Breakpoints
-   ========================================================================== */
-.room {
-  max-width: 1180px;
-  margin: 34px auto 0;
-  padding: 0 24px 20px;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 28px;
-  align-items: start;
+  width: 100%;
+  height: 75vh;
+  background: var(--ink);
+  overflow: hidden;
 }
 
 #panorama-container {
@@ -123,170 +97,62 @@ a {
   height: 100%;
   position: relative;
   overflow: hidden;
-  touch-action: none;
+  touch-action: none; /* Prevents screen bouncing during 360 sweeps */
   -webkit-tap-highlight-color: transparent;
 }
 
-.catalog {
-  background: linear-gradient(180deg, var(--walnut) 0%, var(--walnut-dark) 100%);
-  border-radius: 6px;
-  padding: 12px;
-  box-shadow: 0 18px 32px -20px rgba(31, 22, 17, 0.45);
-}
-
-.catalog-search {
-  width: 100%;
-  padding: 9px 11px;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  font-family: 'Courier Prime', monospace;
-  font-size: 13px;
-  background: var(--paper);
-  color: var(--ink);
-  margin-bottom: 8px;
-}
-
-.drawers { display: flex; flex-direction: column; gap: 8px; }
-
-.drawer {
-  background: linear-gradient(180deg, var(--walnut) 0%, var(--walnut-dark) 100%);
-  border-radius: 3px;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), 0 3px 6px rgba(0, 0, 0, 0.25);
-}
-
-.drawer-handle {
-  width: 100%;
-  background: none;
-  border: none;
-  padding: 10px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  color: var(--paper);
-  font-family: 'Courier Prime', monospace;
-  font-size: 11.5px;
-  text-transform: uppercase;
-}
-
-.drawer-cards {
-  max-height: 0;
-  overflow: hidden;
-  transform: translateZ(0);
-  transition: max-height 0.36s var(--transition-ease);
-}
-
-.drawer.open .drawer-cards { max-height: 1200px; padding: 0 8px 10px; }
-
-.catalog-card {
-  background: var(--card);
-  font-family: 'Courier Prime', monospace;
-  font-size: 11.5px;
-  line-height: 1.5;
-  border-radius: 3px;
-  padding: 9px 10px;
-  margin-bottom: 7px;
-  cursor: pointer;
-  border: 1px solid var(--walnut);
-}
-
-.catalog-card .cc-title { display: block; font-weight: bold; color: var(--ink); }
-
-@media (min-width: 768px) {
-  .room { grid-template-columns: 2fr 1fr; }
-}
-/* ==========================================================================
-   4. Floating HUD System & Interactive Radar Overlays
-   ========================================================================== */
-.invitation-toast {
-  box-shadow: 0 10px 30px -10px rgba(31, 22, 17, 0.4);
-  animation: slideHudDown 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  max-width: min(480px, 90vw);
-}
-
-.nav-guide-arrow {
-  background: rgba(31, 22, 17, 0.6);
-  border: 1px solid var(--amber);
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  box-shadow: 0 0 15px rgba(217, 119, 6, 0.2);
-  animation: radarPulse 1.4s infinite ease-in-out;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.nav-guide-arrow:hover {
-  transform: translateY(-50%) scale(1.1);
-  background: rgba(217, 119, 6, 0.8);
-  color: var(--paper);
-}
-
-@keyframes slideHudDown {
-  from { transform: translateX(-50%) translateY(-30px); opacity: 0; }
-  to { transform: translateX(-50%) translateY(0); opacity: 1; }
-}
-
-@keyframes radarPulse {
-  0% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.4); opacity: 0.8; }
-  50% { box-shadow: 0 0 0 12px rgba(217, 119, 6, 0); opacity: 1; }
-  100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); opacity: 0.8; }
-}
-/* ==========================================================================
-   5. Sliding Card Catalog Panel & Transition Curves
-   ========================================================================== */
+/* Card Catalog Overlay Window */
 .card-catalog-drawer {
-  transition: transform 0.4s var(--transition-ease), opacity 0.3s ease;
-  transform: translateY(0);
-  opacity: 1;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--walnut);
+  border-radius: 6px;
+  padding: 16px;
+  z-index: 50;
+  width: 320px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform 0.3s var(--transition-ease), opacity 0.3s ease;
 }
 
-/* Push panel out of view bounds when minimized class state register triggers */
 .card-catalog-drawer.minimized {
   transform: translateY(calc(100% - 54px));
   opacity: 0.9;
 }
 
-.catalog-minimize-btn {
-  transition: background 0.2s ease, border-color 0.2s ease;
+/* Navigational Guides */
+.nav-guide-arrow {
+  font-family: 'Courier Prime', monospace;
+  font-weight: bold;
+  user-select: none;
+  transition: opacity 0.2s ease;
 }
 
-.catalog-minimize-btn:hover, .catalog-minimize-btn:focus-visible {
-  background: var(--mist) !important;
-  border-color: var(--walnut) !important;
-  outline: none;
-}
+/*
+============================================================================
+4. Mobile-First Media Breakpoint Adaptations
+============================================================================ */
+@media (max-width: 768px) {
+  .entrance {
+    padding: 20px 16px 4px;
+  }
+  
+  #library-viewport-wrapper {
+    height: 60vh; /* Scaled down height preserves vertical scrolling space on mobile */
+  }
 
-.catalog-select {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  .card-catalog-drawer {
+    width: calc(100% - 32px); /* Full fluid width bounds with side gutters */
+    left: 16px !important;
+    bottom: 16px !important;
+    padding: 12px;
+  }
+  
+  /* Tap Target Upgrades for Touch Control Items */
+  .catalog-select, 
+  #catalog-toggle-btn {
+    min-height: 44px; /* Matches standardized mobile physical touch requirements */
+  }
 }
-
-.catalog-select:focus {
-  border-color: var(--amber) !important;
-  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
-  outline: none;
-}
-
-/* ==========================================================================
-   6. Custom WebGL Hotspot Map Geometry
-   ========================================================================== */
-.custom-hotspot {
-  width: 26px !important;
-  height: 26px !important;
-  background: var(--amber);
-  border: 3px solid var(--paper);
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.35), 0 0 0 4px rgba(217, 119, 6, 0.2);
-  cursor: pointer;
-  transition: transform 0.2s var(--transition-ease), background 0.2s ease;
-}
-
-.custom-hotspot:hover, .custom-hotspot:focus-visible {
-  transform: scale(1.25);
-  background: var(--amber-deep);
-  outline: none;
-}
-

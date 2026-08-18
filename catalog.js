@@ -57,6 +57,8 @@ window.setStaticMode = function(enabled) {
   document.getElementById('panorama-loading-spinner')?.remove();
 };
 
+
+/* ==========================================================================
 /* ==========================================================================
    2. DOM Viewport Engineering & Diagnostic Timers
    ========================================================================== */
@@ -103,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   initializeUIComponents();
 });
+
 
 /* ==========================================================================
    3. WebGL Room Viewer & Custom Interactive Hotspots

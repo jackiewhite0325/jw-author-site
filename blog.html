@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Restores vital rendering rules for responsive mobile environments -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blog | J. White</title>
-  <meta name="description" content="Updates, behind-the-scenes notes, and news from author J. White.">
+  <meta name="description" content="Read personal insights, historical essays, and behind-the-scenes thoughts on writing from author J. White.">
   
   <!-- Open Graph Social Protocol Configurations -->
   <meta property="og:title" content="Blog | J. White">
@@ -17,7 +18,7 @@
   <!-- Global Typography Font Arrays -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://googleapis.com" rel="stylesheet">
   
   <!-- Core Design Application Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
@@ -28,141 +29,101 @@
       text-align: center;
       padding: 4rem 1.5rem 2rem;
     }
-    
     .blog-hero h1 {
       font-size: clamp(2rem, 6vw, 3.25rem);
       margin: 0;
+      font-family: 'Playfair Display', serif;
     }
-    
     .blog-hero p {
       font-size: 1.15rem;
       margin: 0.75rem 0 0 0;
-      opacity: 0.85;
+      color: var(--sage-deep);
     }
-
     .blog-feed-container {
       max-width: 750px;
       margin: 0 auto;
       padding: 0 1.5rem 5rem;
     }
-
     .blog-post-card {
-      background: var(--paper, #FDFBF7); 
-      border: 1px solid var(--sage-divider, #A3B19B); 
-      border-radius: 6px; 
+      background: var(--paper, #FDFBF7);
+      border: 1px solid var(--sage, #A3B19B);
+      border-radius: 6px;
       padding: 2.5rem;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+      margin-bottom: 2rem;
     }
-
-        .blog-post-card .post-date {
+    .blog-post-card .post-date {
       font-family: 'Courier Prime', monospace;
       font-size: 0.85rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--amber-gold, #D4A373);
+      color: var(--amber, #D4A373);
       margin: 0;
     }
-
     .blog-post-card h2 {
       margin: 0.5rem 0 1.25rem;
       font-size: clamp(1.5rem, 4vw, 2rem);
       line-height: 1.3;
+      font-family: 'Playfair Display', serif;
     }
-
     .blog-post-card p {
       margin: 0 0 1.25rem 0;
       font-size: 1.05rem;
       line-height: 1.7;
-      color: var(--charcoal-txt, #2B2B2B);
-      opacity: 0.95;
+      color: var(--ink);
     }
-
-    .blog-post-card p:last-of-type {
-      margin-bottom: 2rem;
-    }
-
     .blog-post-card .post-signature {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-style: italic; 
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
       font-size: 1.15rem;
-      color: var(--charcoal-txt, #2B2B2B);
       margin: 0;
+    }
+    
+    /* Mobile Scaling Adaptations */
+    @media (max-width: 768px) {
+      .blog-hero {
+        padding: 2.5rem 1rem 1.5rem;
+      }
+      .blog-post-card {
+        padding: 1.5rem; /* Reduces padding to expand readable line lengths on mobile */
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Accessible Navigation Skip Target Link -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- Global Application Site Header Context -->
-  <header class="site-header">
-    <div class="container">
-      <a href="index.html" class="logo-link">
-        <img src="images/site/logo-banner.png" alt="J. White, Sigil and Scribe">
-      </a>
-      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  <header class="site-header" style="background: var(--walnut-deep); color: var(--paper); padding: 16px 24px;">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto;">
+      <a href="index.html" class="logo-link" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem;">Sigil & Scribe</a>
       <nav class="site-nav">
-        <ul>
+        <ul style="list-style: none; display: flex; gap: 16px; margin: 0;">
           <li><a href="index.html">Home</a></li>
-          <li><a href="children.html">Children's Books</a></li>
-          <li><a href="health-wellness.html">Health &amp; Wellness</a></li>
-          <li><a href="more-books.html">More Books</a></li>
           <li><a href="fiction.html">Fiction</a></li>
-          <li><a href="muffin-memorial.html">Muffin's Memorial</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="blog.html" class="active">Blog</a></li>
+          <li><a href="children.html">Children</a></li>
+          <li><a href="blog.html" style="color: var(--amber); font-weight: 600;">Blog</a></li>
         </ul>
       </nav>
     </div>
   </header>
 
-    <!-- Central Payload Document Workspace -->
   <main id="main-content">
+    <header class="blog-hero">
+      <h1>The Librarian's Desk</h1>
+      <p>Essays, dispatches, and notes on literature by J. White.</p>
+    </header>
 
-    <section class="blog-hero">
-      <h1>The Blog</h1>
-      <p>Updates, behind-the-scenes notes, and news from Sigil and Scribe.</p>
-    </section>
-      
-    <section class="blog-feed-container">
+    <div class="blog-feed-container">
       <article class="blog-post-card">
-        <p class="post-date">August 13, 2026</p>
-        <h2>Welcome to the Healing Space</h2>
-
-        <p>
-          Welcome, however you found your way here. This corner of Sigil and Scribe is a
-          space built for anyone: the parent looking for a story that finally makes sense
-          of a hard diagnosis, the reader who needs a laugh on a rough day, or the person
-          just passing through and curious what's inside. No matter your background, your
-          body, or your story, there's a seat for you here.
-        </p>
-
-        <p>
-          Everything I create—the books, the memorial to Muffin, the free downloadables
-          coming to this blog—is meant to do one of three things: bring a little
-          awareness, offer a little comfort, or (when the day calls for it) just be plain
-          entertaining. Some days you'll need all three at once, and that's alright too.
-        </p>
-
-        <p>
-          I'll use this space to share updates on new books, behind-the-scenes looks at
-          where these stories come from, and free printables and resources as they're
-          ready. Thank you for stepping in. I'm glad you're here.
-        </p>
-
-        <p class="post-signature">J. White</p>
+        <p class="post-date">August 17, 2026</p>
+        <h2>The Architecture of the Virtual Study</h2>
+        <p>Building an immersive catalog requires thinking beyond simple database architecture. It demands treating every user click like a physical turn down an aisle of cedar shelving.</p>
+        <p>When design scales across mobile structures, simplicity always guides the baseline experience.</p>
+        <p class="post-signature">— J. White</p>
       </article>
-    </section>
-
+    </div>
   </main>
 
-  <!-- Universal Footer Element -->
-  <footer class="site-footer">
-    <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
-  </footer>
-
-  <!-- Universal Core Application Navigation Script Logic -->
-  <script src="js/main.js"></script>
 </body>
 </html>

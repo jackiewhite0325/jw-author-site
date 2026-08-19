@@ -1,1 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sigil and Scribe | The Immersive Library</title>
+<meta name="description" content="Step inside the Sigil and Scribe study. Find a book in the card catalog, open it, and step into its page.">
+<link rel="preconnect" href="https://googleapis.com">
+<link rel="preconnect" href="https://gstatic.com" crossorigin>
+<link href="https://googleapis.com/css2?family=Cinzel&family=Courier+Prime&family=IM+Fell+English&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://jsdelivr.net">
+<script src="https://jsdelivr.net"></script>
+<style>
 
+/* ============ design tokens (locked palette, no red) ============ */
+:root {
+--paper: #FDFBF7;
+--mist: #F2F5F3;
+--ink: #2B2B2B;
+--amber: #D4A373;
+--amber-deep: #B8874F;
+--sage: #A3B19B;
+--sage-deep: #7E8F76;
+--walnut: #6B4A34;
+--walnut-dark: #4A3324;
+--walnut-deep: #38251A;
+--card: #F7EFDD;
+--ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+background: radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.08), transparent 55%), var(--paper);
+color: var(--ink);
+font-family: 'IM Fell English', serif;
+overflow-x: hidden;
+min-height: 100vh;
+}
+
+::selection { background: var(--amber); color: var(--paper); }
+a { color: inherit; text-decoration: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.skip-link { position: absolute; left: -9999px; top: 8px; z-index: 10000; background: var(--paper); color: var(--ink); padding: 8px 12px; border-radius: 4px; }
+.skip-link:focus { left: 8px; }
+:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+/* ============ header ============ */
+.site-header {
+position: sticky; top: 0; z-index: 500;
+background: var(--walnut-deep); color: var(--paper);
+box-shadow: 0 4px 14px rgba(31,22,17,0.35);
+}
+.site-header .inner {
+max-width: 1180px; margin: 0 auto; padding: 12px 20px;
+display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+}
+.brand { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 1.15rem; letter-spacing: 0.01em; }
+.brand span { color: var(--amber); }
+.site-nav { display: flex; gap: 4px; flex-wrap: wrap; }
+.site-nav a {
+font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 0.08em;
+text-transform: uppercase; color: rgba(243,231,208,0.85);
+padding: 6px 9px; border-radius: 3px; transition: background 0.2s ease, color 0.2s ease;
+cursor: pointer;
+}
+.site-nav a:hover, .site-nav a:focus-visible { background: rgba(212,163,115,0.18); color: var(--paper); outline: none; }
+
+/* ============ landing view ============ */
+#landing-view { display: block; }
+.entrance { max-width: 1100px; margin: 0 auto; padding: 44px 24px 8px; text-align: center; }
+.eyebrow { font-family: 'Courier Prime', monospace; letter-spacing: 0.18em; text-transform: uppercase; font-size: 12px; color: var(--walnut); opacity: 0.75; }
+
+  .entrance h1 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: clamp(28px, 5vw, 46px); margin: 8px 0 6px; color: var(--walnut-deep); }
+.entrance p { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 16px; color: #5b5b5b; max-width: 640px; margin: 0 auto; }
+.entrance .hint { font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sage-deep); margin-top: 18px; }
+
+/* ============ 360 room stage ============ */
+.sc-pano-stage { display: none; max-width: 1180px; margin: 34px auto 0; padding: 0 20px; }
+.sc-pano-stage.live { display: block; }
+.sc-pano-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+.sc-pano-title { font-family: 'Playfair Display', Georgia, serif; font-size: 19px; color: var(--walnut-dark); margin: 0; }
+.sc-pano-sub { font-family: 'Courier Prime', monospace; font-size: 10.5px; color: var(--sage-deep); letter-spacing: 0.08em; text-transform: uppercase; margin: 2px 0 0; }
+#pano-container { position: relative; width: 100%; height: min(62vh, 540px); border-radius: 6px; overflow: hidden; background: var(--walnut-deep); box-shadow: 0 24px 44px -24px rgba(56,37,26,0.5); }
+#pano-container .pnlm-load-box { border-radius: 4px; }
+.sc-pano-cta { font-family: 'Courier Prime', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: var(--walnut); color: var(--card); border: none; border-radius: 3px; padding: 8px 12px; cursor: pointer; transition: background 0.2s ease; }
+.sc-pano-cta:hover { background: var(--walnut-dark); }
+#pano-enter { margin-top: 14px; }
+
+/* ============ card catalog ============ */
+.sc-catalog { max-width: 780px; margin: 36px auto 60px; padding: 0 20px; }
+.sc-catalog-panel { background: linear-gradient(180deg, var(--walnut) 0%, var(--walnut-dark) 100%); border-radius: 6px; padding: 18px 18px 16px; box-shadow: 0 24px 40px -24px rgba(56,37,26,0.5); scroll-margin-top: 90px; }
+.sc-catalog-title { font-family: 'Playfair Display', Georgia, serif; color: var(--card); font-size: 15px; text-align: center; margin: 2px 0 6px; }
+.sc-catalog-sub { font-family: 'Courier Prime', monospace; color: rgba(243,231,208,0.7); font-size: 10px; text-align: center; margin-bottom: 12px; }
+.sc-catalog-search { width: 100%; padding: 9px 11px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.15); font-family: 'Courier Prime', monospace; font-size: 13px; background: var(--card); color: var(--ink); margin-bottom: 8px; }
+.sc-catalog-search:focus { outline: 2px solid var(--amber); outline-offset: 1px; }
+.sc-filter-row { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.sc-filter-chip { font-family: 'Courier Prime', monospace; font-size: 10px; letter-spacing: 0.04em; background: rgba(243,231,208,0.12); color: #F3E7D0; border: 1px solid rgba(243,231,208,0.25); border-radius: 12px; padding: 4px 9px; cursor: pointer; transition: background 0.2s ease, color 0.2s ease; }
+.sc-filter-chip.active { background: var(--amber); color: var(--walnut-dark); border-color: var(--amber); font-weight: 700; }
+.sc-drawers { display: flex; flex-direction: column; gap: 8px; max-height: 52vh; overflow-y: auto; }
+.sc-drawer { background: linear-gradient(180deg, #8a6142, #6B4A34); border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 3px 6px rgba(0,0,0,0.25); scroll-margin-top: 90px; }
+.sc-drawer-handle { width: 100%; background: none; border: none; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: #F3E7D0; font-family: 'Courier Prime', monospace; font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; }
+.sc-drawer-handle .sc-pull { width: 24px; height: 6px; background: var(--amber); border-radius: 3px; box-shadow: 0 1px 2px rgba(0,0,0,0.3); flex-shrink: 0; }
+.sc-drawer-cards { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1); padding: 0 8px; }
+.sc-drawer.open .sc-drawer-cards { max-height: 1200px; padding: 0 8px 10px; }
+.sc-catalog-card { background: var(--card); font-family: 'Courier Prime', monospace; font-size: 11.5px; line-height: 1.5; border-radius: 3px; padding: 9px 10px; margin-bottom: 7px; cursor: pointer; border: 1px solid rgba(107,74,52,0.2); transition: transform 0.2s ease, box-shadow 0.2s ease; display: block; width: 100%; text-align: left; color: var(--ink); }
+.sc-catalog-card:hover, .sc-catalog-card:focus-visible { transform: translateX(3px); box-shadow: 0 4px 12px rgba(212,163,115,0.35); outline: none; }
+.sc-catalog-card .sc-cc-num { color: var(--amber-deep); font-weight: 700; }
+.sc-catalog-card .sc-cc-title { display: block; font-weight: 700; margin: 2px 0; }
+.sc-catalog-card .sc-cc-author { display: block; font-style: italic; opacity: 0.75; margin-bottom: 2px; }
+.sc-catalog-card.reserved { border-style: dashed; opacity: 0.85; }
+.sc-catalog-card.reserved .sc-cc-num { color: var(--sage-deep); }
+.sc-catalog-card.sc-mem-card { border-left: 3px solid var(--amber); background: linear-gradient(180deg, #FBF3E4, #F7EFDD); }
+.sc-catalog-card.sc-mem-card .sc-cc-num { color: var(--amber-deep); }
+.sc-catalog-empty { color: #F3E7D0; font-family: 'Courier Prime', monospace; font-size: 12px; text-align: center; padding: 10px 4px; opacity: 0.8; }
+
+  /* ============ summary modal / overlay window ============ */
+.sc-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(31,22,17,0.7); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2000; opacity: 0; pointer-events: none;
+  transition: opacity 0.3s var(--ease); padding: 20px;
+}
+.sc-overlay.show { opacity: 1; pointer-events: auto; }
+.sc-book-page {
+  background: radial-gradient(circle at top right, rgba(212,163,115,0.06), transparent), var(--paper);
+  width: 100%; max-width: 540px; border-radius: 6px;
+  box-shadow: 0 30px 60px -15px rgba(0,0,0,0.45);
+  padding: 24px 28px; border: 1px solid rgba(107,74,52,0.15);
+  transform: scale(0.95); transition: transform 0.3s var(--ease);
+  position: relative; max-height: 90vh; overflow-y: auto;
+}
+.sc-overlay.show .sc-book-page { transform: scale(1); }
+.bp-header { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+#bp-call { font-family: 'Courier Prime', monospace; font-size: 12px; font-weight: 700; color: var(--amber-deep); letter-spacing: 0.04em; }
+#bp-author { font-family: 'Courier Prime', monospace; font-size: 11.5px; color: var(--sage-deep); text-transform: uppercase; letter-spacing: 0.02em; }
+#bp-title { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 1.7rem; color: var(--walnut-dark); line-height: 1.25; margin-bottom: 8px; }
+#bp-tagline { font-size: 13.5px; font-weight: 600; color: var(--walnut); line-height: 1.45; margin-bottom: 14px; font-style: italic; }
+#bp-desc { font-size: 14px; line-height: 1.6; color: var(--ink); margin-bottom: 20px; }
+#bp-desc p { margin-bottom: 10px; }
+#bp-note { font-family: 'Courier Prime', monospace; font-size: 11px; color: var(--walnut); background: rgba(212,163,115,0.08); border: 1px dashed rgba(212,163,115,0.3); border-radius: 4px; padding: 10px 12px; margin-bottom: 20px; line-height: 1.4; }
+.bp-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; border-top: 1px solid rgba(107,74,52,0.1); padding-top: 16px; }
+
+/* ============ uniform buttons ============ */
+.sc-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'Courier Prime', monospace; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 16px;
+  border-radius: 4px; border: none; cursor: pointer; transition: all 0.2s ease;
+  min-height: 34px; text-align: center;
+}
+.sc-btn-primary { background: var(--walnut); color: var(--paper); box-shadow: 0 4px 10px rgba(107,74,52,0.15); }
+.sc-btn-primary:hover { background: var(--walnut-dark); transform: translateY(-1px); box-shadow: 0 6px 12px rgba(107,74,52,0.25); }
+.sc-btn-secondary { background: transparent; color: var(--walnut); border: 1px solid rgba(107,74,52,0.25); }
+.sc-btn-secondary:hover { background: rgba(107,74,52,0.04); color: var(--walnut-dark); border-color: var(--walnut-dark); }
+
+/* ============ generic footer ============ */
+.site-footer { text-align: center; padding: 40px 20px; font-family: 'Courier Prime', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sage-deep); border-top: 1px solid rgba(163,177,155,0.15); margin-top: 20px; }
+
+/* ============ desktop grid shift layout ============ */
+@media (min-width: 1024px) {
+  #landing-view { display: grid; grid-template-columns: 1fr 380px; max-width: 1220px; margin: 0 auto; gap: 10px; align-items: start; padding-bottom: 40px; }
+  .entrance { grid-column: 1 / span 2; padding: 40px 24px 10px; }
+  .sc-pano-stage { grid-column: 1; margin-top: 0; padding: 0 10px 0 20px; width: 100%; }
+  .sc-catalog { grid-column: 2; margin-top: 0; padding: 0 20px 0 10px; width: 100%; }
+  #pano-container { height: min(68vh, 580px); }
+  .sc-drawers { max-height: 56vh; }
+}
+</style>
+</head>
+
+  <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="inner">
+    <a href="#main-content" class="brand" id="brand-link">Sigil <span>&amp;</span> Scribe</a>
+    <nav class="site-nav" aria-label="Library sections">
+      <a id="nav-children">Children</a>
+      <a id="nav-wellness">Wellness</a>
+      <a id="nav-more">More Books</a>
+      <a id="nav-fiction">Fiction</a>
+      <a id="nav-toolbox">Toolbox</a>
+    </nav>
+  </div>
+</header>
+
+<div id="landing-view">
+  <main id="main-content">
+    <section class="entrance">
+      <p class="eyebrow">Sigil and Scribe, LLC</p>
+      <h1>The Immersive Library</h1>
+      <p>Step inside the study. Walk the room, or pull a card from the catalog. Every book opens into its own page.</p>
+      <p class="hint">Open a book, meet it briefly, then step into its page.</p>
+      <button type="button" class="sc-pano-cta" id="pano-enter" style="display:none;">Walk the Room (360)</button>
+    </section>
+
+    <section class="sc-pano-stage" id="pano-stage" aria-label="360 room view">
+      <div class="sc-pano-bar">
+        <div>
+          <p class="sc-pano-title">The Study, in the Round</p>
+          <p class="sc-pano-sub">drag to look around &middot; tap a marked spot to visit</p>
+        </div>
+        <button type="button" class="sc-pano-cta" id="pano-toggle">Close the 360</button>
+      </div>
+      <div id="pano-container" role="img" aria-label="360 view of the Sigil and Scribe study"></div>
+    </section>
+
+    <section class="sc-catalog" id="catalog-aside" aria-label="Card catalog">
+      <div class="sc-catalog-panel">
+        <p class="sc-catalog-title">Card Catalog</p>
+        <p class="sc-catalog-sub">searchable by title, author, or genre</p>
+        <input type="text" class="sc-catalog-search" id="catalog-search" placeholder="Search the shelves..." aria-label="Search the shelves">
+        <div class="sc-filter-row" id="filter-row" role="group" aria-label="Filter by author"></div>
+        <div class="sc-drawers" id="catalog-drawers" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
+</footer>
+
+<div class="sc-overlay" id="sc-overlay" role="dialog" aria-modal="true" aria-labelledby="bp-title">
+  <div class="sc-book-page" id="bp-page">
+    <button class="sc-btn sc-btn-secondary" id="bp-close" style="position: absolute; top: 12px; right: 12px; min-height: 28px; padding: 4px 10px;" aria-label="Close">&#10005;</button>
+    <div class="bp-header">
+      <span id="bp-call"></span>
+      <span id="bp-author"></span>
+    </div>
+    <h2 id="bp-title"></h2>
+    <p id="bp-tagline"></p>
+    <div id="bp-desc"></div>
+    <div id="bp-note" style="display:none;"></div>
+    <div class="bp-actions" id="bp-actions"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // Master local database tracking positions, section parameters, metadata links, and covers.
+  var DATA = {
+    books: [
+      {
+        id: "muffin-wiggles",
+        call: "100.1",
+        title: "Muffin Gets the Wiggles",
+        author: "J. White",
+        authorKey: "jw",
+        section: "children",
+        spot: { p: -16.5, y: -125.0 },
+        tagline: "Book 1 of the Muffin the Pitbull Puppy series.",
+        description: "A 26-book series helping kids understand and cope with chronic illness, inspired by a real dog who had seizures and taught her family what courage looks like. Five percent of net series royalties are donated quarterly to St. Jude Children's Research Hospital in her name.",
+        cover: "images/children/book1-cover-v2.png",
+        links: [
+          { label: "Kindle", url: "https://amazon.com" },
+          { label: "Paperback", url: "https://amazon.com" }
+        ],
+        comingSoon: false
+      },
+      {
+        id: "bingo-card-chronic-illness",
+        call: "200.1",
+        title: "The Bingo Card of Chronic Illness",
+        author: "J. White",
+        authorKey: "jw",
+        section: "wellness",
+        spot: { p: -7.0, y: 41.0 },
+        tagline: "A dark humor validation sheet for the weary.",
+        description: "An interactive workbook for those tracking difficult symptoms, medical gaslighting, and recovery milestones. Designed as a soft place to land when standard self-care frameworks fall short.",
+        cover: "images/health-wellness/bingo-cover-v2.jpg",
+        links: [
+          { label: "Kindle", url: "https://amazon.com" }
+        ],
+        comingSoon: false
+      },
+
+      {
+        id: "many-faces-of-grace",
+        call: "200.2",
+        title: "The Many Faces of Grace",
+        author: "J. White",
+        authorKey: "jw",
+        section: "wellness",
+        spot: null,
+        tagline: "Meditations on chronic existence.",
+        description: "A companion compilation focusing on internal landscape shifts when moving from health into ongoing patient management strategies.",
+        cover: "images/health-wellness/grace-cover-v2.png",
+        links: [
+          { label: "Paperback", url: "https://amazon.com" }
+        ],
+        comingSoon: false
+      },
+      {
+        id: "dont-quote-me",
+        call: "300.1",
+        title: "Don't Quote Me: Smart Mouths",
+        author: "J. White",
+        authorKey: "jw",
+        section: "more",
+        spot: { p: -17.0, y: 14.5 },
+        tagline: "Conversational essays regarding creative boundaries.",
+        description: "A series of sharp architectural breakdowns looking at structural problems encountered during long production tasks and collaborative independent cycles.",
+        cover: "images/more-books/dqm-cover-v2.jpg",
+        links: [
+          { label: "Get the Book", url: "https://books2read.com" }
+        ],
+        comingSoon: false
+      },
+
+            {
+        id: "axolotl-dreams",
+        call: "300.2",
+        title: "Axolotl Dreams",
+        author: "J. White",
+        authorKey: "jw",
+        section: "more",
+        spot: { p: -15.5, y: 6.0 },
+        tagline: "A coloring book, gently strange and calming.",
+        description: "A coloring journey built around the odd little charm of axolotls. A quiet, low-stakes creative outlet.",
+        cover: "images/more-books/axo-cover-v1.jpg",
+        links: [
+          { label: "Paperback", url: "https://amazon.com" }
+        ],
+        comingSoon: false
+      },
+      {
+        id: "syncretic-ritualist-almanac",
+        call: "300.3",
+        title: "Syncretic Ritualist Almanac",
+        author: "Petra C.Ht.",
+        authorKey: "petra",
+        section: "more",
+        spot: { p: -3.5, y: -52.0 },
+        tagline: "A working almanac for ritual and practice.",
+        description: "An almanac blending ritual traditions into a practical, syncretic guide, for readers building their own practice rather than following one script.",
+        cover: null,
+        links: [
+          { label: "Get the Book", url: "https://books2read.com/u/475ep7" }
+        ],
+        comingSoon: false
+      },
+
+      {
+            {
+        id: "ties-that-tear",
+        call: "400.1",
+        title: "The Ties That Tear",
+        author: "J. White",
+        authorKey: "jw",
+        section: "fiction",
+        spot: { p: -35.0, y: 145.0 },
+        tagline: "Book 1 of the Ties That Tear series.",
+        description: "The opening thread of the Trinity Tension Saga: a modern journey tangled in a Tudor dynasty trap, with Anna Boleyn at the heart of it. In production: this cover is a working draft.",
+        cover: "images/fiction/ttt1.1-working-cover1.png",
+        links: [],
+        comingSoon: true
+      },
+      {
+        id: "untying-the-knot",
+        call: "400.2",
+        title: "Untying the Knot",
+        author: "J. White",
+        authorKey: "jw",
+        section: "fiction",
+        spot: null,
+        tagline: "Book 1 of the Untying the Knot series.",
+        description: "The second thread of the Trinity Tension Saga. Coming soon.",
+        cover: null,
+        links: [],
+        comingSoon: true
+      },
+
+      {
+        id: "walking-a-tightrope",
+        call: "400.3",
+        title: "Walking a Tightrope",
+        author: "J. White",
+        authorKey: "jw",
+        section: "fiction",
+        spot: null,
+        tagline: "Book 1 of the Walking a Tightrope series.",
+        description: "The third thread of the Trinity Tension Saga. Coming soon.",
+        cover: null,
+        links: [],
+        comingSoon: true
+      },
+      {
+        id: "i-finally-wrote-it",
+        call: "500.1",
+        title: "I Finally Wrote It!",
+        author: "Toolbox",
+        authorKey: "toolbox",
+        section: "toolbox",
+        kind: "tool",
+        spot: { p: -14.5, y: -1.5 },
+        tagline: "The flagship. A drafting canvas with a gentle continuity watcher.",
+        description: "For when the rewrite loop won't let go of chapter one. A focused place to draft, with a soft-spoken companion that quietly notices continuity slips. Never grading, just a second pair of eyes.",
+        cover: null,
+        links: [],
+        workshop: true
+      },
+      {
+        id: "story-compass",
+        call: "520.2",
+        title: "Story Compass",
+        author: "Toolbox",
+        authorKey: "toolbox",
+        section: "toolbox",
+        kind: "tool",
+        spot: { p: -13.0, y: 6.0 },
+        tagline: "Three questions. One line. A quiet sense of where north is.",
+        description: "For the saggy middle and the missing roadmap. Answer three short questions and receive a one-line structural compass. Always visible, never demanding you follow it exactly.",
+        cover: null,
+        links: [],
+        workshop: true
+      },
+      {
+        id: "a-little-cheer",
+        call: "540.3",
+        title: "A Little Cheer",
+        author: "Toolbox",
+        authorKey: "toolbox",
+        section: "toolbox",
+        kind: "tool",
+        spot: { p: -16.0, y: -9.0 },
+        tagline: "A soft momentum companion for the lonely stretches.",
+        description: "A simple momentum helper designed to surface milestones and break tracking anxiety during deep solo production stretches.",
+        cover: null,
+        links: [],
+        workshop: true
+      }
+    ],
+    reserved: [
+      {
+        id: "nineteen-days",
+        title: "Nineteen Days",
+        author: "J. White",
+        description: "A private workshop log and deep analytical framework tracking production cycles across an intense window of creative planning."
+      }
+    ]
+  };
+
+  // Local build file index URLs mapping point destinations.
+  var BOOK_URLS = {
+    "muffin-wiggles": "pages/muffin-wiggles.html",
+    "bingo-card-chronic-illness": "pages/bingo-card-chronic-illness.html",
+    "many-faces-of-grace": "pages/many-faces-of-grace.html",
+    "dont-quote-me": "pages/dont-quote-me.html",
+    "axolotl-dreams": "pages/axolotl-dreams.html",
+    "syncretic-ritualist-almanac": "pages/syncretic-ritualist-almanac.html",
+    "ties-that-tear": "pages/ties-that-tear.html",
+    "untying-the-knot": "pages/untying-the-knot.html",
+    "walking-a-tightrope": "pages/walking-a-tightrope.html",
+    "i-finally-wrote-it": "pages/i-finally-wrote-it.html",
+    "story-compass": "pages/story-compass.html",
+    "a-little-cheer": "pages/a-little-cheer.html",
+    "memorial": "pages/muffin-memorial.html"
+  };
+
+   var SECTIONS = [
+    { key: "children", id: "shelf-children", label: "Children's Books", callRange: "100s", cls: "sc-children" },
+    { key: "wellness", id: "shelf-wellness", label: "Health & Wellness", callRange: "200s", cls: "sc-wellness" },
+    { key: "more", id: "shelf-more", label: "More Books", callRange: "300s", cls: "sc-more" },
+    { key: "fiction", id: "shelf-fiction", label: "Fiction", callRange: "400s", cls: "sc-fiction", emptyNote: "New stories are on the way, from more than one author." }
+  ];
+
+  var FILTERS = [
+    { key: "all", label: "All authors" },
+    { key: "jw", label: "J. White" },
+    { key: "petra", label: "Petra" },
+    { key: "toolbox", label: "Toolbox" }
+  ];
+
+  var state = { search: "", author: "all", openDrawer: "children" };
+
+  var overlayEl = document.getElementById("sc-overlay");
+
+  // DOM node generation helper
+  function el(tag, className, html) {
+    var e = document.createElement(tag);
+    if (className) e.className = className;
+    if (html !== undefined) e.innerHTML = html;
+    return e;
+  }
+
+  function groupBySection(books) {
+    var out = {};
+    books.forEach(function (b) {
+      if (!out[b.section]) out[b.section] = [];
+      out[b.section].push(b);
+    });
+    return out;
+  }
+
+  function bookById(id) {
+    for (var i = 0; i < DATA.books.length; i++) {
+      if (DATA.books[i].id === id) return DATA.books[i];
+    }
+    return null;
+  }
+
+  function reservedById(id) {
+    for (var i = 0; i < DATA.reserved.length; i++) {
+      if (DATA.reserved[i].id === id) return DATA.reserved[i];
+    }
+    return null;
+  }
+
+  function sectionMeta(key) {
+    for (var i = 0; i < SECTIONS.length; i++) {
+      if (SECTIONS[i].key === key) return SECTIONS[i];
+    }
+    return null;
+  }
+
+  /* ---------- 360 room ---------- */
+  var PANO = {
+    url: "images/site/victorian_library_360.jpg",
+    viewer: null,
+    stage: document.getElementById("pano-stage"),
+    container: document.getElementById("pano-container"),
+    toggleBtn: document.getElementById("pano-toggle"),
+    enterBtn: document.getElementById("pano-enter")
+  };
+
+  /* Every room button opens the same summary as its catalog card. */
+  var ROOM_SPOTS = [
+    { p: -16.5, y: -125.0, label: "Muffin Gets the Wiggles", act: "book", id: "muffin-wiggles" },
+    { p: 13.0, y: -138.5, label: "Muffin's Portrait", act: "memorial" },
+    { p: -7.0, y: 41.0, label: "The Bingo Card of Chronic Illness", act: "book", id: "bingo-card-chronic-illness" },
+    { p: -17.0, y: 14.5, label: "Don't Quote Me: Smart Mouths", act: "book", id: "dont-quote-me" },
+    { p: -14.5, y: -1.5, label: "I Finally Wrote It!", act: "book", id: "i-finally-wrote-it" },
+    { p: -35.0, y: 145.0, label: "The Ties That Tear", act: "book", id: "ties-that-tear" },
+    { p: -8.2, y: -24.0, label: "Reserved: Nineteen Days", act: "reserved", id: "nineteen-days" },
+    { p: -3.5, y: -52.0, label: "Petra's Almanac", act: "book", id: "syncretic-ritualist-almanac" }
+  ];
+
+  function panoAvailable() {
+    if (typeof window.pannellum === "undefined" || !window.pannellum.viewer) return false;
+    try {
+      var c = document.createElement("canvas");
+      return !!(c.getContext("webgl") || c.getContext("experimental-webgl"));
+    } catch (e) {
+      return false;
+    }
+  }
+
+
+  function actOnSpot(s) {
+    if (s.act === "memorial") {
+      window.location.href = BOOK_URLS.memorial || "muffin-memorial.html";
+    } else if (s.act === "book") {
+      var b = bookById(s.id);
+      if (b) openBook(b);
+    } else if (s.act === "reserved") {
+      var r = reservedById(s.id);
+      if (r) openReserved(r);
+    }
+  }
+
+  function initPano() {
+    if (PANO.viewer) return;
+    if (!panoAvailable()) return;
+    PANO.stage.classList.add("live");
+    PANO.enterBtn.style.display = "none";
+    try {
+      PANO.viewer = window.pannellum.viewer(PANO.container, {
+        type: "equirectangular",
+        panorama: PANO.url,
+        autoLoad: true,
+        compass: false,
+        keyboardZoom: true,
+        mouseZoom: true,
+        hfov: 100,
+        hotSpots: ROOM_SPOTS.map(function (s) {
+          return {
+            pitch: s.p,
+            yaw: s.y,
+            type: "info",
+            text: s.label,
+            clickHandlerFunc: function () { actOnSpot(s); }
+          };
+        })
+      });
+      PANO.toggleBtn.textContent = "Close the 360";
+    } catch (err) {
+      PANO.stage.classList.remove("live");
+      PANO.viewer = null;
+    }
+  }
+
+  function destroyPano() {
+    if (PANO.viewer) {
+      try { PANO.viewer.destroy(); } catch (e) {}
+      PANO.viewer = null;
+    }
+    PANO.stage.classList.remove("live");
+    PANO.enterBtn.style.display = "inline-block";
+  }
+
+  PANO.toggleBtn.addEventListener("click", function () {
+    if (PANO.viewer) destroyPano();
+  });
+  
+  PANO.enterBtn.addEventListener("click", initPano);
+
+   function matches(book, term, author) {
+    if (author !== "all" && book.authorKey !== author) return false;
+    if (!term) return true;
+    var hay = (book.title + " " + book.author + " " + (book.tagline || "") + " " + (book.description || "")).toLowerCase();
+    return hay.indexOf(term) !== -1;
+  }
+
+  /* ---------- card catalog ---------- */
+  function renderCatalog() {
+    var term = state.search;
+    var author = state.author;
+    var filterRow = document.getElementById("filter-row");
+    filterRow.innerHTML = "";
+    
+    FILTERS.forEach(function (opt) {
+      var chip = el("button", "sc-filter-chip" + (opt.key === author ? " active" : ""), opt.label);
+      chip.type = "button";
+      chip.setAttribute("aria-pressed", opt.key === author ? "true" : "false");
+      chip.addEventListener("click", function () {
+        state.author = opt.key;
+        renderCatalog();
+      });
+      filterRow.appendChild(chip);
+    });
+
+    var wrap = document.getElementById("catalog-drawers");
+    wrap.innerHTML = "";
+
+    // Insert Muffin's persistent top-drawer index shortcut
+    var memCard = el("button", "sc-catalog-card sc-mem-card",
+      '<span class="sc-cc-num">memorial</span>' +
+      '<span class="sc-cc-title">Muffin</span>' +
+      '<span class="sc-cc-author">In loving memory &middot; the dog who inspired it all</span>');
+    memCard.type = "button";
+    memCard.addEventListener("click", function () {
+      window.location.href = BOOK_URLS.memorial || "muffin-memorial.html";
+    });
+    wrap.appendChild(memCard);
+
+    // Render historical reservation locks
+    DATA.reserved.forEach(function (r) {
+      var authorOk = author === "all" || r.authorKey === author;
+      var searchOk = !term || (r.title + " " + r.description).toLowerCase().indexOf(term) !== -1;
+      if (authorOk && searchOk) {
+        var card = el("button", "sc-catalog-card reserved",
+          '<span class="sc-cc-num">reserved</span>' +
+          '<span class="sc-cc-title">' + r.title + "</span>" +
+          '<span class="sc-cc-author">' + r.author + " &middot; coming soon</span>");
+        card.type = "button";
+        card.addEventListener("click", function () {
+          openReserved(r);
+        });
+        wrap.appendChild(card);
+      }
+    });
+
+    var grouped = groupBySection(DATA.books);
+    
+    SECTIONS.forEach(function (meta, idx) {
+      var items = (grouped[meta.key] || []).filter(function (b) {
+        return matches(b, term, author);
+      });
+      var open = state.openDrawer === meta.key && items.length > 0;
+      if (!state.openDrawer && !term && author === "all" && idx === 0) open = true;
+
+      var drawer = el("div", "sc-drawer" + (open ? " open" : ""));
+      drawer.id = "drawer-" + meta.key;
+      var handle = el("button", "sc-drawer-handle", "<span>" + meta.label + '</span><span class="sc-pull"></span>');
+      handle.type = "button";
+      handle.addEventListener("click", function () {
+        state.openDrawer = drawer.classList.contains("open") ? "" : meta.key;
+        drawer.classList.toggle("open");
+      });
+      drawer.appendChild(handle);
+
+      var cardsWrap = el("div", "sc-drawer-cards");
+      if (items.length === 0) {
+        cardsWrap.appendChild(el("div", "sc-catalog-empty", "No cards match here."));
+      }
+
+      items.forEach(function (b) {
+        var authorLine = b.author !== "Toolbox" ? '<span class="sc-cc-author">' + b.author + "</span>" : "";
+        var card = el("button", "sc-catalog-card",
+          '<span class="sc-cc-num">' + b.call + "</span>" +
+          '<span class="sc-cc-title">' + b.title + "</span>" +
+          authorLine + (b.tagline || ""));
+        card.type = "button";
+        card.addEventListener("click", function () { openBook(b); });
+        cardsWrap.appendChild(card);
+      });
+
+      drawer.appendChild(cardsWrap);
+      wrap.appendChild(drawer);
+    });
+  }
+
+   /* ---------- summary modal actions ---------- */
+  function fillSummary(book, isReserved) {
+    document.getElementById("bp-call").innerText = isReserved ? "reserved" : (book.call || "100.0");
+    document.getElementById("bp-author").innerText = (book.author !== "Toolbox" ? "by " : "") + book.author;
+    document.getElementById("bp-title").innerText = book.title;
+    document.getElementById("bp-tagline").innerText = book.tagline || "";
+    document.getElementById("bp-desc").innerHTML = book.description ? "<p>" + book.description + "</p>" : "";
+    document.getElementById("bp-note").style.display = "none";
+    
+    var page = document.getElementById("bp-page");
+    page.className = "sc-book-page sec-" + (isReserved ? "more" : book.section);
+  }
+
+  function openBook(book) {
+    fillSummary(book, false);
+    var noteEl = document.getElementById("bp-note");
+    noteEl.style.display = "none";
+    
+    if (book.comingSoon) {
+      noteEl.innerText = "Coming soon. New items are added to the shelf automatically as they are published.";
+      noteEl.style.display = "block";
+    } else if (book.workshop) {
+      noteEl.innerText = "The Writer's Toolbox is still in the workshop. When this tool opens, it will live behind your library card.";
+      noteEl.style.display = "block";
+    }
+    
+    var actions = document.getElementById("bp-actions");
+    actions.innerHTML = "";
+    
+    if (!book.workshop) {
+      var openBtn = el("a", "sc-btn sc-btn-primary", "Open the Book");
+      openBtn.href = BOOK_URLS[book.id] || (book.id + ".html");
+      openBtn.addEventListener("click", closeModal);
+      actions.appendChild(openBtn);
+    }
+    
+    var putBack = el("button", "sc-btn sc-btn-secondary", "Put Back on Shelf");
+    putBack.type = "button";
+    putBack.addEventListener("click", closeModal);
+    actions.appendChild(putBack);
+    
+    overlayEl.classList.add("show");
+    document.getElementById("bp-close").focus();
+  }
+
+  function openReserved(r) {
+    fillSummary(r, true);
+    var noteEl = document.getElementById("bp-note");
+    noteEl.innerText = "This item is reserved for historical validation. It will appear on the shelf when it is ready.";
+    noteEl.style.display = "block";
+    
+    var actions = document.getElementById("bp-actions");
+    actions.innerHTML = "";
+    
+    var closeBtn = el("button", "sc-btn sc-btn-secondary", "Close Record");
+    closeBtn.type = "button";
+    closeBtn.addEventListener("click", closeModal);
+    actions.appendChild(closeBtn);
+    
+    overlayEl.classList.add("show");
+    document.getElementById("bp-close").focus();
+  }
+
+  function closeModal() {
+    overlayEl.classList.remove("show");
+  }
+
+  function openDrawerAndScroll(key) {
+    var meta = sectionMeta(key);
+    if (!meta && key !== "toolbox") return;
+    state.openDrawer = key === "toolbox" ? "more" : key; // Fallback to drawer containing tools
+    renderCatalog();
+    var drawer = document.getElementById("drawer-" + (key === "toolbox" ? "more" : key));
+    if (drawer) {
+      drawer.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      document.getElementById("catalog-aside").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  function showLanding() {
+    document.title = "Sigil and Scribe | The Immersive Library";
+    destroyPano();
+    initPano();
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- event wiring ---------- */
+  document.getElementById("catalog-search").addEventListener("input", function (e) {
+    state.search = e.target.value.trim().toLowerCase();
+    renderCatalog();
+  });
+
+  document.getElementById("bp-close").addEventListener("click", closeModal);
+  overlayEl.addEventListener("click", function (e) {
+    if (e.target === overlayEl) closeModal();
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && overlayEl.classList.contains("show")) closeModal();
+  });
+
+  document.getElementById("brand-link").addEventListener("click", function (e) {
+    e.preventDefault();
+    showLanding();
+  });
+
+  ["children", "wellness", "more", "fiction", "toolbox"].forEach(function (key) {
+    var link = document.getElementById("nav-" + key);
+    if (link) {
+      link.addEventListener("click", function () {
+        showLanding();
+        openDrawerAndScroll(key);
+      });
+    }
+  });
+
+  /* ---------- router hash-sync ---------- */
+  function openFromHash() {
+    var m = location.hash.match(/^#book=(.+)$/);
+    if (!m) return;
+    var b = bookById(decodeURIComponent(m[1]));
+    if (b) openBook(b);
+  }
+
+  window.addEventListener("hashchange", openFromHash);
+  
+  // App initialization context execution
+  openFromHash();
+  renderCatalog();
+  initPano();
+
+  /* ---------- mobile device catalog reparenting ---------- */
+  var catalogAside = document.getElementById("catalog-aside");
+  var mqMobile = window.matchMedia("(max-width: 1023px)");
+  var catalogReparented = false;
+
+  function applyMobileCatalog(mq) {
+    if (mq.matches && !catalogReparented) {
+      PANO.stage.parentNode.insertBefore(catalogAside, PANO.stage);
+      catalogReparented = true;
+    } else if (!mq.matches && catalogReparented) {
+      var targetParent = document.querySelector("#landing-view main");
+      if (targetParent) targetParent.appendChild(catalogAside);
+      catalogReparented = false;
+    }
+  }
+
+  if (mqMobile.addEventListener) {
+    mqMobile.addEventListener("change", applyMobileCatalog);
+  } else if (mqMobile.addListener) {
+    mqMobile.addListener(applyMobileCatalog);
+  }
+  applyMobileCatalog(mqMobile);
+
+}());
+</script>
+</body>
+</html>
+
+
+  // Initialize on page load
+  renderCatalog();
+  initPano();
+
+})();
+</script>
+</body>
+</html>

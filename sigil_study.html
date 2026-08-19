@@ -7,9 +7,8 @@
 <meta name="description" content="Step inside the Sigil and Scribe study. Find a book in the card catalog, open it, and step into its page.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://googleapis.com" rel="stylesheet">
-<link rel="stylesheet" href="https://jsdelivr.net">
-<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:ital,wght@0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
 <style>
 /* ============ design tokens (locked palette, no red) ============ */
 :root {
@@ -81,6 +80,7 @@ cursor: pointer;
 .sc-pano-sub { font-family: 'Courier Prime', monospace; font-size: 10.5px; color: var(--sage-deep); letter-spacing: 0.08em; text-transform: uppercase; margin: 2px 0 0; }
 #pano-container { position: relative; width: 100%; height: min(62vh, 540px); border-radius: 6px; overflow: hidden; background: var(--walnut-deep); box-shadow: 0 24px 44px -24px rgba(56,37,26,0.5); }
 #pano-container .pnlm-load-box { border-radius: 4px; }
+.pano-fallback { display: flex; align-items: center; justify-content: center; font-family: 'Courier Prime', monospace; font-size: 12px; color: rgba(243,231,208,0.65); letter-spacing: 0.06em; text-transform: uppercase; height: 100%; }
 .sc-pano-cta { font-family: 'Courier Prime', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: var(--walnut); color: var(--card); border: none; border-radius: 3px; padding: 8px 12px; cursor: pointer; transition: background 0.2s ease; }
 .sc-pano-cta:hover { background: var(--walnut-dark); }
 #pano-enter { margin-top: 14px; }
@@ -165,6 +165,12 @@ cursor: pointer;
   #pano-container { height: min(68vh, 580px); }
   .sc-drawers { max-height: 56vh; }
 }
+
+/* ============ reduced motion ============ */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  html { scroll-behavior: auto; }
+}
 </style>
 </head>
 
@@ -173,13 +179,13 @@ cursor: pointer;
 
 <header class="site-header">
   <div class="inner">
-    <a href="#main-content" class="brand" id="brand-link">Sigil <span>&amp;</span> Scribe</a>
+    <a href="sigil_study.html" class="brand" id="brand-link">Sigil <span>&amp;</span> Scribe</a>
     <nav class="site-nav" aria-label="Library sections">
-      <a id="nav-children">Children</a>
-      <a id="nav-wellness">Wellness</a>
-      <a id="nav-more">More Books</a>
-      <a id="nav-fiction">Fiction</a>
-      <a id="nav-toolbox">Toolbox</a>
+      <a id="nav-children" href="#children" role="button">Children</a>
+      <a id="nav-wellness" href="#wellness" role="button">Wellness</a>
+      <a id="nav-more" href="#more" role="button">More Books</a>
+      <a id="nav-fiction" href="#fiction" role="button">Fiction</a>
+      <a id="nav-toolbox" href="#toolbox" role="button">Toolbox</a>
     </nav>
   </div>
 </header>
@@ -194,24 +200,25 @@ cursor: pointer;
       <button type="button" class="sc-pano-cta" id="pano-enter" style="display:none;">Walk the Room (360)</button>
     </section>
 
-    <section class="sc-pano-stage" id="pano-stage" aria-label="360 room view">
+    <section class="sc-pano-stage" id="pano-stage" aria-label="360-degree panoramic view of the Sigil and Scribe study room">
       <div class="sc-pano-bar">
         <div>
           <p class="sc-pano-title">The Study, in the Round</p>
           <p class="sc-pano-sub">drag to look around &middot; tap a marked spot to visit</p>
         </div>
-        <button type="button" class="sc-pano-cta" id="pano-toggle">Close the 360</button>
+        <button type="button" class="sc-pano-cta" id="pano-toggle" aria-label="Close 360 viewer">Close the 360</button>
       </div>
-      <div id="pano-container" role="img" aria-label="360 view of the Sigil and Scribe study"></div>
+      <div id="pano-container" role="region" aria-label="Interactive 360-degree view of the Sigil and Scribe study. Use arrow keys to pan, or drag with the mouse."></div>
     </section>
 
     <section class="sc-catalog" id="catalog-aside" aria-label="Card catalog">
       <div class="sc-catalog-panel">
         <p class="sc-catalog-title">Card Catalog</p>
         <p class="sc-catalog-sub">searchable by title, author, or genre</p>
-        <input type="text" class="sc-catalog-search" id="catalog-search" placeholder="Search the shelves..." aria-label="Search the shelves">
+        <input type="text" class="sc-catalog-search" id="catalog-search" placeholder="Search the shelves..." aria-label="Search the shelves" autocomplete="off">
         <div class="sc-filter-row" id="filter-row" role="group" aria-label="Filter by author"></div>
-        <div class="sc-drawers" id="catalog-drawers" aria-live="polite"></div>
+        <div aria-live="polite" aria-atomic="true" class="sr-only" id="search-status"></div>
+        <div class="sc-drawers" id="catalog-drawers" role="list"></div>
       </div>
     </section>
   </main>
@@ -239,6 +246,16 @@ cursor: pointer;
     <script>
 (function () {
   "use strict";
+
+  /* ============ CONFIG — magic numbers & tunables ============ */
+  var CONFIG = {
+    drawerMaxHeight: 1200,
+    panoHeightMin: "62vh",
+    panoHeightMax: 540,
+    modalMaxWidth: 540,
+    storageKey: "sc_catalog_state",
+    pannellumCDN: "https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"
+  };
 
   // Master local database tracking positions, section parameters, metadata links, and covers.
   var DATA = {
@@ -433,6 +450,7 @@ cursor: pointer;
         id: "nineteen-days",
         title: "Nineteen Days",
         author: "J. White",
+        authorKey: "jw",
         description: "A private workshop log and deep analytical framework tracking production cycles across an intense window of creative planning."
       }
     ]
@@ -469,9 +487,53 @@ cursor: pointer;
     { key: "toolbox", label: "Toolbox" }
   ];
 
-  var state = { search: "", author: "all", openDrawer: "children" };
+  /* ============ DOM cache ============ */
+  var DOM = {
+    overlay: document.getElementById("sc-overlay"),
+    bookPage: document.getElementById("bp-page"),
+    bpClose: document.getElementById("bp-close"),
+    bpCall: document.getElementById("bp-call"),
+    bpAuthor: document.getElementById("bp-author"),
+    bpTitle: document.getElementById("bp-title"),
+    bpTagline: document.getElementById("bp-tagline"),
+    bpDesc: document.getElementById("bp-desc"),
+    bpNote: document.getElementById("bp-note"),
+    bpActions: document.getElementById("bp-actions"),
+    catalogSearch: document.getElementById("catalog-search"),
+    filterRow: document.getElementById("filter-row"),
+    catalogDrawers: document.getElementById("catalog-drawers"),
+    catalogAside: document.getElementById("catalog-aside"),
+    panoStage: document.getElementById("pano-stage"),
+    panoContainer: document.getElementById("pano-container"),
+    panoToggle: document.getElementById("pano-toggle"),
+    panoEnter: document.getElementById("pano-enter"),
+    searchStatus: document.getElementById("search-status"),
+    brandLink: document.getElementById("brand-link")
+  };
 
-  var overlayEl = document.getElementById("sc-overlay");
+  /* ============ State — with localStorage persistence ============ */
+  var state = (function () {
+    var defaults = { search: "", author: "all", openDrawer: "children" };
+    try {
+      var saved = JSON.parse(localStorage.getItem(CONFIG.storageKey) || "null");
+      if (saved && typeof saved === "object") {
+        return Object.assign({}, defaults, {
+          author: saved.author || defaults.author,
+          openDrawer: saved.openDrawer || defaults.openDrawer
+        });
+      }
+    } catch (e) {}
+    return Object.assign({}, defaults);
+  }());
+
+  function saveState() {
+    try {
+      localStorage.setItem(CONFIG.storageKey, JSON.stringify({
+        author: state.author,
+        openDrawer: state.openDrawer
+      }));
+    } catch (e) {}
+  }
 
   // DOM node generation helper
   function el(tag, className, html) {
@@ -514,11 +576,7 @@ cursor: pointer;
   /* ---------- 360 room ---------- */
   var PANO = {
     url: "https://r2.dev",
-    viewer: null,
-    stage: document.getElementById("pano-stage"),
-    container: document.getElementById("pano-container"),
-    toggleBtn: document.getElementById("pano-toggle"),
-    enterBtn: document.getElementById("pano-enter")
+    viewer: null
   };
 
   /* Every room button opens the same summary as its catalog card. */
@@ -533,14 +591,17 @@ cursor: pointer;
     { p: -3.5, y: -52.0, label: "Petra's Almanac", act: "book", id: "syncretic-ritualist-almanac" }
   ];
 
-  function panoAvailable() {
-    if (typeof window.pannellum === "undefined" || !window.pannellum.viewer) return false;
+  function webGLAvailable() {
     try {
       var c = document.createElement("canvas");
       return !!(c.getContext("webgl") || c.getContext("experimental-webgl"));
     } catch (e) {
       return false;
     }
+  }
+
+  function panoAvailable() {
+    return typeof window.pannellum !== "undefined" && typeof window.pannellum.viewer === "function" && webGLAvailable();
   }
 
   function actOnSpot(s) {
@@ -555,13 +616,35 @@ cursor: pointer;
     }
   }
 
+  function showPanoFallback() {
+    DOM.panoContainer.innerHTML = '<div class="pano-fallback" role="status">360\u00b0 view requires WebGL &mdash; not supported in this browser.</div>';
+  }
+
   function initPano() {
     if (PANO.viewer) return;
-    if (!panoAvailable()) return;
-    PANO.stage.classList.add("live");
-    PANO.enterBtn.style.display = "none";
+    if (!webGLAvailable()) {
+      DOM.panoStage.classList.add("live");
+      DOM.panoEnter.style.display = "none";
+      showPanoFallback();
+      return;
+    }
+    if (!panoAvailable()) {
+      /* Pannellum not loaded yet — load it dynamically then retry */
+      var s = document.createElement("script");
+      s.src = CONFIG.pannellumCDN;
+      s.onload = function () { initPano(); };
+      s.onerror = function () {
+        DOM.panoStage.classList.add("live");
+        DOM.panoEnter.style.display = "none";
+        showPanoFallback();
+      };
+      document.head.appendChild(s);
+      return;
+    }
+    DOM.panoStage.classList.add("live");
+    DOM.panoEnter.style.display = "none";
     try {
-      PANO.viewer = window.pannellum.viewer(PANO.container, {
+      PANO.viewer = window.pannellum.viewer(DOM.panoContainer, {
         type: "equirectangular",
         panorama: PANO.url,
         autoLoad: true,
@@ -579,10 +662,12 @@ cursor: pointer;
           };
         })
       });
-      PANO.toggleBtn.textContent = "Close the 360";
+      DOM.panoToggle.textContent = "Close the 360";
     } catch (err) {
-      PANO.stage.classList.remove("live");
+      DOM.panoStage.classList.remove("live");
       PANO.viewer = null;
+      DOM.panoEnter.style.display = "inline-block";
+      showPanoFallback();
     }
   }
 
@@ -591,17 +676,17 @@ cursor: pointer;
       try { PANO.viewer.destroy(); } catch (e) {}
       PANO.viewer = null;
     }
-    PANO.stage.classList.remove("live");
-    PANO.enterBtn.style.display = "inline-block";
+    DOM.panoStage.classList.remove("live");
+    DOM.panoEnter.style.display = "inline-block";
   }
 
-  PANO.toggleBtn.addEventListener("click", function () {
+  DOM.panoToggle.addEventListener("click", function () {
     if (PANO.viewer) destroyPano();
   });
-  
-  PANO.enterBtn.addEventListener("click", initPano);
 
-   function matches(book, term, author) {
+  DOM.panoEnter.addEventListener("click", initPano);
+
+  function matches(book, term, author) {
     if (author !== "all" && book.authorKey !== author) return false;
     if (!term) return true;
     var hay = (book.title + " " + book.author + " " + (book.tagline || "") + " " + (book.description || "")).toLowerCase();
@@ -612,22 +697,21 @@ cursor: pointer;
   function renderCatalog() {
     var term = state.search;
     var author = state.author;
-    var filterRow = document.getElementById("filter-row");
-    filterRow.innerHTML = "";
-    
+    DOM.filterRow.innerHTML = "";
+
     FILTERS.forEach(function (opt) {
       var chip = el("button", "sc-filter-chip" + (opt.key === author ? " active" : ""), opt.label);
       chip.type = "button";
       chip.setAttribute("aria-pressed", opt.key === author ? "true" : "false");
       chip.addEventListener("click", function () {
         state.author = opt.key;
+        saveState();
         renderCatalog();
       });
-      filterRow.appendChild(chip);
+      DOM.filterRow.appendChild(chip);
     });
 
-    var wrap = document.getElementById("catalog-drawers");
-    wrap.innerHTML = "";
+    DOM.catalogDrawers.innerHTML = "";
 
     // Insert Muffin's persistent top-drawer index shortcut
     var memCard = el("button", "sc-catalog-card sc-mem-card",
@@ -635,12 +719,13 @@ cursor: pointer;
       '<span class="sc-cc-title">Muffin</span>' +
       '<span class="sc-cc-author">In loving memory &middot; the dog who inspired it all</span>');
     memCard.type = "button";
+    memCard.setAttribute("role", "listitem");
     memCard.addEventListener("click", function () {
       window.location.href = BOOK_URLS.memorial || "muffin-memorial.html";
     });
-    wrap.appendChild(memCard);
+    DOM.catalogDrawers.appendChild(memCard);
 
-    // Render historical reservation locks
+    // Render historical reservation locks — fixed: respect author filter via authorKey
     DATA.reserved.forEach(function (r) {
       var authorOk = author === "all" || r.authorKey === author;
       var searchOk = !term || (r.title + " " + r.description).toLowerCase().indexOf(term) !== -1;
@@ -650,33 +735,44 @@ cursor: pointer;
           '<span class="sc-cc-title">' + r.title + "</span>" +
           '<span class="sc-cc-author">' + r.author + " &middot; coming soon</span>");
         card.type = "button";
+        card.setAttribute("role", "listitem");
         card.addEventListener("click", function () {
           openReserved(r);
         });
-        wrap.appendChild(card);
+        DOM.catalogDrawers.appendChild(card);
       }
     });
 
     var grouped = groupBySection(DATA.books);
-    
+    var totalVisible = 0;
+
     SECTIONS.forEach(function (meta, idx) {
       var items = (grouped[meta.key] || []).filter(function (b) {
         return matches(b, term, author);
       });
+      totalVisible += items.length;
       var open = state.openDrawer === meta.key && items.length > 0;
       if (!state.openDrawer && !term && author === "all" && idx === 0) open = true;
 
       var drawer = el("div", "sc-drawer" + (open ? " open" : ""));
       drawer.id = "drawer-" + meta.key;
-      var handle = el("button", "sc-drawer-handle", "<span>" + meta.label + '</span><span class="sc-pull"></span>');
+      drawer.setAttribute("role", "listitem");
+
+      var handle = el("button", "sc-drawer-handle", "<span>" + meta.label + '</span><span class="sc-pull" aria-hidden="true"></span>');
       handle.type = "button";
+      handle.setAttribute("aria-expanded", open ? "true" : "false");
+      handle.setAttribute("aria-controls", "cards-" + meta.key);
       handle.addEventListener("click", function () {
-        state.openDrawer = drawer.classList.contains("open") ? "" : meta.key;
+        var isOpen = drawer.classList.contains("open");
+        state.openDrawer = isOpen ? "" : meta.key;
+        saveState();
         drawer.classList.toggle("open");
+        handle.setAttribute("aria-expanded", !isOpen ? "true" : "false");
       });
       drawer.appendChild(handle);
 
       var cardsWrap = el("div", "sc-drawer-cards");
+      cardsWrap.id = "cards-" + meta.key;
       if (items.length === 0) {
         cardsWrap.appendChild(el("div", "sc-catalog-empty", "No cards match here."));
       }
@@ -688,92 +784,121 @@ cursor: pointer;
           '<span class="sc-cc-title">' + b.title + "</span>" +
           authorLine + (b.tagline || ""));
         card.type = "button";
+        if (b.cover) {
+          var img = new Image();
+          img.loading = "lazy";
+          img.src = b.cover;
+          img.alt = b.title + " cover";
+        }
         card.addEventListener("click", function () { openBook(b); });
         cardsWrap.appendChild(card);
       });
 
       drawer.appendChild(cardsWrap);
-      wrap.appendChild(drawer);
+      DOM.catalogDrawers.appendChild(drawer);
+    });
+
+    // Announce search results to screen readers
+    if (term) {
+      DOM.searchStatus.textContent = totalVisible === 0
+        ? "No books found for \u201c" + term + "\u201d."
+        : totalVisible + " book" + (totalVisible === 1 ? "" : "s") + " found.";
+    } else {
+      DOM.searchStatus.textContent = "";
+    }
+  }
+
+  /* ---------- focus trap for modal ---------- */
+  function trapFocus(modal) {
+    var focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    var first = focusable[0];
+    var last = focusable[focusable.length - 1];
+    modal.addEventListener("keydown", function onTrap(e) {
+      if (!DOM.overlay.classList.contains("show")) return;
+      if (e.key !== "Tab") return;
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
     });
   }
 
-   /* ---------- summary modal actions ---------- */
+  trapFocus(DOM.bookPage);
+
+  /* ---------- summary modal actions ---------- */
   function fillSummary(book, isReserved) {
-    document.getElementById("bp-call").innerText = isReserved ? "reserved" : (book.call || "100.0");
-    document.getElementById("bp-author").innerText = (book.author !== "Toolbox" ? "by " : "") + book.author;
-    document.getElementById("bp-title").innerText = book.title;
-    document.getElementById("bp-tagline").innerText = book.tagline || "";
-    document.getElementById("bp-desc").innerHTML = book.description ? "<p>" + book.description + "</p>" : "";
-    document.getElementById("bp-note").style.display = "none";
-    
-    var page = document.getElementById("bp-page");
-    page.className = "sc-book-page sec-" + (isReserved ? "more" : book.section);
+    DOM.bpCall.innerText = isReserved ? "reserved" : (book.call || "100.0");
+    DOM.bpAuthor.innerText = (book.author !== "Toolbox" ? "by " : "") + book.author;
+    DOM.bpTitle.innerText = book.title;
+    DOM.bpTagline.innerText = book.tagline || "";
+    DOM.bpDesc.innerHTML = book.description ? "<p>" + book.description + "</p>" : "";
+    DOM.bpNote.style.display = "none";
+
+    DOM.bookPage.className = "sc-book-page sec-" + (isReserved ? "more" : book.section);
   }
 
   function openBook(book) {
     fillSummary(book, false);
-    var noteEl = document.getElementById("bp-note");
-    noteEl.style.display = "none";
-    
+    DOM.bpNote.style.display = "none";
+
     if (book.comingSoon) {
-      noteEl.innerText = "Coming soon. New items are added to the shelf automatically as they are published.";
-      noteEl.style.display = "block";
+      DOM.bpNote.innerText = "Coming soon. New items are added to the shelf automatically as they are published.";
+      DOM.bpNote.style.display = "block";
     } else if (book.workshop) {
-      noteEl.innerText = "The Writer's Toolbox is still in the workshop. When this tool opens, it will live behind your library card.";
-      noteEl.style.display = "block";
+      DOM.bpNote.innerText = "The Writer's Toolbox is still in the workshop. When this tool opens, it will live behind your library card.";
+      DOM.bpNote.style.display = "block";
     }
-    
-    var actions = document.getElementById("bp-actions");
-    actions.innerHTML = "";
-    
+
+    DOM.bpActions.innerHTML = "";
+
     if (!book.workshop) {
       var openBtn = el("a", "sc-btn sc-btn-primary", "Open the Book");
       openBtn.href = BOOK_URLS[book.id] || (book.id + ".html");
       openBtn.addEventListener("click", closeModal);
-      actions.appendChild(openBtn);
+      DOM.bpActions.appendChild(openBtn);
     }
-    
+
     var putBack = el("button", "sc-btn sc-btn-secondary", "Put Back on Shelf");
     putBack.type = "button";
     putBack.addEventListener("click", closeModal);
-    actions.appendChild(putBack);
-    
-    overlayEl.classList.add("show");
-    document.getElementById("bp-close").focus();
+    DOM.bpActions.appendChild(putBack);
+
+    DOM.overlay.classList.add("show");
+    DOM.bpClose.focus();
   }
 
   function openReserved(r) {
     fillSummary(r, true);
-    var noteEl = document.getElementById("bp-note");
-    noteEl.innerText = "This item is reserved for historical validation. It will appear on the shelf when it is ready.";
-    noteEl.style.display = "block";
-    
-    var actions = document.getElementById("bp-actions");
-    actions.innerHTML = "";
-    
+    DOM.bpNote.innerText = "This item is reserved for historical validation. It will appear on the shelf when it is ready.";
+    DOM.bpNote.style.display = "block";
+
+    DOM.bpActions.innerHTML = "";
+
     var closeBtn = el("button", "sc-btn sc-btn-secondary", "Close Record");
     closeBtn.type = "button";
     closeBtn.addEventListener("click", closeModal);
-    actions.appendChild(closeBtn);
-    
-    overlayEl.classList.add("show");
-    document.getElementById("bp-close").focus();
+    DOM.bpActions.appendChild(closeBtn);
+
+    DOM.overlay.classList.add("show");
+    DOM.bpClose.focus();
   }
 
   function closeModal() {
-    overlayEl.classList.remove("show");
+    DOM.overlay.classList.remove("show");
   }
 
   function openDrawerAndScroll(key) {
     var meta = sectionMeta(key);
     if (!meta && key !== "toolbox") return;
-    state.openDrawer = key === "toolbox" ? "more" : key; // Fallback to drawer containing tools
+    state.openDrawer = key === "toolbox" ? "more" : key;
+    saveState();
     renderCatalog();
     var drawer = document.getElementById("drawer-" + (key === "toolbox" ? "more" : key));
     if (drawer) {
       drawer.scrollIntoView({ behavior: "smooth", block: "center" });
     } else {
-      document.getElementById("catalog-aside").scrollIntoView({ behavior: "smooth", block: "start" });
+      DOM.catalogAside.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }
 
@@ -784,22 +909,44 @@ cursor: pointer;
     window.scrollTo(0, 0);
   }
 
+  /* ---------- arrow key drawer navigation ---------- */
+  DOM.catalogDrawers.addEventListener("keydown", function (e) {
+    var drawers = Array.prototype.slice.call(DOM.catalogDrawers.querySelectorAll(".sc-drawer-handle"));
+    var idx = drawers.indexOf(document.activeElement);
+    if (idx === -1) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      var next = drawers[idx + 1];
+      if (next) next.focus();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      var prev = drawers[idx - 1];
+      if (prev) prev.focus();
+    }
+  });
+
   /* ---------- event wiring ---------- */
-  document.getElementById("catalog-search").addEventListener("input", function (e) {
+  DOM.catalogSearch.addEventListener("input", function (e) {
     state.search = e.target.value.trim().toLowerCase();
     renderCatalog();
   });
 
-  document.getElementById("bp-close").addEventListener("click", closeModal);
-  overlayEl.addEventListener("click", function (e) {
-    if (e.target === overlayEl) closeModal();
+  DOM.bpClose.addEventListener("click", closeModal);
+  DOM.overlay.addEventListener("click", function (e) {
+    if (e.target === DOM.overlay) closeModal();
   });
 
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && overlayEl.classList.contains("show")) closeModal();
+    if (e.key === "Escape") {
+      if (DOM.overlay.classList.contains("show")) {
+        closeModal();
+      } else if (PANO.viewer) {
+        destroyPano();
+      }
+    }
   });
 
-  document.getElementById("brand-link").addEventListener("click", function (e) {
+  DOM.brandLink.addEventListener("click", function (e) {
     e.preventDefault();
     showLanding();
   });
@@ -807,7 +954,8 @@ cursor: pointer;
   ["children", "wellness", "more", "fiction", "toolbox"].forEach(function (key) {
     var link = document.getElementById("nav-" + key);
     if (link) {
-      link.addEventListener("click", function () {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
         showLanding();
         openDrawerAndScroll(key);
       });
@@ -823,25 +971,33 @@ cursor: pointer;
   }
 
   window.addEventListener("hashchange", openFromHash);
-  
+
   // App initialization context execution
   openFromHash();
   renderCatalog();
-  initPano();
 
-  /* ---------- mobile device catalog reparenting ---------- */
-  var catalogAside = document.getElementById("catalog-aside");
+  /* Conditionally load Pannellum only when WebGL is available */
+  if (webGLAvailable()) {
+    DOM.panoEnter.style.display = "inline-block";
+    initPano();
+  }
+
+  /* ---------- mobile device catalog reparenting (scroll-preserving) ---------- */
   var mqMobile = window.matchMedia("(max-width: 1023px)");
   var catalogReparented = false;
 
   function applyMobileCatalog(mq) {
     if (mq.matches && !catalogReparented) {
-      PANO.stage.parentNode.insertBefore(catalogAside, PANO.stage);
+      var scrollY = window.scrollY;
+      DOM.panoStage.parentNode.insertBefore(DOM.catalogAside, DOM.panoStage);
       catalogReparented = true;
+      window.scrollTo(0, scrollY);
     } else if (!mq.matches && catalogReparented) {
+      var scrollY2 = window.scrollY;
       var targetParent = document.querySelector("#landing-view main");
-      if (targetParent) targetParent.appendChild(catalogAside);
+      if (targetParent) targetParent.appendChild(DOM.catalogAside);
       catalogReparented = false;
+      window.scrollTo(0, scrollY2);
     }
   }
 
@@ -856,5 +1012,3 @@ cursor: pointer;
 </script>
 </body>
 </html>
-
-

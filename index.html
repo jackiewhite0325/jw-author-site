@@ -11,17 +11,15 @@
 <meta property="og:title" content="Sigil and Scribe | The Immersive Library">
 <meta property="og:description" content="Step inside the Sigil and Scribe study. Find a book in the card catalog, open it, and step into its page.">
 <meta property="og:url" content="https://jackiewhite0325.github.io/jw-author-site/">
-<meta property="og:image" content="https://jackiewhite0325.github.io/jw-author-site/images/site/social-share.jpg">
+<meta property="og:image" content="https://jackiewhite0325.github.io/jw-author-site/images/site/study_illustration.jpg">
 <meta property="og:image:alt" content="The Sigil and Scribe study">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Sigil and Scribe | The Immersive Library">
 <meta name="twitter:description" content="Step inside the Sigil and Scribe study. Find a book in the card catalog, open it, and step into its page.">
-<meta name="twitter:image" content="https://jackiewhite0325.github.io/jw-author-site/images/site/social-share.jpg">
+<meta name="twitter:image" content="https://jackiewhite0325.github.io/jw-author-site/images/site/study_illustration.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Courier+Prime&family=IM+Fell+English&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
-<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 <style>
 
 
@@ -88,17 +86,23 @@ cursor: pointer;
 .entrance p { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 16px; color: #5b5b5b; max-width: 640px; margin: 0 auto; }
 .entrance .hint { font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sage-deep); margin-top: 18px; }
 
-/* ============ 360 room stage ============ */
-.sc-pano-stage { display: none; max-width: 1180px; margin: 34px auto 0; padding: 0 20px; }
-.sc-pano-stage.live { display: block; }
+/* ============ study scene (illustrated room) ============ */
+.sc-pano-stage { display: block; max-width: 1180px; margin: 34px auto 0; padding: 0 20px; }
 .sc-pano-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
 .sc-pano-title { font-family: 'Playfair Display', Georgia, serif; font-size: 19px; color: var(--walnut-dark); margin: 0; }
 .sc-pano-sub { font-family: 'Courier Prime', monospace; font-size: 10.5px; color: var(--sage-deep); letter-spacing: 0.08em; text-transform: uppercase; margin: 2px 0 0; }
-#pano-container { position: relative; width: 100%; height: min(62vh, 540px); border-radius: 6px; overflow: hidden; background: var(--walnut-deep); box-shadow: 0 24px 44px -24px rgba(56,37,26,0.5); }
-#pano-container .pnlm-load-box { border-radius: 4px; }
-.sc-pano-cta { font-family: 'Courier Prime', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: var(--walnut); color: var(--card); border: none; border-radius: 3px; padding: 8px 12px; cursor: pointer; transition: background 0.2s ease; }
-.sc-pano-cta:hover { background: var(--walnut-dark); }
-#pano-enter { margin-top: 14px; }
+.sc-room { position: relative; border-radius: 6px; overflow: hidden; background: var(--walnut-deep); box-shadow: 0 24px 44px -24px rgba(56,37,26,0.5); }
+.sc-room-img { display: block; width: 100%; height: auto; }
+.sc-room-spots { position: absolute; inset: 0; pointer-events: none; }
+.sc-room-spot { position: absolute; transform: translate(-50%, -50%); background: none; border: none; padding: 0; cursor: pointer; pointer-events: auto; z-index: 2; }
+.sc-spot-dot { display: block; width: 20px; height: 20px; border-radius: 50%; background: var(--amber); border: 2px solid var(--card); box-shadow: 0 0 0 0 rgba(212,163,115,0.55); animation: sc-pulse 2.2s infinite; transition: transform 0.2s ease; }
+@keyframes sc-pulse { 0% { box-shadow: 0 0 0 0 rgba(212,163,115,0.55); } 70% { box-shadow: 0 0 0 16px rgba(212,163,115,0); } 100% { box-shadow: 0 0 0 0 rgba(212,163,115,0); } }
+.sc-spot-label { position: absolute; left: 50%; top: calc(100% + 8px); transform: translateX(-50%); font-family: 'Courier Prime', monospace; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--card); background: rgba(56,37,26,0.88); padding: 4px 8px; border-radius: 3px; white-space: nowrap; max-width: 260px; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 3px 8px rgba(0,0,0,0.3); }
+.sc-room-spot.sc-spot-up .sc-spot-label { top: auto; bottom: calc(100% + 8px); }
+.sc-room-spot:hover .sc-spot-dot, .sc-room-spot:focus-visible .sc-spot-dot { transform: scale(1.3); }
+.sc-room-spot:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; border-radius: 50%; }
+@media (max-width: 640px) { .sc-spot-dot { width: 22px; height: 22px; } .sc-spot-label { font-size: 9px; } }
+@media (prefers-reduced-motion: reduce) { .sc-spot-dot { animation: none; } }
 
 /* ============ card catalog ============ */
 .sc-catalog { max-width: 780px; margin: 36px auto 60px; padding: 0 20px; }
@@ -176,11 +180,10 @@ cursor: pointer;
 
 /* ============ desktop grid shift layout ============ */
 @media (min-width: 1024px) {
-  #landing-view { display: grid; grid-template-columns: 1fr 380px; max-width: 1220px; margin: 0 auto; gap: 10px; align-items: start; padding-bottom: 40px; }
+  #main-content { display: grid; grid-template-columns: 1fr 380px; max-width: 1220px; margin: 0 auto; gap: 10px; align-items: start; padding-bottom: 40px; }
   .entrance { grid-column: 1 / span 2; padding: 40px 24px 10px; }
   .sc-pano-stage { grid-column: 1; margin-top: 0; padding: 0 10px 0 20px; width: 100%; }
   .sc-catalog { grid-column: 2; margin-top: 0; padding: 0 20px 0 10px; width: 100%; }
-  #pano-container { height: min(68vh, 580px); }
   .sc-drawers { max-height: 56vh; }
 }
 </style>
@@ -207,20 +210,21 @@ cursor: pointer;
     <section class="entrance">
       <p class="eyebrow">Sigil and Scribe, LLC</p>
       <h1>The Immersive Library</h1>
-      <p>Step inside the study. Walk the room, or pull a card from the catalog. Every book opens into its own page.</p>
-      <p class="hint">Open a book, meet it briefly, then step into its page.</p>
-      <button type="button" class="sc-pano-cta" id="pano-enter" style="display:none;">Walk the Room (360)</button>
+      <p>Step into the study. Tap a glowing spot on the shelves, or pull a card from the catalog. Every book opens into its own page.</p>
+      <p class="hint">Meet a book briefly, then step into its page.</p>
     </section>
 
-    <section class="sc-pano-stage" id="pano-stage" aria-label="360 room view">
+    <section class="sc-pano-stage" id="pano-stage" aria-label="The Sigil and Scribe study">
       <div class="sc-pano-bar">
         <div>
-          <p class="sc-pano-title">The Study, in the Round</p>
-          <p class="sc-pano-sub">drag to look around &middot; tap a marked spot to visit</p>
+          <p class="sc-pano-title">The Study, at Night</p>
+          <p class="sc-pano-sub">tap a glowing spot to visit that shelf</p>
         </div>
-        <button type="button" class="sc-pano-cta" id="pano-toggle">Close the 360</button>
       </div>
-      <div id="pano-container" role="img" aria-label="360 view of the Sigil and Scribe study"></div>
+      <div class="sc-room">
+        <img src="./images/site/study_illustration.jpg" alt="Illustration of the Sigil and Scribe study at night, warm lamplight on the desk and shelves full of books" class="sc-room-img" id="room-img" width="1376" height="768">
+        <div class="sc-room-spots" id="room-spots"></div>
+      </div>
     </section>
 
     <section class="sc-catalog" id="catalog-aside" aria-label="Card catalog">
@@ -416,7 +420,6 @@ cursor: pointer;
       },
 
       {
-            {
         id: "ties-that-tear",
         call: "400.1",
         title: "The Ties That Tear",
@@ -588,39 +591,23 @@ cursor: pointer;
     return null;
   }
 
-  /* ---------- 360 room ---------- */
-  var PANO = {
-    url: "./images/site/victorian_library_360.jpg",
-    viewer: null,
+  /* ---------- study scene (illustrated room, no WebGL) ---------- */
+  var ROOM = {
     stage: document.getElementById("pano-stage"),
-    container: document.getElementById("pano-container"),
-    toggleBtn: document.getElementById("pano-toggle"),
-    enterBtn: document.getElementById("pano-enter")
+    spotsWrap: document.getElementById("room-spots")
   };
 
-  /* Every room button opens the same summary as its catalog card. */
+  /* Every room spot opens the same summary as its catalog card. */
   var ROOM_SPOTS = [
-    { p: -16.5, y: -125.0, label: "Muffin Gets the Wiggles", act: "book", id: "muffin-wiggles" },
-    { p: 13.0, y: -138.5, label: "Muffin's Portrait", act: "memorial" },
-    { p: -7.0, y: 41.0, label: "The Bingo Card of Chronic Illness", act: "book", id: "bingo-card-chronic-illness" },
-    { p: -17.0, y: 14.5, label: "Don't Quote Me: Smart Mouths", act: "book", id: "dont-quote-me" },
-    { p: -14.5, y: -1.5, label: "I Finally Wrote It!", act: "book", id: "i-finally-wrote-it" },
-    { p: -35.0, y: 145.0, label: "The Ties That Tear", act: "book", id: "ties-that-tear" },
-    { p: -8.2, y: -24.0, label: "Reserved: Nineteen Days", act: "reserved", id: "nineteen-days" },
-    { p: -3.5, y: -52.0, label: "Petra's Almanac", act: "book", id: "syncretic-ritualist-almanac" }
+    { x: 0.24, y: 0.28, label: "Muffin, Book 1", act: "book", id: "muffin-wiggles" },
+    { x: 0.70, y: 0.09, label: "Muffin's Portrait", act: "memorial" },
+    { x: 0.46, y: 0.42, label: "The Bingo Card", act: "book", id: "bingo-card-chronic-illness" },
+    { x: 0.24, y: 0.55, label: "Don't Quote Me", act: "book", id: "dont-quote-me" },
+    { x: 0.84, y: 0.52, label: "The Ties That Tear", act: "book", id: "ties-that-tear" },
+    { x: 0.46, y: 0.66, label: "I Finally Wrote It", act: "book", id: "i-finally-wrote-it" },
+    { x: 0.84, y: 0.90, label: "Reserved", act: "reserved", id: "nineteen-days" },
+    { x: 0.26, y: 0.78, label: "Petra's Almanac", act: "book", id: "syncretic-ritualist-almanac" }
   ];
-
-  function panoAvailable() {
-    if (typeof window.pannellum === "undefined" || !window.pannellum.viewer) return false;
-    try {
-      var c = document.createElement("canvas");
-      return !!(c.getContext("webgl") || c.getContext("experimental-webgl"));
-    } catch (e) {
-      return false;
-    }
-  }
-
-
 
   function actOnSpot(s) {
     if (s.act === "memorial") {
@@ -634,51 +621,22 @@ cursor: pointer;
     }
   }
 
-  function initPano() {
-    if (PANO.viewer) return;
-    if (!panoAvailable()) return;
-    PANO.stage.classList.add("live");
-    PANO.enterBtn.style.display = "none";
-    try {
-      PANO.viewer = window.pannellum.viewer(PANO.container, {
-        type: "equirectangular",
-        panorama: PANO.url,
-        autoLoad: true,
-        compass: false,
-        keyboardZoom: true,
-        mouseZoom: true,
-        hfov: 100,
-        hotSpots: ROOM_SPOTS.map(function (s) {
-          return {
-            pitch: s.p,
-            yaw: s.y,
-            type: "info",
-            text: s.label,
-            clickHandlerFunc: function () { actOnSpot(s); }
-          };
-        })
-      });
-      PANO.toggleBtn.textContent = "Close the 360";
-    } catch (err) {
-      PANO.stage.classList.remove("live");
-      PANO.viewer = null;
-    }
+  function renderRoomSpots() {
+    if (!ROOM.spotsWrap) return;
+    ROOM.spotsWrap.innerHTML = "";
+    ROOM_SPOTS.forEach(function (s) {
+      var spot = document.createElement("button");
+      spot.type = "button";
+      spot.className = "sc-room-spot" + (s.y > 0.85 ? " sc-spot-up" : "");
+      spot.style.left = (s.x * 100).toFixed(2) + "%";
+      spot.style.top = (s.y * 100).toFixed(2) + "%";
+      spot.setAttribute("aria-label", s.label);
+      spot.title = s.label;
+      spot.innerHTML = '<span class="sc-spot-dot" aria-hidden="true"></span><span class="sc-spot-label">' + s.label + "</span>";
+      spot.addEventListener("click", function () { actOnSpot(s); });
+      ROOM.spotsWrap.appendChild(spot);
+    });
   }
-
-  function destroyPano() {
-    if (PANO.viewer) {
-      try { PANO.viewer.destroy(); } catch (e) {}
-      PANO.viewer = null;
-    }
-    PANO.stage.classList.remove("live");
-    PANO.enterBtn.style.display = "inline-block";
-  }
-
-  PANO.toggleBtn.addEventListener("click", function () {
-    if (PANO.viewer) destroyPano();
-  });
-  
-  PANO.enterBtn.addEventListener("click", initPano);
 
    function matches(book, term, author) {
     if (author !== "all" && book.authorKey !== author) return false;
@@ -858,8 +816,7 @@ cursor: pointer;
 
   function showLanding() {
     document.title = "Sigil and Scribe | The Immersive Library";
-    destroyPano();
-    initPano();
+    renderRoomSpots();
     window.scrollTo(0, 0);
   }
 
@@ -906,34 +863,11 @@ cursor: pointer;
   // App initialization context execution
   openFromHash();
   renderCatalog();
-  initPano();
-
-  /* ---------- mobile device catalog reparenting ---------- */
-  var catalogAside = document.getElementById("catalog-aside");
-  var mqMobile = window.matchMedia("(max-width: 1023px)");
-  var catalogReparented = false;
-
-  function applyMobileCatalog(mq) {
-    if (mq.matches && !catalogReparented) {
-      PANO.stage.parentNode.insertBefore(catalogAside, PANO.stage);
-      catalogReparented = true;
-    } else if (!mq.matches && catalogReparented) {
-      var targetParent = document.querySelector("#landing-view main");
-      if (targetParent) targetParent.appendChild(catalogAside);
-      catalogReparented = false;
-    }
-  }
-
-  if (mqMobile.addEventListener) {
-    mqMobile.addEventListener("change", applyMobileCatalog);
-  } else if (mqMobile.addListener) {
-    mqMobile.addListener(applyMobileCatalog);
-  }
-  applyMobileCatalog(mqMobile);
+  renderRoomSpots();
 
   // Initialize on page load
   renderCatalog();
-  initPano();
+  renderRoomSpots();
 
 }());
 </script>

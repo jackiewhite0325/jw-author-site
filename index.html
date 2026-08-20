@@ -221,6 +221,31 @@ cursor: pointer;
   </main>
 </div>
 
+<section class="sc-newsletter" id="study-letter" aria-label="Newsletter signup">
+  <style>
+    .sc-newsletter { max-width: 780px; margin: 0 auto 60px; padding: 0 20px; }
+    .sc-newsletter-panel { background: linear-gradient(180deg, var(--walnut) 0%, var(--walnut-dark) 100%); border-radius: 6px; padding: 22px 22px 20px; box-shadow: 0 24px 40px -24px rgba(56,37,26,0.5); border: 1px solid rgba(212,163,115,0.25); }
+    .sc-newsletter-title { font-family: 'Playfair Display', Georgia, serif; color: var(--card); font-size: 16px; text-align: center; margin: 2px 0 4px; }
+    .sc-newsletter-sub { font-family: 'Courier Prime', monospace; color: rgba(243,231,208,0.7); font-size: 10px; text-align: center; margin-bottom: 14px; }
+    .sc-newsletter-form { display: flex; gap: 8px; max-width: 460px; margin: 0 auto; }
+    .sc-newsletter-form input[type="email"] { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.15); font-family: 'Courier Prime', monospace; font-size: 13px; background: var(--card); color: var(--ink); }
+    .sc-newsletter-form input[type="email"]:focus { outline: 2px solid var(--amber); outline-offset: 1px; }
+    .sc-newsletter-form .sc-btn { white-space: nowrap; }
+    .sc-newsletter-note { font-family: 'Courier Prime', monospace; font-size: 10px; color: rgba(243,231,208,0.6); text-align: center; margin-top: 10px; }
+    @media (max-width: 480px) { .sc-newsletter-form { flex-direction: column; } .sc-newsletter-form .sc-btn { width: 100%; } }
+  </style>
+  <div class="sc-newsletter-panel">
+    <p class="sc-newsletter-title">The Study Letter</p>
+    <p class="sc-newsletter-sub">new releases, first looks, and the occasional St. Jude note. No noise.</p>
+    <form class="sc-newsletter-form" action="https://gmail.us18.list-manage.com/subscribe/post?u=b60ca17a6f10ca19af0cdac3a&amp;id=00a4d46bcd&amp;f_id=0022b3e6f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+      <input type="email" name="EMAIL" id="mce-EMAIL" placeholder="you@example.com" aria-label="Email address" required value="">
+      <div aria-hidden="true" style="position:absolute; left:-5000px;"><input type="text" name="b_b60ca17a6f10ca19af0cdac3a_00a4d46bcd" tabindex="-1" value=""></div>
+      <button type="submit" name="subscribe" id="mc-embedded-subscribe" class="sc-btn sc-btn-primary">Subscribe</button>
+    </form>
+    <p class="sc-newsletter-note">Powered by Mailchimp &middot; unsubscribe anytime</p>
+  </div>
+</section>
+
 <footer class="site-footer">
   <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
 </footer>

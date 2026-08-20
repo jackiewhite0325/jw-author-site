@@ -101,7 +101,7 @@ cursor: pointer;
 .sc-room-spot.sc-spot-up .sc-spot-label { top: auto; bottom: calc(100% + 8px); }
 .sc-room-spot:hover .sc-spot-dot, .sc-room-spot:focus-visible .sc-spot-dot { transform: scale(1.3); }
 .sc-room-spot:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; border-radius: 50%; }
-@media (max-width: 640px) { .sc-spot-dot { width: 22px; height: 22px; } .sc-spot-label { font-size: 9px; } }
+@media (max-width: 640px) { .sc-spot-dot { width: 22px; height: 22px; } .sc-spot-label { font-size: 8px; padding: 3px 6px; letter-spacing: 0.04em; max-width: 150px; } }
 @media (prefers-reduced-motion: reduce) { .sc-spot-dot { animation: none; } }
 
 /* ============ card catalog ============ */
@@ -294,7 +294,7 @@ cursor: pointer;
 
 <footer class="site-footer">
   <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
-  <p class="sc-footer-links"><a href="pages/about.html">About the Author</a> &middot; <a href="https://www.facebook.com/share/p/198CY6b8FX/" rel="me noopener">Facebook</a> &middot; <a href="https://x.com/Jwhite0420" rel="me noopener">X</a> &middot; <a href="https://www.instagram.com/Jwhite0420" rel="me noopener">Instagram</a></p>
+  <p class="sc-footer-links"><a href="pages/about.html">About the Author</a> &middot; <a href="https://www.facebook.com/share/p/198CY6b8FX/" rel="me noopener">Facebook</a> &middot; <a href="https://x.com/Jwhitemuffin" rel="me noopener">X</a> &middot; <a href="https://www.instagram.com/Jwhite0420" rel="me noopener">Instagram</a></p>
 </footer>
 
 <div class="sc-overlay" id="sc-overlay" role="dialog" aria-modal="true" aria-labelledby="bp-title">
@@ -601,12 +601,12 @@ cursor: pointer;
   var ROOM_SPOTS = [
     { x: 0.24, y: 0.28, label: "Muffin, Book 1", act: "book", id: "muffin-wiggles" },
     { x: 0.70, y: 0.09, label: "Muffin's Portrait", act: "memorial" },
-    { x: 0.46, y: 0.42, label: "The Bingo Card", act: "book", id: "bingo-card-chronic-illness" },
-    { x: 0.24, y: 0.55, label: "Don't Quote Me", act: "book", id: "dont-quote-me" },
-    { x: 0.84, y: 0.52, label: "The Ties That Tear", act: "book", id: "ties-that-tear" },
-    { x: 0.46, y: 0.66, label: "I Finally Wrote It", act: "book", id: "i-finally-wrote-it" },
-    { x: 0.84, y: 0.90, label: "Reserved", act: "reserved", id: "nineteen-days" },
-    { x: 0.26, y: 0.78, label: "Petra's Almanac", act: "book", id: "syncretic-ritualist-almanac" }
+    { x: 0.54, y: 0.40, label: "The Bingo Card", act: "book", id: "bingo-card-chronic-illness" },
+    { x: 0.16, y: 0.58, label: "Don't Quote Me", act: "book", id: "dont-quote-me" },
+    { x: 0.86, y: 0.54, label: "The Ties That Tear", act: "book", id: "ties-that-tear" },
+    { x: 0.50, y: 0.70, label: "I Finally Wrote It", act: "book", id: "i-finally-wrote-it" },
+    { x: 0.86, y: 0.92, label: "Reserved", act: "reserved", id: "nineteen-days" },
+    { x: 0.22, y: 0.80, label: "Petra's Almanac", act: "book", id: "syncretic-ritualist-almanac" }
   ];
 
   function actOnSpot(s) {

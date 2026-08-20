@@ -201,6 +201,8 @@ cursor: pointer;
       <a id="nav-more">More Books</a>
       <a id="nav-fiction">Fiction</a>
       <a id="nav-toolbox">Toolbox</a>
+      <a href="#the-shelves">Shelves</a>
+      <a href="pages/about.html">Founders</a>
     </nav>
   </div>
 </header>
@@ -210,6 +212,7 @@ cursor: pointer;
     <section class="entrance">
       <p class="eyebrow">Sigil and Scribe, LLC</p>
       <h1>The Immersive Library</h1>
+      <p class="sc-tagline" style="font-size: 14px; color: var(--walnut); margin-top: 10px;">Stories that soothe the mind. Science that anchors the nervous system.</p>
       <p>Step into the study. Tap a glowing spot on the shelves, or pull a card from the catalog. Every book opens into its own page.</p>
       <p class="hint">Meet a book briefly, then step into its page.</p>
     </section>
@@ -238,6 +241,68 @@ cursor: pointer;
     </section>
   </main>
 </div>
+
+<section class="sc-shelves" id="the-shelves" aria-label="The two shelves">
+  <style>
+    .sc-shelves { max-width: 980px; margin: 0 auto 56px; padding: 0 20px; scroll-margin-top: 80px; }
+    .sc-shelves-head { text-align: center; margin-bottom: 22px; }
+    .sc-shelves-head .eyebrow { margin-bottom: 6px; }
+    .sc-shelves-head h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; color: var(--walnut-deep); margin-bottom: 8px; }
+    .sc-shelves-head p { font-family: 'Courier Prime', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sage-deep); }
+    .sc-shelf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 720px) { .sc-shelf-grid { grid-template-columns: 1fr; } }
+    .sc-shelf { background: var(--card); border: 1px solid rgba(212,163,115,0.35); border-radius: 6px; padding: 22px 22px 18px; box-shadow: 0 18px 40px -28px rgba(56,37,26,0.45); }
+    .sc-shelf-tag { font-family: 'Courier Prime', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber-deep); margin-bottom: 8px; }
+    .sc-shelf h3 { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; color: var(--walnut-deep); margin-bottom: 10px; }
+    .sc-shelf p { font-size: 13px; line-height: 1.7; color: var(--ink); margin-bottom: 10px; }
+    .sc-shelf ul { list-style: none; margin-bottom: 14px; }
+    .sc-shelf li { font-family: 'Courier Prime', monospace; font-size: 11px; color: var(--walnut-dark); padding: 4px 0 4px 16px; position: relative; letter-spacing: 0.02em; }
+    .sc-shelf li:before { content: ""; position: absolute; left: 0; top: 11px; width: 6px; height: 6px; background: var(--amber); border-radius: 1px; }
+    .sc-shelf .sc-shelf-link { display: inline-block; font-family: 'Courier Prime', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--paper); background: var(--walnut); padding: 7px 12px; border-radius: 3px; }
+    .sc-shelf .sc-shelf-link:hover { background: var(--walnut-dark); }
+    .sc-gaze { margin-top: 22px; background: linear-gradient(180deg, #38251A, #2A1B12); border-radius: 8px; padding: 24px 20px 20px; text-align: center; }
+    .sc-gaze-orb { width: 96px; height: 96px; margin: 0 auto 12px; border-radius: 50%; background: radial-gradient(circle at 38% 32%, #FFE9C4, var(--amber) 55%, var(--amber-deep)); box-shadow: 0 0 40px rgba(212,163,115,0.55); animation: sc-breathe 12s ease-in-out infinite; }
+    @keyframes sc-breathe { 0%, 100% { transform: scale(0.72); opacity: 0.55; } 33% { transform: scale(1); opacity: 1; } 66% { transform: scale(1); opacity: 1; } }
+    .sc-gaze-label { font-family: 'Courier Prime', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(243,231,208,0.75); }
+    .sc-gaze-sub { font-family: 'Courier Prime', monospace; font-size: 9px; letter-spacing: 0.06em; color: rgba(243,231,208,0.45); margin-top: 6px; }
+    @media (prefers-reduced-motion: reduce) { .sc-gaze-orb { animation: none; } }
+  </style>
+  <div class="sc-shelves-head">
+    <p class="eyebrow">Sigil and Scribe</p>
+    <h2>Two Shelves, One Study</h2>
+    <p>stories that soothe the mind &middot; science that anchors the nervous system</p>
+  </div>
+  <div class="sc-shelf-grid">
+    <article class="sc-shelf">
+      <p class="sc-shelf-tag">The Conscious Shelf &middot; Jackie White</p>
+      <h3>Books you can hold</h3>
+      <p>Children's wellness, humor and survival guides, fiction, and quiet toolboxes. Publishing and operations live here.</p>
+      <ul>
+        <li>The Muffin Series, a 26-book memorial journey</li>
+        <li>Chronic illness humor and wellness</li>
+        <li>Quote collections and coloring books</li>
+        <li>Fiction: the Trinity Tension Saga</li>
+      </ul>
+      <a class="sc-shelf-link" href="#catalog-aside">Browse the catalog</a>
+    </article>
+    <article class="sc-shelf">
+      <p class="sc-shelf-tag">The Subconscious Shelf &middot; Petra C.Ht.</p>
+      <h3>Tools for the nervous system</h3>
+      <p>Guided neuroregulation audio, theta and isochronic tracks, and gaze anchors. Co-curated with our certified hypnotherapist; the audio is in the workshop, and the first gaze anchor is live below.</p>
+      <ul>
+        <li>Guided relaxation and hypnotherapy audio</li>
+        <li>Theta-wave and isochronic acoustic tracks</li>
+        <li>Digital gaze anchors and breathing aids</li>
+      </ul>
+      <a class="sc-shelf-link" href="pages/about.html">Meet the founders</a>
+    </article>
+  </div>
+  <div class="sc-gaze" role="img" aria-label="A soft amber light pulsing on a four second inhale, four second hold, four second exhale cycle">
+    <div class="sc-gaze-orb"></div>
+    <p class="sc-gaze-label">4 &middot; 4 &middot; 4 breathing light</p>
+    <p class="sc-gaze-sub">follow the glow &middot; a relaxation aid, not a medical device</p>
+  </div>
+</section>
 
 <section class="sc-news" id="from-the-study" aria-label="From the study">
   <style>
@@ -288,13 +353,23 @@ cursor: pointer;
       <div aria-hidden="true" style="position:absolute; left:-5000px;"><input type="text" name="b_b60ca17a6f10ca19af0cdac3a_00a4d46bcd" tabindex="-1" value=""></div>
       <button type="submit" name="subscribe" id="mc-embedded-subscribe" class="sc-btn sc-btn-primary">Subscribe</button>
     </form>
-    <p class="sc-newsletter-note">Powered by Mailchimp &middot; unsubscribe anytime</p>
+    <p class="sc-newsletter-note">Powered by Mailchimp &middot; unsubscribe anytime &middot; <a href="pages/privacy.html" style="color:inherit;">privacy policy</a></p>
   </div>
 </section>
 
 <footer class="site-footer">
-  <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White</p>
-  <p class="sc-footer-links"><a href="pages/about.html">About the Author</a> &middot; <a href="https://www.facebook.com/share/p/198CY6b8FX/" rel="me noopener">Facebook</a> &middot; <a href="https://x.com/Jwhitemuffin" rel="me noopener">X</a> &middot; <a href="https://www.instagram.com/Jwhite0420" rel="me noopener">Instagram</a></p>
+  <style>
+    .sc-disclaimer { max-width: 640px; margin: 22px auto 0; text-align: left; }
+    .sc-disclaimer summary { cursor: pointer; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--walnut); display: inline-block; }
+    .sc-disclaimer p { font-family: 'Inter', sans-serif; font-size: 10px; line-height: 1.6; letter-spacing: 0.02em; text-transform: none; color: var(--sage-deep); margin-top: 8px; }
+  </style>
+  <p>&copy; 2026 Sigil and Scribe, LLC &middot; J. White &middot; Petra C.Ht.</p>
+  <p class="sc-footer-links"><a href="pages/about.html">About the Founders</a> &middot; <a href="pages/terms.html">Terms</a> &middot; <a href="pages/privacy.html">Privacy</a> &middot; <a href="https://www.facebook.com/share/p/198CY6b8FX/" rel="me noopener">Facebook</a> &middot; <a href="https://x.com/Jwhitemuffin" rel="me noopener">X</a> &middot; <a href="https://www.instagram.com/Jwhite0420" rel="me noopener">Instagram</a></p>
+  <details class="sc-disclaimer">
+    <summary>Legal and Safety Disclaimer</summary>
+    <p>All digital media, audio tracks, guided imagery, visual anchors, and neuroregulation tools provided on this platform by Sigil &amp; Scribe, LLC are designed exclusively for educational, relaxation, and informational purposes. They do not constitute, nor are they intended to serve as a substitute for, professional medical advice, clinical diagnosis, or psychological treatment.</p>
+    <p>Audio safety warning: The audio recordings distributed by the Company induce deeply relaxed states and altered conscious focus. Do not listen to any audio assets produced by Sigil &amp; Scribe, LLC while operating a motor vehicle, handling heavy machinery, or engaging in any physical activity that requires full, immediate conscious awareness and rapid reflexes. Use of this site and its digital downloads implies full acceptance of these terms and indemnifies the creators and Sigil &amp; Scribe, LLC from any liability.</p>
+  </details>
 </footer>
 
 <div class="sc-overlay" id="sc-overlay" role="dialog" aria-modal="true" aria-labelledby="bp-title">

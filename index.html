@@ -603,7 +603,7 @@ cursor: pointer;
     { x: 0.70, y: 0.09, label: "Muffin's Portrait", act: "memorial" },
     { x: 0.54, y: 0.40, label: "The Bingo Card", act: "book", id: "bingo-card-chronic-illness" },
     { x: 0.16, y: 0.58, label: "Don't Quote Me", act: "book", id: "dont-quote-me" },
-    { x: 0.86, y: 0.54, label: "The Ties That Tear", act: "book", id: "ties-that-tear" },
+    { x: 0.86, y: 0.54, label: "The Ties That Tear", act: "book", id: "ties-that-tear", labelUp: true },
     { x: 0.50, y: 0.70, label: "I Finally Wrote It", act: "book", id: "i-finally-wrote-it" },
     { x: 0.86, y: 0.92, label: "Reserved", act: "reserved", id: "nineteen-days" },
     { x: 0.22, y: 0.80, label: "Petra's Almanac", act: "book", id: "syncretic-ritualist-almanac" }
@@ -627,7 +627,7 @@ cursor: pointer;
     ROOM_SPOTS.forEach(function (s) {
       var spot = document.createElement("button");
       spot.type = "button";
-      spot.className = "sc-room-spot" + (s.y > 0.85 ? " sc-spot-up" : "");
+      spot.className = "sc-room-spot" + ((s.labelUp || s.y > 0.85) ? " sc-spot-up" : "");
       spot.style.left = (s.x * 100).toFixed(2) + "%";
       spot.style.top = (s.y * 100).toFixed(2) + "%";
       spot.setAttribute("aria-label", s.label);

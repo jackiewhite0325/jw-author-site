@@ -512,6 +512,8 @@ cursor: pointer;
       {
         id: "nineteen-days",
         title: "Nineteen Days",
+        author: "Petra",
+        authorKey: "petra",
         tagline: "A memoir of a woman on the edge and the sister who called her back."
       }
     ]
@@ -679,11 +681,12 @@ cursor: pointer;
     // Render historical reservation locks
     DATA.reserved.forEach(function (r) {
       var authorOk = author === "all" || r.authorKey === author;
-      var searchOk = !term || (r.title + " " + r.description).toLowerCase().indexOf(term) !== -1;
+      var searchOk = !term || (r.title + " " + (r.author || "") + " " + (r.description || "")).toLowerCase().indexOf(term) !== -1;
       if (authorOk && searchOk) {
         var card = el("button", "sc-catalog-card reserved",
           '<span class="sc-cc-num">reserved</span>' +
           '<span class="sc-cc-title">' + r.title + "</span>" +
+          (r.author ? '<span class="sc-cc-author">' + r.author + "</span>" : "") +
           (r.tagline || ""));
         card.type = "button";
         card.addEventListener("click", function () {

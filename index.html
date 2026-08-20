@@ -512,8 +512,7 @@ cursor: pointer;
       {
         id: "nineteen-days",
         title: "Nineteen Days",
-        author: "J. White",
-        description: "A memoir of a woman on the edge and the sister who called her back."
+        tagline: "A memoir of a woman on the edge and the sister who called her back."
       }
     ]
   };
@@ -685,7 +684,7 @@ cursor: pointer;
         var card = el("button", "sc-catalog-card reserved",
           '<span class="sc-cc-num">reserved</span>' +
           '<span class="sc-cc-title">' + r.title + "</span>" +
-          '<span class="sc-cc-author">' + r.author + " &middot; coming soon</span>");
+          (r.tagline || ""));
         card.type = "button";
         card.addEventListener("click", function () {
           openReserved(r);
@@ -737,7 +736,7 @@ cursor: pointer;
    /* ---------- summary modal actions ---------- */
   function fillSummary(book, isReserved) {
     document.getElementById("bp-call").innerText = isReserved ? "reserved" : (book.call || "100.0");
-    document.getElementById("bp-author").innerText = (book.author !== "Toolbox" ? "by " : "") + book.author;
+    document.getElementById("bp-author").innerText = book.author ? (book.author !== "Toolbox" ? "by " : "") + book.author : "";
     document.getElementById("bp-title").innerText = book.title;
     document.getElementById("bp-tagline").innerText = book.tagline || "";
     document.getElementById("bp-desc").innerHTML = book.description ? "<p>" + book.description + "</p>" : "";
@@ -781,9 +780,6 @@ cursor: pointer;
 
   function openReserved(r) {
     fillSummary(r, true);
-    var noteEl = document.getElementById("bp-note");
-    noteEl.innerText = "This item is reserved for historical validation. It will appear on the shelf when it is ready.";
-    noteEl.style.display = "block";
     
     var actions = document.getElementById("bp-actions");
     actions.innerHTML = "";
